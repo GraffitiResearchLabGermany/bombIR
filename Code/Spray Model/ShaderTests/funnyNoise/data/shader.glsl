@@ -17,8 +17,6 @@ uniform float dispersion;    // size of the airbrush
 
 uniform vec2 refAngle;
 
-uniform float depthOffset;
-
 
 //--------------------------------------------------------------------
 
@@ -143,28 +141,24 @@ void main(void)
   // Noisedepth map (3rd dimension of the noise)
  	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
 
- 	float density = 100.0;
- 	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
+ 	float density = 100.0 * (1.0 - distance / dispersion);
+ 	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth ) ) * density );
 
 
  	// Color to display
-    float red   = 0.4;
-    float green = 0.8;
-    float blue  = 0.86;
+    float red   = 0.0;
+    float green = 0.0;
+    float blue  = 0.0;
 
     // The farther from the center of the window, the more transparent
     float alpha = 1.0 - distance / dispersion - noise;
 
     // Debug (show raw noise)
-    // alpha = 1.0 - noise;
+     alpha = 1.0 - noise;
 
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
     // Debug show noise depth map
     //gl_FragColor = vec4(depth, depth, depth, 1.0);
-
-    // Debug show noise density map
-    //gl_FragColor = vec4(density, density, density, 1.0);
-
 
 }
