@@ -134,8 +134,8 @@ void main(void)
  	// How far are we from the center?
  	float distance = length( coord.xy );
 
-  // 3rd dimension of the noise spread 
- 	float depth = (gl_FragCoord.x * (distance + cosAngle) ) / 1000.0;// distance + cosAngle; 
+  // Noisedepth map (3rd dimension of the noise)
+ 	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
 
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth ) ) * density );
@@ -159,6 +159,6 @@ void main(void)
     //float alpha = 1.0 - noise;
 
     // Debug show noise depth map
-    //gl_FragColor = vec4(depth, depth, depth, 1.0);
+    gl_FragColor = vec4(depth, depth, depth, 1.0);
 
 }
