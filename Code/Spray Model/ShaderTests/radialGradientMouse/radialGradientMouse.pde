@@ -30,7 +30,7 @@ void draw() {
   
   sprayBrush.set( "depthOffset", depthOffset );
 
-  shader(sprayBrush);
+  shader(sprayBrush);  
 
   rect( 0, 0, width, height );  
 

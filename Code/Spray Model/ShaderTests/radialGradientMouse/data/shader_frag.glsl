@@ -9,11 +9,7 @@ precision mediump float;
 precision mediump int;
 #endif
 
-#define PROCESSING_COLOR_SHADER
-
-varying vec4 vertColor;
-varying vec2 center;
-varying vec2 pos;
+#define PROCESSING_POINT_SHADER
 
 uniform vec2 resolution;
 
