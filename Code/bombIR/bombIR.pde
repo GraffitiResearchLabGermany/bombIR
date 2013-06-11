@@ -50,14 +50,21 @@ PImage bg;
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 
-
+  public void init() {
+    
+    // remove the window frame
+    frame.removeNotify(); 
+    frame.setUndecorated(true);
+    frame.addNotify();
+    super.init();
+  }
 
 //-----------------------------------------------------------------------------------------
   
   void setup() {
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  		//size(3072, 768, P3D);
+  	//size(3072, 768, P3D);
         //for testing with one screen
         size(1024, 256, P3D);
         //create painting screen
@@ -66,41 +73,42 @@ PImage bg;
         paintbackground = createGraphics(340,256,P2D);
         bg = loadImage("background.jpg");
         //setup wall screen
-		setupKeystone();
-    
+	setupKeystone();
+        setupSpraypaint();
+        wallscreen.background(0);
+        paintscreen.background(255,255,255,0);
+		
+        //put the upper left corner of the frame to the upper left corner of the screen
+        //needs to be the last call on setup to work
+	frame.setLocation(0,0);
   } // end SETUP
   
   //-----------------------------------------------------------------------------------------
   
   void draw() {
    	PVector surfaceMouse = surface.getTransformedMouse();
-        //draw background for painting screen
-        paintbackground.beginDraw();
-        paintbackground.image(bg,0,0);
-        paintbackground.endDraw();
+        //draw background for painting screen on first frame
+        if(frameCount == 1) {
+          paintbackground.beginDraw();
+          paintbackground.image(bg,0,0);
+          paintbackground.endDraw();
+          image(paintbackground,0,0);
+        }
 	
-		//draw painting screen
+	//draw painting screen
         paintscreen.beginDraw();
-        paintscreen.background(255,255,255,0);
-        
-        //example "painting"
-        paintscreen.stroke(0,255,50);
-        paintscreen.line(paintscreen.width*0.5, paintscreen.height*0.5, mouseX, mouseY);
+        spray();
         paintscreen.endDraw();
         
-		//draw wall screen
+	//draw wall screen
         wallscreen.beginDraw();
-        wallscreen.background(0);
         wallscreen.image(paintscreen,0,0); 
         wallscreen.endDraw();
 
-		background(0);
-        //draw background image
-        image(paintbackground,0,0);
         //draw painting area
         image(paintscreen,0,0);
         //render the wall screen
-		surface.render(wallscreen);
+	surface.render(wallscreen);
     
   } // end DRAW
   
