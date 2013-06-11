@@ -89,11 +89,9 @@ PImage bg;
    	PVector surfaceMouse = surface.getTransformedMouse();
         //draw background for painting screen on first frame
         if(frameCount == 1) {
-          paintbackground.beginDraw();
-          paintbackground.image(bg,0,0);
-          paintbackground.endDraw();
-          image(paintbackground,0,0);
+          drawBackgroundImage();
         }
+       
 	
 	//draw painting screen
         paintscreen.beginDraw();
@@ -102,15 +100,35 @@ PImage bg;
         
 	//draw wall screen
         wallscreen.beginDraw();
+        //redraw the background of the wallscreen during calibration  
+        //for the calibration view to work
+        if(ks.isCalibrating()){
+          wallscreen.background(0);
+        }
         wallscreen.image(paintscreen,0,0); 
         wallscreen.endDraw();
-
+        //redraw the main backgound for calibration and male sure
+        //that the imagebackground is drawn as well
+        if(ks.isCalibrating()){
+          background(0);
+          drawBackgroundImage();
+        }
         //draw painting area
         image(paintscreen,0,0);
+        
         //render the wall screen
 	surface.render(wallscreen);
+         
+        
     
   } // end DRAW
+  
+  void drawBackgroundImage(){
+    paintbackground.beginDraw();
+    paintbackground.image(bg,0,0);
+    paintbackground.endDraw();
+    image(paintbackground,0,0);
+  }
   
   void keyPressed() {
   	switch(key) {
@@ -118,6 +136,11 @@ PImage bg;
 		    // enter/leave calibration mode, where surfaces can be warped 
 		    // and moved
 		    ks.toggleCalibration();
+                    //redraw background once after calibration
+                    background(0);
+                    drawBackgroundImage();
+                    
+                    
 		    break;
 
   		case 'l':
