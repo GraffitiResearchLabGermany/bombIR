@@ -3,9 +3,8 @@
 
 class Stroke {
   
-  ArrayList<Point> curve;       // raw point list
-  ArrayList<Point> curveExtrap; // extrapolated point list
-  ArrayList<Point> curveSmooth; // smoothed point list
+  ArrayList<Point> pointList;       // raw point list
+  ArrayList<Point> pointsExtrap;  // extrapolated point list along a curve
   
   float distMax;
 
@@ -19,28 +18,24 @@ class Stroke {
   }
 
   Stroke(ArrayList<Point> p) {
-    curve = p;
+    pointList = p;
     initialize();
   }
 
   Stroke(ArrayList<Point> p, float d) {
-    curve   = p;
+    pointList   = p;
     distMax = d;
     initialize();
   }
   
   void initialize() {
-    if(null == curve      ) curve       = new ArrayList<Point>();
-    if(null == curveExtrap) curveExtrap = new ArrayList<Point>();
-    if(null == curveSmooth) curveSmooth = new ArrayList<Point>();
+    if(null == pointList   ) pointList    = new ArrayList<Point>();
+    if(null == pointsExtrap) pointsExtrap = new ArrayList<Point>();
   }
   
-  void update(PVector p) {
-    
-  }
-  
-  // Remove jitter
-  void smooth(int level) {
+  void update(Point p) {
+    pointList.add(p);
+    extrapolate();
   }
   
   // Fill in the gaps in the stroke, based
@@ -48,7 +43,7 @@ class Stroke {
   void extrapolate() {
     // draw a curve based on the last 4 points
     // get points on the curve
-    // update curveExtrap
+    // update pointsExtrap
   }
   
   
