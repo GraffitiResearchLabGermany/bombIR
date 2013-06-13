@@ -1,50 +1,78 @@
 
-// The Stroke object contains a list of points
+// The Path object contains a list of points
 
-class Stroke {
+class Path {
   
-  ArrayList<Point> pointList;       // raw point list
-  ArrayList<Point> pointsExtrap;  // extrapolated point list along a curve
+  ArrayList<Knot> pointList;       // raw point list
   
-  float distMax;
-
-  Stroke() {
-    initialize();
-  }
+  Knot previousKnot;
+  Knot currentKnot;
   
-  Stroke(float d) {
-    distMax = d;
-    initialize();
-  }
-
-  Stroke(ArrayList<Point> p) {
-    pointList = p;
-    initialize();
+  float mag;
+  float numSteps;
+  float distMin = 3;
+  float stepSize = 20;
+  
+  Path() {
   }
 
-  Stroke(ArrayList<Point> p, float d) {
-    pointList   = p;
-    distMax = d;
-    initialize();
+  Path(Knot startingPoint) {
+    initialize(startingPoint);
   }
   
-  void initialize() {
-    if(null == pointList   ) pointList    = new ArrayList<Point>();
-    if(null == pointsExtrap) pointsExtrap = new ArrayList<Point>();
+  Path(Knot startingPoint, float d) {
+    stepSize = d;
+    initialize(startingPoint);
   }
   
-  void update(Point p) {
-    pointList.add(p);
-    extrapolate();
+  void initialize(Knot k) {
+    
+    previousKnot = k;
+    currentKnot  = k;
+    
+    if( null == pointList ) pointList = new ArrayList<Knot>();
+    
+    pointList.add(previousKnot);
+    pointList.add(currentKnot);
   }
   
-  // Fill in the gaps in the stroke, based
-  // on a maximum distance between points
-  void extrapolate() {
-    // draw a curve based on the last 4 points
-    // get points on the curve
-    // update pointsExtrap
+  void add(Knot p) {
+  
+    int size = pointList.size();
+
+    previousKnot = pointList.get(size-1);
+    currentKnot = p;
+    
+    // Compute the vector from previous to current knot
+    PVector prevPos = previousKnot.getPos();
+    PVector newPos  = currentKnot.getPos();
+    PVector velocity = PVector.sub(newPos, prevPos);
+ 
+    // How many points can we fit between the two last knots?
+    float mag = velocity.mag();
+    
+    if( mag > stepSize ) {
+      numSteps = mag/stepSize;
+      for(int i=1; i<numSteps; i++ ) {
+        PVector stepper = new PVector();
+        PVector.mult(velocity, 1/numSteps*i, stepper);
+        stepper.add(prevPos);
+        Knot k = new Knot(stepper.x, stepper.y);
+        p.setColor(color(0,255,0));
+        pointList.add(k);
+      }
+    }
+    else {
+      p.setColor(color(255,0,0));
+      pointList.add(p);
+    }
+    
   }
   
+  void draw() {
+    for(Knot p: pointList) {
+      p.draw();
+    }
+  }
   
 }
