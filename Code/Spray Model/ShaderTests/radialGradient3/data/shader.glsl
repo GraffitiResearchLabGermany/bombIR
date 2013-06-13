@@ -9,7 +9,11 @@ precision mediump float;
 precision mediump int;
 #endif
 
-#define PROCESSING_POINT_SHADER
+#define PROCESSING_COLOR_SHADER
+
+varying vec4 vertColor;
+varying vec2 center;
+varying vec2 pos;
 
 uniform vec2 resolution;
 
@@ -144,7 +148,7 @@ void main(void)
  	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
 
  	float density = 100.0;
- 	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
+ 	float noise = simplexNoise3( vec3( 4.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
 
  	// Color to display
@@ -154,6 +158,8 @@ void main(void)
 
     // The farther from the center of the window, the more transparent
     float alpha = 1.0 - distance / dispersion - noise;
+
+    alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise;
 
     // Debug (show raw noise)
     // alpha = 1.0 - noise;

@@ -1,18 +1,25 @@
+ // This shader example is adapted from the Andrew Baldwin's 
+ // introductory tutorials to GLSL. Find them at http://thndl.com
+
+// This shader belongs to 
+// color_03_radial_gradient.pde
+
 #ifdef GL_ES
 precision mediump float;
 precision mediump int;
 #endif
 
-uniform float weight;
-uniform float sharpness;
-
-uniform float dispersion;
-uniform float depthOffset;
-uniform vec2 refAngle;
+#define PROCESSING_COLOR_SHADER
 
 varying vec4 vertColor;
 varying vec2 center;
 varying vec2 pos;
+
+uniform vec2 resolution;
+uniform float dispersion;    // size of the airbrush
+uniform vec2 refAngle;
+uniform float depthOffset;
+uniform sampler2D sprayMap;
 
 
 //--------------------------------------------------------------------
@@ -123,14 +130,11 @@ float simplexNoise3(vec3 v)
 //--------------------------------------------------------------------
 
 
-void main() {  
 
-
-
-  float len = 1.0 - length(pos)/weight;
-
-  // We compute the position of the current fragment (from [-1,-1] to [1,1])
-  vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
+void main(void)
+{ 
+	// We compute the position of the current fragment (from [-1,-1] to [1,1])
+ 	vec2 coord = vec2 (-1.0 + 2.0 * gl_FragCoord.x / resolution.x, 1.0 - 2.0 * gl_FragCoord.y / resolution.y) ;
 
   // We calculate a value depending on the angle at the center
   float cosAngle = dot( coord, refAngle );
@@ -139,10 +143,10 @@ void main() {
  	float distance = length( coord.xy );
 
   // Noisedepth map (3rd dimension of the noise)
- 	float depth = (pos.x / weight * (distance + cosAngle) );// distance + cosAngle; 
+ 	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
 
  	float density = 100.0;
- 	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
+ 	float noise = simplexNoise3( vec3( 4.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
 
  	// Color to display
@@ -151,13 +155,26 @@ void main() {
     float blue  = 0.86;
 
     // The farther from the center of the window, the more transparent
-    float alpha = 1.0 - distance / dispersion - noise;
+    //float alpha = 1.0 - distance / dispersion - noise;
+
+    //alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise - 0.7;
+
+    // Map the alpha to the gradient texture
+    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r;
+
+    // Apply noise
+    float alpha = gradient - noise;
 
     // Debug (show raw noise)
     // alpha = 1.0 - noise;
 
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
-  //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
+    // Debug show noise depth map
+    //gl_FragColor = vec4(depth, depth, depth, 1.0);
+
+    // Debug show noise density map
+    //gl_FragColor = vec4(density, density, density, 1.0);
+
 
 }
