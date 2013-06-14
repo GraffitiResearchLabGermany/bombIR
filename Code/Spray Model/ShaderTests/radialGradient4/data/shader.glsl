@@ -160,7 +160,7 @@ void main(void)
     //alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise - 0.7;
 
     // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r - 1.0 ;
+    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r ;
 
     // Apply noise
     float alpha = gradient - noise;
@@ -175,6 +175,9 @@ void main(void)
 
     // Debug show noise density map
     //gl_FragColor = vec4(density, density, density, 1.0);
+
+    // Debug show spray map
+    // gl_FragColor = vec4(gradient, gradient, gradient, 1.0);
 
 
 }
