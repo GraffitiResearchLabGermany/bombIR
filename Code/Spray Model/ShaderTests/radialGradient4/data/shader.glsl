@@ -160,7 +160,7 @@ void main(void)
     //alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise - 0.7;
 
     // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r;
+    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r - 1.0 ;
 
     // Apply noise
     float alpha = gradient - noise;
