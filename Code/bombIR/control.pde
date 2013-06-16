@@ -1,66 +1,47 @@
 
-int saveCount = 0;
+// Radio Button
+void CropBox(int a) {
+  adjustBox = a;
+}
 
-
- void CLEAR(boolean theFlag) {
+// Camera
+ void CAM(boolean theFlag) {
   if(theFlag == true) {
-    //TODO: Spraypaint doesn't get cleared yet
-    paintscreen.background(0);
-    wallscreen.background(0);
-    drawBackgroundImage();
-    drawColorPicker();
+    calibShowCam = true;
+  } else if (theFlag == false) {
+    calibShowCam = false;
+  }
+ }
+ 
+// Blob
+ void BLB(boolean theFlag) {
+  if(theFlag == true) {
+    calibShowBlob = true;
+  } else if (theFlag == false) {
+    calibShowBlob = false;
   }
  }
 
- // SAVE
- void SAVE(boolean theFlag) {
-  if(theFlag == true) {
-     saveCount ++;
-     // save image w/o gui
-     wallscreen.save("exports/Save_" + saveCount + ".jpg");
-  }
- } 
+// Min 
+void BlobMin(float range) {
+  blobMin = range;
+  //println("Minimum Blob Size Set To " + blobMin);
+}
 
-//adjust brush size
- void WIDTH(int BrushSize) {
-    weight = (BrushSize);
- } 
- 
- 
- 
- void keyPressed() {
-    switch(key) {
-      case 'c':
-        // enter/leave calibration mode, where surfaces can be warped 
-        // and moved
-        ks.toggleCalibration();
-                    //redraw background once after calibration
-                    background(0);
-                    drawBackgroundImage();
-                    break;
+// Max
+void BlobMax(float range) {
+  blobMax = range;
+  //println("Maximum Blob Size Set To " + blobMax);
+}
 
-      case 'l':
-        // loads the saved layout
-        ks.load();
-        break;
+// Thresh
+void BlobThresh(float thresh) {
+  blobThresh = thresh;
+  //println("Threshold Blob Size Set To " + blobThresh);
+}
 
-    case 's':
-              // saves the layout
-        ks.save();
-        break;
-
-                case 'm':
-                   //show or hide the menu
-                   if(menu.isVisible()){
-                     menu.hide();
-                     background(0);
-                     drawBackgroundImage();
-                   }else{
-                     menu.show();
-                     //paint the colorpicker
-                     drawColorPicker();
-                   }
-                   break;
-         }
- 
-   }
+// Save Blob Settings
+public void SaveSettings() {
+  saveCalibrationSettings();
+  println("Saving Blob Tracking Config");
+}
