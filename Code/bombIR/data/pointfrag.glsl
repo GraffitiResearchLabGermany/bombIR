@@ -6,6 +6,10 @@ precision mediump int;
 uniform float weight;
 uniform float sharpness;
 
+uniform float red;
+uniform float green;
+uniform float blue;
+
 uniform float dispersion;
 uniform float depthOffset;
 uniform vec2 refAngle;
@@ -143,9 +147,9 @@ void main() {
 
 
  	// Color to display
-    float red   = 0.4;
-    float green = 0.8;
-    float blue  = 0.86;
+    //float red   = 0.4;
+    //float green = 0.8;
+    //float blue  = 0.86;
 
     // The farther from the center of the window, the more transparent
     float alpha = 1.0 - distance / dispersion - noise;

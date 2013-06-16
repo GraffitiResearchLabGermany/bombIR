@@ -37,6 +37,7 @@ TO DO
 // IMPORTS
 //-----------------------------------------------------------------------------------------
 import deadpixel.keystone.*;
+import controlP5.*;
 
 
   
@@ -49,6 +50,9 @@ PImage bg;
 
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
+
+int windowHeight = 384;
+int windowWidth = 1024;
 
   public void init() {
     
@@ -64,19 +68,20 @@ PImage bg;
   void setup() {
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  	//size(3072, 768, P3D);
-        //for testing with one screen
-        size(1024, 256, P3D);
+  	size(windowWidth, windowHeight, P3D);
         //create painting screen
-        paintscreen = createGraphics(340,256,P3D);
+        paintscreen = createGraphics(windowWidth/2,windowHeight,P3D);
         //create background for painting screen
-        paintbackground = createGraphics(340,256,P2D);
+        paintbackground = createGraphics(windowWidth/2,windowHeight,P2D);
         bg = loadImage("background.jpg");
         //setup wall screen
-	setupKeystone();
-        setupSpraypaint();
+	setupKeystone(); 
         wallscreen.background(0);
+        
+        setupSpraypaint();
         paintscreen.background(255,255,255,0);
+        
+        setupMenu();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
@@ -95,7 +100,9 @@ PImage bg;
 	
 	//draw painting screen
         paintscreen.beginDraw();
-        spray();
+        if(!menu.isVisible()){
+          spray();
+        }
         paintscreen.endDraw();
         
 	//draw wall screen
@@ -118,11 +125,16 @@ PImage bg;
         
         //render the wall screen
 	surface.render(wallscreen);
-         
+
+        if(menu.isVisible()){
+          drawColorPicker();
+        }
         
     
   } // end DRAW
   
+  //draws the background image for 
+  //the paintscreen
   void drawBackgroundImage(){
     paintbackground.beginDraw();
     paintbackground.image(bg,0,0);
@@ -130,30 +142,8 @@ PImage bg;
     image(paintbackground,0,0);
   }
   
-  void keyPressed() {
-  	switch(key) {
-  		case 'c':
-		    // enter/leave calibration mode, where surfaces can be warped 
-		    // and moved
-		    ks.toggleCalibration();
-                    //redraw background once after calibration
-                    background(0);
-                    drawBackgroundImage();
-                    
-                    
-		    break;
+  
 
-  		case 'l':
-		    // loads the saved layout
-		    ks.load();
-		    break;
-
-		case 's':
-			// saves the layout
-		    ks.save();
-		    break;
-         }
-  }
   
 //-----------------------------------------------------------------------------------------
 
