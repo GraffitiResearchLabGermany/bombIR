@@ -1,6 +1,6 @@
 void setupKeystone() {
 	ks = new Keystone(this);
-  	surface = ks.createCornerPinSurface(340, 256, 20);
-    surface.moveTo(341,0);
-  	wallscreen = createGraphics(340, 256, P3D);
+  	surface = ks.createCornerPinSurface(windowWidth/2, windowHeight, 20);
+        surface.moveTo(windowWidth/2+1,0);
+  	wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
 }
