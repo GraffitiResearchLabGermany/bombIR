@@ -110,7 +110,8 @@ void setup() {
   println(devices);
   //cam = new GSCapture(this, CameraWidth, CameraHeight, "Sony HD Eye for PS3 (SLEH 00201)");
   //cam.start();
-  cam = new Capture(this, CameraWidth, CameraHeight, devices[CameraID]);
+  cam = new Capture(this, devices[CameraID]);
+  cam.start();
   println();
   
   // Blob Detection
