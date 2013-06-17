@@ -20,7 +20,7 @@ public class MyCapture {
     _h = h; 
     pa = parent;
     cam = new GSCapture(pa, _w, _h);
-    
+    cam.start();
   }
   
   public void start() {

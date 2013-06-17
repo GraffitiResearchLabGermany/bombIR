@@ -34,7 +34,7 @@ public class DetectFace extends Thread {
     opencv = new OpenCV(parent);
     opencv.allocate(_w1,_h1);
     opencv.cascade("/usr/local/share/OpenCV/haarcascades/","haarcascade_frontalface_alt.xml"); 
-    _cap.start();
+    //_cap.start();
     super.start();
   }
 
@@ -43,9 +43,9 @@ public class DetectFace extends Thread {
       if (_cap.available() == true) {
         _img = _cap.get_image();
         opencv.copy(_img);
-        faceRect = opencv.detect(true);
+        //faceRect = opencv.detect(true);
       }
-      
+      println("detect");
       try {
         sleep((long)(wait));
       }
@@ -57,6 +57,7 @@ public class DetectFace extends Thread {
 
   public void display() {
     if (_cap.available() == true) {
+      faceRect = opencv.detect(true);
       println("Number of faces =" + faceRect.length + "."); 
       opencv.drawRectDetect(true);
     }
@@ -67,7 +68,7 @@ public class DetectFace extends Thread {
     interrupt(); 
 
     try {
-      sleep(100l);
+      sleep((long)100);
     } 
     catch (Exception e) {
       e.printStackTrace();
