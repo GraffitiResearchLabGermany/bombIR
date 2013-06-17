@@ -1,0 +1,2 @@
+http://www.saint-clair.net/gml/000000bookproxy.php
+Edit the above url to reflect where you copied the 000000bookproxy.php file
