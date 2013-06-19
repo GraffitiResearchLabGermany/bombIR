@@ -38,6 +38,7 @@ TO DO
 //-----------------------------------------------------------------------------------------
 import deadpixel.keystone.*;
 import controlP5.*;
+import io.thp.psmove.*;
 
 
   
@@ -48,11 +49,13 @@ CornerPinSurface surface;
 PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
 
+
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 
 int windowHeight = 384;
 int windowWidth = 1024;
+boolean clicked = false;
 
   public void init() {
     
@@ -82,6 +85,7 @@ int windowWidth = 1024;
         paintscreen.background(255,255,255,0);
         
         setupMenu();
+        psmoveInit();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
@@ -129,6 +133,9 @@ int windowWidth = 1024;
         if(menu.isVisible()){
           drawColorPicker();
         }
+        
+         // Playstation Move udptate
+        psmoveUpdate();
         
     
   } // end DRAW

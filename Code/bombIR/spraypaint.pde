@@ -16,7 +16,7 @@ void setupSpraypaint() {
 }
 
 void spray() {
-  if (mousePressed) {
+  if (clicked==true) {
     
     
     paintscreen.shader(pointShader, POINTS);

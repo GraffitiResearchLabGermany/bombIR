@@ -127,6 +127,14 @@ void setColorSlot(int activeSlot, float red, float green, float blue){
   colorSlots[activeSlot].draw(this);
 }
 
+void switchColorSlot(){
+  if(activeColorSlot < colorSlots.length-1) {
+    activeColorSlot++;
+  } else {
+    activeColorSlot = 0;
+  }
+}
+
 /**
  * Slot to save picked colors for later use
  */
