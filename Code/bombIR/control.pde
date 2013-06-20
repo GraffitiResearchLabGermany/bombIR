@@ -8,7 +8,7 @@ int saveCount = 0;
     paintscreen.background(0);
     wallscreen.background(0);
     drawBackgroundImage();
-    drawColorPicker();
+    //drawColorPicker();
   }
  }
 
@@ -34,33 +34,25 @@ int saveCount = 0;
         // enter/leave calibration mode, where surfaces can be warped 
         // and moved
         ks.toggleCalibration();
-                    //redraw background once after calibration
-                    background(0);
-                    drawBackgroundImage();
-                    break;
-
-      case 'l':
-        // loads the saved layout
-        ks.load();
+        //redraw background once after calibration
+        background(0);
+        drawBackgroundImage();
         break;
 
-    case 's':
-              // saves the layout
-        ks.save();
+      case 'm':     
+        toggleMenu();
         break;
-
-                case 'm':
-                   //show or hide the menu
-                   if(menu.isVisible()){
-                     menu.hide();
-                     background(0);
-                     drawBackgroundImage();
-                   }else{
-                     menu.show();
-                     //paint the colorpicker
-                     drawColorPicker();
-                   }
-                   break;
-         }
+      }
  
+   }
+   
+   //show or hide the menu
+   void toggleMenu(){
+     if(menu.isVisible()){
+          menu.hide();
+          background(0);
+          drawBackgroundImage();
+        }else{
+          menu.show();
+        }
    }

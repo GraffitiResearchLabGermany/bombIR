@@ -1,6 +1,7 @@
 PSMove move;
 PSMove [] controllers; // Define an array of controllers
 long lastTime = 0;
+boolean moveConnected = true;
 
 // Setup of the move -------------------------------------------------------------
 
@@ -12,6 +13,7 @@ void psmoveInit() {
   // This is only fun if we actually have controllers
   if (connected == 0) {
     print("WARNING: No controllers connected.");
+    moveConnected = false;
   }
 
   controllers = new PSMove[connected];
@@ -31,9 +33,9 @@ void psmoveInit() {
 void psmoveUpdate() {
   for (int i = 0; i<controllers.length; i++) {
       controllers[i].set_leds(
-      (int)colorSlots[activeColorSlot].getRed(), 
-      (int)colorSlots[activeColorSlot].getGreen(), 
-      (int)colorSlots[activeColorSlot].getBlue()
+      (int)cs.getColorSlot(activeColorSlot).getRed(), 
+      (int)cs.getColorSlot(activeColorSlot).getGreen(), 
+      (int)cs.getColorSlot(activeColorSlot).getBlue()
     );
     controllers[i].update_leds();
     while (controllers[i].poll () != 0) {
@@ -53,6 +55,13 @@ void psmoveUpdate() {
            lastTime = millis();
          }
       } 
+      if ((buttons & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
+        if ( millis() - lastTime > 500 ) {
+           toggleMenu();
+           lastTime = millis();
+         }
+      
+      }
     }
   }
 }

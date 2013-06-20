@@ -131,7 +131,7 @@ boolean clicked = false;
 	surface.render(wallscreen);
 
         if(menu.isVisible()){
-          drawColorPicker();
+          drawColorSlots();
         }
         
          // Playstation Move udptate
