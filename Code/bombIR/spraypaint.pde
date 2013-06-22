@@ -25,7 +25,7 @@ void spray() {
     
     depthOffset += offsetVel;
     
-    pointShader.set( "weight", weight+random(0,20));
+    pointShader.set( "weight", weight + random(0, 20));
     pointShader.set( "refAngle", -1.0, 0.0 );
     pointShader.set( "dispersion", 0.2 );
     pointShader.set( "depthOffset", depthOffset );
