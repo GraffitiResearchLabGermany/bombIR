@@ -1,14 +1,15 @@
 
 int saveCount = 0;
-
-
+;
  void CLEAR(boolean theFlag) {
   if(theFlag == true) {
-    //TODO: Spraypaint doesn't get cleared yet
-    paintscreen.background(0);
-    wallscreen.background(0);
-    drawBackgroundImage();
-    //drawColorPicker();
+    paintscreen.beginDraw();
+    paintscreen.clear();
+    paintscreen.endDraw();
+    
+    wallscreen.beginDraw();
+    wallscreen.clear();
+    wallscreen.endDraw();
   }
  }
 

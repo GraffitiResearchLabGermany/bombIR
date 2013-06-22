@@ -35,7 +35,8 @@ void setupMenu(){
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
-                
+    //TODO: Pickable colors change when something has been drawn in the back 
+    //of the colorpicker    
     menu.addGroup("cp")
                         .setPosition(50,80)
                         .setBackgroundHeight(cpsize)
@@ -156,7 +157,8 @@ class ColorPickerCanvas extends Canvas {
   
   //create the colorpicker once
   protected void createColorPicker(PApplet p){
-   this.colorpicker = createGraphics(cpsize, cpsize, JAVA2D); 
+   this.colorpicker = createGraphics(cpsize, cpsize, JAVA2D);
+   this.colorpicker.background(255);
    // Colour Picker
    this.colorpicker.beginDraw();
    this.colorpicker.colorMode(HSB, cpsize);
@@ -167,7 +169,7 @@ class ColorPickerCanvas extends Canvas {
      }
    }
    this.colorpicker.endDraw();
-   p.colorMode(RGB);
+   this.colorpicker.colorMode(RGB);
   }
 }
 

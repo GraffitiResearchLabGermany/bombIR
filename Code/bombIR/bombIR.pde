@@ -75,7 +75,7 @@ boolean clicked = false;
         //create painting screen
         paintscreen = createGraphics(windowWidth/2,windowHeight,P3D);
         //create background for painting screen
-        paintbackground = createGraphics(windowWidth/2,windowHeight,P2D);
+        paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         bg = loadImage("background.jpg");
         //setup wall screen
 	setupKeystone(); 
@@ -97,11 +97,11 @@ boolean clicked = false;
   void draw() {
    	PVector surfaceMouse = surface.getTransformedMouse();
         //draw background for painting screen on first frame
-        if(frameCount == 1) {
+        if(frameCount == 1 ) {
           drawBackgroundImage();
         }
-       
-	
+        
+       	
 	//draw painting screen
         paintscreen.beginDraw();
         if(!menu.isVisible()){
@@ -124,6 +124,7 @@ boolean clicked = false;
           background(0);
           drawBackgroundImage();
         }
+          
         //draw painting area
         image(paintscreen,0,0);
         
@@ -136,7 +137,6 @@ boolean clicked = false;
         
          // Playstation Move udptate
         psmoveUpdate();
-        
     
   } // end DRAW
   
@@ -151,6 +151,7 @@ boolean clicked = false;
   
   
 
+  
   
 //-----------------------------------------------------------------------------------------
 

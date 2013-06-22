@@ -2,6 +2,7 @@ PSMove move;
 PSMove [] controllers; // Define an array of controllers
 long lastTime = 0;
 boolean moveConnected = true;
+int trigger = 0;
 
 // Setup of the move -------------------------------------------------------------
 
@@ -39,7 +40,7 @@ void psmoveUpdate() {
     );
     controllers[i].update_leds();
     while (controllers[i].poll () != 0) {
-      int trigger = controllers[i].get_trigger();
+      trigger = controllers[i].get_trigger();
       int buttons = controllers[i].get_buttons();
       if ( trigger > 0){ 
         clicked = true;
