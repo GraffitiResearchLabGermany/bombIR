@@ -5,6 +5,8 @@ class Knot extends PVector {
   color tint;
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
+
+  boolean isDrawn = false;
   
   Knot(float posX, float posY) {
     super(posX, posY);
@@ -37,15 +39,19 @@ class Knot extends PVector {
     float x = this.x;
     float y = this.y;
 
-    pointShader.set( "weight", size );
-    pointShader.set( "refAngle", -1.0, 0.0 );
-    pointShader.set( "dispersion", 0.2 );
-    pointShader.set( "depthOffset", noiseDepth );
-    strokeWeight(size);
-    
-    shader(pointShader, POINTS);
-    point(x,y);
-    resetShader();
+    if(!isDrawn) {
+      pointShader.set( "weight", size );
+      pointShader.set( "refAngle", -1.0, 0.0 );
+      pointShader.set( "dispersion", 0.2 );
+      pointShader.set( "depthOffset", noiseDepth );
+      strokeWeight(size);
+      
+      shader(pointShader, POINTS);
+      point(x,y);
+      resetShader();
+      
+      isDrawn = true;
+    }
     
     if(debug) {
       pushMatrix();

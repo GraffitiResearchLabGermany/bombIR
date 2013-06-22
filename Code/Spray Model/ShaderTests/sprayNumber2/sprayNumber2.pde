@@ -27,7 +27,7 @@ void setup() {
 }
 
 void draw() {
-  background(0);
+
   if (mousePressed) {
     if(null!=s) s.add( new Knot(mouseX, mouseY) );
   }
