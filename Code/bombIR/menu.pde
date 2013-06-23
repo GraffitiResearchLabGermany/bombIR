@@ -5,11 +5,14 @@ float brushR, brushG, brushB;
 int activeColorSlot=0;
 ColorSlotCanvas cs;
 RadioButton rb;
+ColorPicker cp;
 
 
 //setup the control menu
 void setupMenu(){
     menu = new ControlP5(this);
+    
+    cp = new ColorPicker(50,80,200,200,45);
     
     cs = (ColorSlotCanvas)menu.addGroup("cs")
                 .setPosition(cpsize+50,80)
@@ -35,15 +38,7 @@ void setupMenu(){
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
-                
-    menu.addGroup("cp")
-                        .setPosition(50,80)
-                        .setBackgroundHeight(cpsize)
-                        .setWidth(cpsize)
-                        .setBackgroundColor(color(255))
-                        .hideBar()
-                        .addCanvas(new ColorPickerCanvas());
-                        
+     
     menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 20).setGroup("width");
     menu.addBang("CLEAR", 10, 10, 20, 20).setGroup("misc");
     menu.addBang("SAVE",  40, 10, 20, 20).setGroup("misc");
@@ -63,13 +58,13 @@ void setupMenu(){
          .addItem("Color5",4)
          ;
      rb.activate(0);
-    
+
     menu.hide();
 }
 
 
-//draw the colorslots 
-void drawColorSlots(){   
+//pck color with the mouse
+void pickColor(){   
     if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < 280) {
           if(mousePressed) {
             picker = get(mouseX, mouseY);
@@ -138,39 +133,6 @@ class ColorSlot{
   }
 }
 
-/**
- * Canvas to draw the color picker
- * TODO: remove references to cpsize
- */
-class ColorPickerCanvas extends Canvas {
-  
-  PGraphics colorpicker;
-  
-  public void setup(PApplet p) {
-    this.createColorPicker(p);
-  }
-  
-  public void draw(PApplet p) {
-    p.image(colorpicker,0,0);
-  }
-  
-  //create the colorpicker once
-  protected void createColorPicker(PApplet p){
-   this.colorpicker = createGraphics(cpsize, cpsize, JAVA2D); 
-   // Colour Picker
-   this.colorpicker.beginDraw();
-   this.colorpicker.colorMode(HSB, cpsize);
-   for (int i = 0; i < cpsize; i++) {
-     for (int j = 0; j < cpsize; j++) {
-       this.colorpicker.stroke(i, j, i+j);
-       this.colorpicker.point(i, j);
-     }
-   }
-   this.colorpicker.endDraw();
-   p.colorMode(RGB);
-  }
-}
-
 class ColorSlotCanvas extends Canvas {
   ColorSlot[] colorSlots = new ColorSlot[5];
   
@@ -206,6 +168,87 @@ class ColorSlotCanvas extends Canvas {
     return this.colorSlots[id];
   }
 
+}
+
+/**
+ * Colorpicker from http://www.julapy.com/processing/ColorPicker.pde
+ * with little adjustments
+ */
+public class ColorPicker 
+{
+  int x, y, w, h, c;
+  PImage cpImage;
+  
+  public ColorPicker ( int x, int y, int w, int h, int c )
+  {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.c = c;
+    
+    cpImage = new PImage( w, h );
+    
+    init();
+  }
+  
+  private void init ()
+  {
+    // draw color.
+    int cw = w - 60;
+    for( int i=0; i<cw; i++ ) 
+    {
+      float nColorPercent = i / (float)cw;
+      float rad = (-360 * nColorPercent) * (PI / 180);
+      int nR = (int)(cos(rad) * 127 + 128) << 16;
+      int nG = (int)(cos(rad + 2 * PI / 3) * 127 + 128) << 8;
+      int nB = (int)(Math.cos(rad + 4 * PI / 3) * 127 + 128);
+      int nColor = nR | nG | nB;
+      
+      setGradient( i, 0, 1, h/2, 0xFFFFFF, nColor );
+      setGradient( i, (h/2), 1, h/2, nColor, 0x000000 );
+    }
+    
+    // draw black/white.
+    drawRect( cw, 0,   30, h/2, 0xFFFFFF );
+    drawRect( cw, h/2, 30, h/2, 0 );
+    
+    // draw grey scale.
+    for( int j=0; j<h; j++ )
+    {
+      int g = 255 - (int)(j/(float)(h-1) * 255 );
+      drawRect( w-30, j, 30, 1, color( g, g, g ) );
+    }
+  }
+
+  private void setGradient(int x, int y, float w, float h, int c1, int c2 )
+  {
+    float deltaR = red(c2) - red(c1);
+    float deltaG = green(c2) - green(c1);
+    float deltaB = blue(c2) - blue(c1);
+
+    for (int j = y; j<(y+h); j++)
+    {
+      int c = color( red(c1)+(j-y)*(deltaR/h), green(c1)+(j-y)*(deltaG/h), blue(c1)+(j-y)*(deltaB/h) );
+      cpImage.set( x, j, c );
+    }
+  }
+  
+  private void drawRect( int rx, int ry, int rw, int rh, int rc )
+  {
+    for(int i=rx; i<rx+rw; i++) 
+    {
+      for(int j=ry; j<ry+rh; j++) 
+      {
+        cpImage.set( i, j, rc );
+      }
+    }
+  }
+  
+  public void render ()
+  {
+    image( cpImage, x, y );
+  }
 }
 
 

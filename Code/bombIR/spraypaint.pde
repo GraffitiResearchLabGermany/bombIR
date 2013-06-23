@@ -24,17 +24,22 @@ void spray() {
     paintscreen.shader(pointShader, POINTS);
     
     depthOffset += offsetVel;
-    
-    pointShader.set( "weight", weight + random(0, 20));
+  
+    //use the psmove trigger to change the weight of the 
+    //spraypaint
+    //pointShader.set( "weight", weight+trigger/5);
     pointShader.set( "refAngle", -1.0, 0.0 );
+    pointShader.set( "weight", weight+random(0,20));
     pointShader.set( "dispersion", 0.2 );
     pointShader.set( "depthOffset", depthOffset );
     pointShader.set( "red", activeCS.getRed()/255);
     pointShader.set( "green", activeCS.getGreen()/255);
     pointShader.set( "blue", activeCS.getBlue()/255);
+    //paintscreen.strokeWeight(weight+trigger/5);
     paintscreen.strokeWeight(weight+random(0,20));
     
     paintscreen.stroke(random(255), random(255), random(255));  
     paintscreen.point(mouseX, mouseY);
+    
   }
 }
