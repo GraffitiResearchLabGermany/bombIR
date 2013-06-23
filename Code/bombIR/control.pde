@@ -1,6 +1,6 @@
 
 int saveCount = 0;
-;
+
  void CLEAR(boolean theFlag) {
   if(theFlag == true) {
     paintscreen.beginDraw();
@@ -54,6 +54,7 @@ int saveCount = 0;
           background(0);
           drawBackgroundImage();
         }else{
+          drawBackgroundImage();
           menu.show();
         }
    }

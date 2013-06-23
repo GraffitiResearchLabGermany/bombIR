@@ -50,6 +50,7 @@ PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
 
 
+
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 
@@ -71,7 +72,7 @@ boolean clicked = false;
   void setup() {
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  	size(windowWidth, windowHeight, P3D);
+  	size(windowWidth, windowHeight, P2D);
         //create painting screen
         paintscreen = createGraphics(windowWidth/2,windowHeight,P3D);
         //create background for painting screen
@@ -83,6 +84,8 @@ boolean clicked = false;
         
         setupSpraypaint();
         paintscreen.background(255,255,255,0);
+        
+        
         
         setupMenu();
         psmoveInit();
@@ -128,11 +131,13 @@ boolean clicked = false;
         //draw painting area
         image(paintscreen,0,0);
         
+             
         //render the wall screen
 	surface.render(wallscreen);
 
         if(menu.isVisible()){
-          drawColorSlots();
+          cp.render();
+          pickColor();
         }
         
          // Playstation Move udptate
