@@ -28,9 +28,9 @@
 
 /*
 TO DO 
-- use opencv for capturing the wall
-- get aspect ratio of wallscreen for match the painting area
 - saving of keystone configurations not working (yet)
+- IRCam calibration
+- Menu positioning and sizing
   
 */
 
@@ -39,6 +39,7 @@ TO DO
 import deadpixel.keystone.*;
 import controlP5.*;
 import io.thp.psmove.*;
+import java.util.Properties;
 
 
   
@@ -49,15 +50,11 @@ CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
 
 
-
-
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
-
-int windowHeight = 384;
-int windowWidth = 1024;
 boolean clicked = false;
 boolean calib=false;
+
 
   public void init() {
     
@@ -71,6 +68,10 @@ boolean calib=false;
 //-----------------------------------------------------------------------------------------
   
   void setup() {
+        
+        //read the values from the configuration file
+        readConfiguration();
+        
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
   	size(windowWidth, windowHeight, P3D);
@@ -102,10 +103,8 @@ boolean calib=false;
    	PVector surfaceMouse = paintbg.getTransformedMouse();
         //draw background for painting screen on first frame
         if(frameCount == 1 ) {
-          drawBackgroundImage();
           paintbg.render(paintbackground);
         }
-        
        	
 	//draw painting screen
         paintscreen.beginDraw();
@@ -144,6 +143,10 @@ boolean calib=false;
         
          // Playstation Move udptate
         psmoveUpdate();
+        
+        if(debug){
+           println("Framerate: " + int(frameRate));
+        }
     
   } // end DRAW
 
