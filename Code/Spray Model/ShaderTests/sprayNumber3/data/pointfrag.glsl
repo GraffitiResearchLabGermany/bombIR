@@ -5,6 +5,8 @@ precision mediump int;
 
 uniform float weight;
 uniform float sharpness;
+uniform float scale;
+uniform float soften;
 
 uniform float dispersion;
 uniform float depthOffset;
@@ -154,7 +156,7 @@ void main() {
     float blue  = 0.86;
 
     // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance, 0.5 ) ).r ;
+    float gradient = texture2D( sprayMap, vec2( distance / scale, 0.5 ) ).r - soften;
 
     // The farther from the center of the window, the more transparent
     float alpha = gradient - noise;

@@ -2,7 +2,7 @@
 
 boolean debug = false;
 
-PShader pointShader;
+PShader sprayBrush;
 
 // Spray density distribution expressed in grayscale gradient
 PImage sprayMap;
@@ -24,9 +24,9 @@ void setup() {
   depthOffset = 0.0;
   offsetVel = 0.0005;
 
-  pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");  
+  sprayBrush = loadShader("pointfrag.glsl", "pointvert.glsl");  
   //pointShader.set("sharpness", 0.9);
-  pointShader.set( "sprayMap", sprayMap );
+  sprayBrush.set( "sprayMap", sprayMap );
 
   strokeCap(SQUARE);
   background(0);  

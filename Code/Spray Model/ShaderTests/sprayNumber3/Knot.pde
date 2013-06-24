@@ -40,13 +40,14 @@ class Knot extends PVector {
     float y = this.y;
 
     if(!isDrawn) {
-      pointShader.set( "weight", size );
-      pointShader.set( "refAngle", -1.0, 0.0 );
-      pointShader.set( "dispersion", 0.2 );
-      pointShader.set( "depthOffset", noiseDepth );
+      sprayBrush.set( "weight", size );
+      sprayBrush.set( "refAngle", -1.0, 0.0 );
+      sprayBrush.set( "scale", 0.5 ); 
+      sprayBrush.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
+      sprayBrush.set( "depthOffset", noiseDepth );
       strokeWeight(size);
       
-      shader(pointShader, POINTS);
+      shader(sprayBrush, POINTS);
       point(x,y);
       resetShader();
       
