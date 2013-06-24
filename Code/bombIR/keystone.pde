@@ -12,7 +12,7 @@ PImage bg;
         paintbg.moveTo(0,0);
         paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         bg = loadImage("background.jpg");
-        bg.resize(windowWidth, windowHeight);
+        bg.resize(windowWidth/2, windowHeight);
         paintbackground.beginDraw();
         paintbackground.image(bg,0,0);
         paintbackground.endDraw();      
