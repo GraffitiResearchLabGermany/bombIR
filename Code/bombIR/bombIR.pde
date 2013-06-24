@@ -45,9 +45,9 @@ import io.thp.psmove.*;
 // DECLARATIONS
 //-----------------------------------------------------------------------------------------  
 Keystone ks;
-CornerPinSurface surface;
+CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
-PImage bg;
+
 
 
 
@@ -57,6 +57,7 @@ PImage bg;
 int windowHeight = 384;
 int windowWidth = 1024;
 boolean clicked = false;
+boolean calib=false;
 
   public void init() {
     
@@ -72,22 +73,22 @@ boolean clicked = false;
   void setup() {
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  	size(windowWidth, windowHeight, P2D);
+  	size(windowWidth, windowHeight, P3D);
+        
         //create painting screen
         paintscreen = createGraphics(windowWidth/2,windowHeight,P3D);
-        //create background for painting screen
-        paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
-        bg = loadImage("background.jpg");
-        //setup wall screen
-	setupKeystone(); 
-        wallscreen.background(0);
-        
-        setupSpraypaint();
         paintscreen.background(255,255,255,0);
         
+        //setup wall screen
+	setupKeystone(); 
+                
+        //setup the spraypaint shader
+        setupSpraypaint();
         
-        
+        //setup the control menu (colorpicker, clear screen, save, etc.)
         setupMenu();
+        
+        //Init the PSMove controller
         psmoveInit();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
@@ -98,16 +99,17 @@ boolean clicked = false;
   //-----------------------------------------------------------------------------------------
   
   void draw() {
-   	PVector surfaceMouse = surface.getTransformedMouse();
+   	PVector surfaceMouse = paintbg.getTransformedMouse();
         //draw background for painting screen on first frame
         if(frameCount == 1 ) {
           drawBackgroundImage();
+          paintbg.render(paintbackground);
         }
         
        	
 	//draw painting screen
         paintscreen.beginDraw();
-        if(!menu.isVisible()){
+        if(!menu.isVisible() && calib == false){
           spray();
         }
         paintscreen.endDraw();
@@ -120,18 +122,18 @@ boolean clicked = false;
           wallscreen.background(0);
         }
         wallscreen.image(paintscreen,0,0); 
+        
         wallscreen.endDraw();
         //redraw the main backgound for calibration and male sure
         //that the imagebackground is drawn as well
         if(ks.isCalibrating()){
           background(0);
-          drawBackgroundImage();
+          paintbg.render(paintbackground);
         }
-          
+      
         //draw painting area
         image(paintscreen,0,0);
-        
-             
+            
         //render the wall screen
 	surface.render(wallscreen);
 
@@ -144,15 +146,7 @@ boolean clicked = false;
         psmoveUpdate();
     
   } // end DRAW
-  
-  //draws the background image for 
-  //the paintscreen
-  void drawBackgroundImage(){
-    paintbackground.beginDraw();
-    paintbackground.image(bg,0,0);
-    paintbackground.endDraw();
-    image(paintbackground,0,0);
-  }
+
   
   
 
