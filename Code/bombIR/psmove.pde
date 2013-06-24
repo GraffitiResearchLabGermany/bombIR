@@ -59,6 +59,7 @@ void psmoveUpdate() {
       if ((buttons & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
         if ( millis() - lastTime > 500 ) {
            toggleMenu();
+           paintbg.render(paintbackground);
            lastTime = millis();
          }
       
