@@ -1,4 +1,3 @@
-
 int saveCount = 0;
 
  void CLEAR(boolean theFlag) {
@@ -32,17 +31,18 @@ int saveCount = 0;
  void keyPressed() {
     switch(key) {
       case 'c':
-        // enter/leave calibration mode, where surfaces can be warped 
-        // and moved
-        ks.toggleCalibration();
-        //redraw background once after calibration
-        background(0);
-        drawBackgroundImage();
-        break;
-
+       // enter/leave calibration mode, where surfaces can be warped 
+       // and moved
+       ks.toggleCalibration();
+       calib = !calib;       
+       //redraw background once after calibration
+       background(0);
+       paintbg.render(paintbackground);
+       break;
       case 'm':     
-        toggleMenu();
-        break;
+       toggleMenu();
+       paintbg.render(paintbackground);
+       break;
       }
  
    }
@@ -52,9 +52,7 @@ int saveCount = 0;
      if(menu.isVisible()){
           menu.hide();
           background(0);
-          drawBackgroundImage();
         }else{
-          drawBackgroundImage();
           menu.show();
         }
    }
