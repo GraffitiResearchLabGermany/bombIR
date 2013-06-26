@@ -44,3 +44,9 @@ void mousePressed() {
   Knot mousePos = new Knot(mouseX, mouseY);
   s = new Path(mousePos, 10);
 }
+
+void keyPressed() {
+  if (key == 'r' || key == 'R') {
+      background(0);
+  }
+}

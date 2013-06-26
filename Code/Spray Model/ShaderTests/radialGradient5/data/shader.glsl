@@ -3,22 +3,16 @@ precision mediump float;
 precision mediump int;
 #endif
 
-uniform float weight;
-uniform float sharpness;
+#define PROCESSING_COLOR_SHADER
+
+uniform vec2 resolution;
 uniform float scale;
 uniform float soften;
 
-uniform float dispersion;
-uniform float depthOffset;
 uniform vec2 direction;
-uniform vec2 rotation;
+uniform vec2 depthAngle;
+uniform float depthOffset;
 uniform sampler2D sprayMap;
-
-varying vec4 vertColor;
-varying vec2 center;
-varying vec2 pos;
-
-
 
 
 //--------------------------------------------------------------------
@@ -129,32 +123,28 @@ float simplexNoise3(vec3 v)
 //--------------------------------------------------------------------
 
 
-void main() {  
 
+void main(void)
+{ 
+	// We compute the position of the current fragment (from [-1,-1] to [1,1])
+ 	vec2 coord = vec2 (-1.0 + 2.0 * gl_FragCoord.x / resolution.x, 1.0 - 2.0 * gl_FragCoord.y / resolution.y) ;
 
-
-  float len = 1.0 - length(pos)/weight;
-
-  // We compute the position of the current fragment (from [-1,-1] to [1,1])
-  vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
-
-  // We calculate values depending on the angle at the center
+  // We calculate a value depending on the angle at the center
   float cosAngle = dot( coord, direction );
   float sinAngle = 1.0 - cosAngle;
-  float tanAngle = sinAngle/cosAngle;
 
-  // How should the brush expand depending on the direction of the spray?
-  float flare = sinAngle;
+  // Controls how much the brush expands depending on the orientation of the spray
+  float flare = abs(sinAngle);
 
  	// How far are we from the center?
  	float distance = length( coord.xy );
 
   // Noisedepth map (3rd dimension of the noise)
-  float r = dot( coord, rotation ); // cosine of the rotation
- 	float depth = (pos.x / weight * (distance + r) ); 
+  float r = dot( coord, depthAngle );
+ 	float depth = (gl_FragCoord.x / resolution.x * (distance + r) );// distance + cosAngle; 
 
  	float density = 100.0;
- 	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
+ 	float noise = simplexNoise3( vec3( 4.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
 
  	// Color to display
@@ -162,10 +152,15 @@ void main() {
     float green = 0.8;
     float blue  = 0.86;
 
-    // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - soften;
-
     // The farther from the center of the window, the more transparent
+    //float alpha = 1.0 - distance / scale - noise;
+
+    //alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise - 0.7;
+
+    // Map the alpha to the gradient texture
+    float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 )  ).r - soften;
+
+    // Apply noise
     float alpha = gradient - noise;
 
     // Debug (show raw noise)
@@ -173,6 +168,14 @@ void main() {
 
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
-  //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
+    // Debug show noise depth map
+    //gl_FragColor = vec4(depth, depth, depth, 1.0);
+
+    // Debug show noise density map
+    //gl_FragColor = vec4(density, density, density, 1.0);
+
+    // Debug show spray map
+    // gl_FragColor = vec4(gradient, gradient, gradient, 1.0);
+
 
 }

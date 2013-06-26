@@ -38,10 +38,14 @@ class Knot extends PVector {
     
     float x = this.x;
     float y = this.y;
+    
+    PVector dir = new PVector(x, y);
+    dir.normalize();
 
     if(!isDrawn) {
       sprayBrush.set( "weight", size );
-      sprayBrush.set( "refAngle", -1.0, 0.0 );
+      sprayBrush.set( "direction", dir.x, dir.y );
+      sprayBrush.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
       sprayBrush.set( "scale", 0.5 ); 
       sprayBrush.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       sprayBrush.set( "depthOffset", noiseDepth );

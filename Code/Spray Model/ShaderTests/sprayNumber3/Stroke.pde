@@ -10,8 +10,8 @@ class Path {
   
   float mag;
   float numSteps;
-  float distMin = 3;
-  float stepSize = 5;
+  float distMin = 1;
+  float stepSize = 3;
   
   Path() {
   }
