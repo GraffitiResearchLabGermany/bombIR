@@ -1,56 +1,50 @@
-
 ControlP5 menu;
-PGraphics colorpicker;
 int cpsize = 200;
 int picker;
 float brushR, brushG, brushB;
 int activeColorSlot=0;
+ColorSlotCanvas cs;
+RadioButton rb;
+ColorPicker cp;
 
-ColorSlot[] colorSlots = new ColorSlot[5];
 
 //setup the control menu
 void setupMenu(){
     menu = new ControlP5(this);
     
-    /*Group all = menu.addGroup("right")
+    cp = new ColorPicker(50,80,200,200,45);
+    
+    cs = (ColorSlotCanvas)menu.addGroup("cs")
                 .setPosition(cpsize+50,80)
                 .setBackgroundHeight(cpsize+1)
-                .setWidth(50)
+                .setWidth(90)
                 .setBackgroundColor(color(0))
                 .hideBar()
-                ;*/
+                .addCanvas(new ColorSlotCanvas())
+                ;
                 
     
-    Group misc = menu.addGroup("misc")
+    menu.addGroup("misc")
                 .setPosition(50,280)
                 .setBackgroundHeight(50)
-                .setWidth(cpsize+50)
+                .setWidth(cpsize+90)
                 .setBackgroundColor(color(0))
                 .hideBar()
                 ;
-    Group width = menu.addGroup("width")
+    menu.addGroup("width")
                   .setPosition(50,51)
                   .setBackgroundHeight(30)
-                  .setWidth(cpsize+50)
+                  .setWidth(cpsize+90)
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
-                
-    //TODO Add the colopicker to the menu
-    /*Group colorpicker = menu.addGroup("cp").
-                        .setPosition(50,80)
-                        .setBackgroundHeight(cpsize)
-                        .setWidth(cpsize)
-                        .setBackgroundColor(color(0))
-                        .hideBar()
-                        .addCanvas(cpCanvas);*/
-                        
+     
     menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 20).setGroup("width");
     menu.addBang("CLEAR", 10, 10, 20, 20).setGroup("misc");
     menu.addBang("SAVE",  40, 10, 20, 20).setGroup("misc");
     
-    menu.addRadioButton("radioButton")
-         .setPosition(300,80)
+    rb = menu.addRadioButton("radioButton")
+         .setPosition(280,80)
          .setSize(20,20)
          .setColorForeground(color(120))
          .setColorActive(color(255))
@@ -63,55 +57,23 @@ void setupMenu(){
          .addItem("Color4",3)
          .addItem("Color5",4)
          ;
-    
-    createColorPicker();
+     rb.activate(0);
+
     menu.hide();
-    
-   
-    colorSlots[0] = new ColorSlot(cpsize + 60,80);
-    colorSlots[1] = new ColorSlot(cpsize + 60,101);
-    colorSlots[2] = new ColorSlot(cpsize + 60,122);
-    colorSlots[3] = new ColorSlot(cpsize + 60,143);
-    colorSlots[4] = new ColorSlot(cpsize + 60,164);
-    
-   
 }
 
-//create the colorpicker once
-void createColorPicker(){
-   colorpicker = createGraphics(cpsize, cpsize, JAVA2D); 
-   // Colour Picker
-   colorpicker.beginDraw();
-   colorpicker.colorMode(HSB, cpsize);
-   for (int i = 0; i < cpsize; i++) {
-     for (int j = 0; j < cpsize; j++) {
-       colorpicker.stroke(i, j, i+j);
-       colorpicker.point(i, j);
-     }
-   }
-   colorpicker.endDraw();
-   colorMode(RGB);
-}
 
-//draw the colorpicker whenever the menue's called  
-void drawColorPicker(){
-  image(colorpicker,50,80);
-  
-  if(menu.isVisible()){
-     for(int i=0;i<=4;i++){
-        colorSlots[i].draw(this);
-      }
-    
+//pck color with the mouse
+void pickColor(){   
     if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < 280) {
           if(mousePressed) {
             picker = get(mouseX, mouseY);
             brushR = red(picker);
             brushG = green(picker);
             brushB = blue(picker);
-            setColorSlot(activeColorSlot,brushR,brushG,brushB);
+            cs.setColorSlot(activeColorSlot,brushR,brushG,brushB);
           } 
-        }  
-  }
+     }  
 } 
 
 //is called when a radio button is pressed
@@ -119,12 +81,9 @@ void radioButton(int a) {
   activeColorSlot = a;  
 }
 
-//update the color of the color slot
-void setColorSlot(int activeSlot, float red, float green, float blue){
-  colorSlots[activeSlot].setRed(red);
-  colorSlots[activeSlot].setGreen(green);
-  colorSlots[activeSlot].setBlue(blue); 
-  colorSlots[activeSlot].draw(this);
+void switchColorSlot(){
+  activeColorSlot = cs.getNextColorSlot(activeColorSlot);
+  rb.activate(activeColorSlot);
 }
 
 /**
@@ -171,6 +130,124 @@ class ColorSlot{
   
   public void setBlue(float blue){
     this.blue = blue;
+  }
+}
+
+class ColorSlotCanvas extends Canvas {
+  ColorSlot[] colorSlots = new ColorSlot[5];
+  
+  public void setup(PApplet p) {
+    colorSlots[0] = new ColorSlot(5,0);
+    colorSlots[1] = new ColorSlot(5,21);
+    colorSlots[2] = new ColorSlot(5,42);
+    colorSlots[3] = new ColorSlot(5,63);
+    colorSlots[4] = new ColorSlot(5,84);
+  }
+  
+   public void draw(PApplet p) {
+    for(int i=0;i<=4;i++){
+        this.colorSlots[i].draw(p);
+    }
+  }
+  
+  //update the color of the color slot
+  public void setColorSlot(int activeSlot, float red, float green, float blue){
+    this.colorSlots[activeSlot].setRed(red);
+    this.colorSlots[activeSlot].setGreen(green);
+    this.colorSlots[activeSlot].setBlue(blue); 
+  }
+  
+  public int getNextColorSlot(int activeSlot){
+    if(activeSlot < this.colorSlots.length-1) {
+      return activeSlot+1;
+    } 
+    return 0;
+  }
+  
+  public ColorSlot getColorSlot(int id){
+    return this.colorSlots[id];
+  }
+
+}
+
+/**
+ * Colorpicker from http://www.julapy.com/processing/ColorPicker.pde
+ * with little adjustments
+ */
+public class ColorPicker 
+{
+  int x, y, w, h, c;
+  PImage cpImage;
+  
+  public ColorPicker ( int x, int y, int w, int h, int c )
+  {
+    this.x = x;
+    this.y = y;
+    this.w = w;
+    this.h = h;
+    this.c = c;
+    
+    cpImage = new PImage( w, h );
+    
+    init();
+  }
+  
+  private void init ()
+  {
+    // draw color.
+    int cw = w - 60;
+    for( int i=0; i<cw; i++ ) 
+    {
+      float nColorPercent = i / (float)cw;
+      float rad = (-360 * nColorPercent) * (PI / 180);
+      int nR = (int)(cos(rad) * 127 + 128) << 16;
+      int nG = (int)(cos(rad + 2 * PI / 3) * 127 + 128) << 8;
+      int nB = (int)(Math.cos(rad + 4 * PI / 3) * 127 + 128);
+      int nColor = nR | nG | nB;
+      
+      setGradient( i, 0, 1, h/2, 0xFFFFFF, nColor );
+      setGradient( i, (h/2), 1, h/2, nColor, 0x000000 );
+    }
+    
+    // draw black/white.
+    drawRect( cw, 0,   30, h/2, 0xFFFFFF );
+    drawRect( cw, h/2, 30, h/2, 0 );
+    
+    // draw grey scale.
+    for( int j=0; j<h; j++ )
+    {
+      int g = 255 - (int)(j/(float)(h-1) * 255 );
+      drawRect( w-30, j, 30, 1, color( g, g, g ) );
+    }
+  }
+
+  private void setGradient(int x, int y, float w, float h, int c1, int c2 )
+  {
+    float deltaR = red(c2) - red(c1);
+    float deltaG = green(c2) - green(c1);
+    float deltaB = blue(c2) - blue(c1);
+
+    for (int j = y; j<(y+h); j++)
+    {
+      int c = color( red(c1)+(j-y)*(deltaR/h), green(c1)+(j-y)*(deltaG/h), blue(c1)+(j-y)*(deltaB/h) );
+      cpImage.set( x, j, c );
+    }
+  }
+  
+  private void drawRect( int rx, int ry, int rw, int rh, int rc )
+  {
+    for(int i=rx; i<rx+rw; i++) 
+    {
+      for(int j=ry; j<ry+rh; j++) 
+      {
+        cpImage.set( i, j, rc );
+      }
+    }
+  }
+  
+  public void render ()
+  {
+    image( cpImage, x, y );
   }
 }
 
