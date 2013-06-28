@@ -57,7 +57,7 @@ class Path {
         PVector stepper = new PVector();
         PVector.mult(velocity, 1/numSteps*i, stepper);
         stepper.add(prevPos);
-        Knot k = new Knot(stepper.x, stepper.y);
+        Knot k = new Knot(stepper.x, stepper.y, previousKnot.getSize());
         p.setColor(color(0,255,0));
         pointList.add(k);
       }
