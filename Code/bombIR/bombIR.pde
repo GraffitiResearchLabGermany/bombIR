@@ -53,7 +53,7 @@ PGraphics wallscreen, paintscreen, paintbackground;
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
-boolean calib=false;
+boolean calib = false;
 
 
   public void init() {
