@@ -18,9 +18,9 @@ void setup() {
   //size(640, 360, P3D);
   size(displayWidth, displayHeight, P3D);
   frameRate(60);
-  
+
   sprayMap = loadImage("sprayMap.png");
-  
+
   depthOffset = 0.0;
   offsetVel = 0.0005;
 
@@ -29,15 +29,22 @@ void setup() {
   sprayBrush.set( "sprayMap", sprayMap );
 
   strokeCap(SQUARE);
-  background(0);  
+  background(0);
 }
 
 void draw() {
 
+  weight = ( 1.0 + sin(radians(frameCount)) ) / 2.0 * 10;
+  strokeWeight(100);
+  stroke(255,0,0);
+  println(weight);
+  
+  sprayBrush.set( "weight", weight );
+
   if (mousePressed) {
-    if(null!=s) s.add( new Knot(mouseX, mouseY) );
+    if (null!=s) s.add( new Knot(mouseX, mouseY) );
   }
-  if( null != s ) s.draw();
+  if ( null != s ) s.draw();
 }
 
 void mousePressed() {
@@ -47,6 +54,7 @@ void mousePressed() {
 
 void keyPressed() {
   if (key == 'r' || key == 'R') {
-      background(0);
+    background(0);
   }
 }
+
