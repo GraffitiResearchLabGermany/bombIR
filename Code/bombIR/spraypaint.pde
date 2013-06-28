@@ -18,7 +18,7 @@ void setupSpraypaint() {
 void spray() {
   //spray when controller trigger is pressed
   //if no controller present, spray on mouse click
-  if (clicked==true || (moveConnected == false && mousePressed == true)) {
+  if (clicked == true || (moveConnected == false && mousePressed == true)) {
     
     ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
     paintscreen.shader(pointShader, POINTS);

@@ -33,12 +33,15 @@ void setup() {
 void draw() {
   background(0);
 
+  //image(cap.get_image(), 0, 0);
+  
   // flip image horizonatlly
-  pushMatrix();
-    scale(-1,1);
+  //pushMatrix();
+    //scale(-1,1);
     detect.display();
-  popMatrix(); 
+  //popMatrix(); 
 
+  println(frameRate);
 }
 
 public void stop() {
