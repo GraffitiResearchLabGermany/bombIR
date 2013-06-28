@@ -34,21 +34,20 @@ void setup() {
 
 void draw() {
 
-  weight = ( 1.0 + sin(radians(frameCount)) ) / 2.0 * 10;
-  strokeWeight(100);
-  stroke(255,0,0);
-  println(weight);
-  
+  weight = sin(radians(frameCount)) * 100.0;
   sprayBrush.set( "weight", weight );
+  strokeWeight(weight);
+  stroke(100, 255, 150);  
+  println(weight);
 
   if (mousePressed) {
-    if (null!=s) s.add( new Knot(mouseX, mouseY) );
+    if ( null!=s ) s.add( new Knot(mouseX, mouseY, weight) );
   }
   if ( null != s ) s.draw();
 }
 
 void mousePressed() {
-  Knot mousePos = new Knot(mouseX, mouseY);
+  Knot mousePos = new Knot(mouseX, mouseY, weight);
   s = new Path(mousePos, 10);
 }
 

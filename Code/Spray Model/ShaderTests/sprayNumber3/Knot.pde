@@ -8,9 +8,9 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float posX, float posY) {
+  Knot(float posX, float posY, float weight) {
     super(posX, posY);
-    size  = 70.0;
+    size  = weight;
     angle = 0.0;
     tint = color(255,0,0);
     noiseDepth = random(1.0);
@@ -32,6 +32,10 @@ class Knot extends PVector {
   
   PVector getPos() {
     return new PVector(x,y);
+  }
+  
+  float getSize() {
+    return size;
   }
   
   void draw() {

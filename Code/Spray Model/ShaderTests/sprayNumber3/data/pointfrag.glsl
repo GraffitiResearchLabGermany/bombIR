@@ -133,7 +133,7 @@ void main() {
 
 
 
-  float len = 1.0 - length(pos)/weight;
+  float len = weight/2.0 - length(pos);
 
   // We compute the position of the current fragment (from [-1,-1] to [1,1])
   vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
@@ -156,19 +156,19 @@ void main() {
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
-    // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - soften;
+  // Map the alpha to the gradient texture
+  float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - soften;
 
-    // color of the spray 
-    vec3 color = vertColor.rgb;
+  // The farther from the center of the window, the more transparent
+  float alpha = gradient - noise;
 
-    // The farther from the center of the window, the more transparent
-    float alpha = gradient - noise;
+  // color of the spray 
+  vec4 color = vec4(vertColor.rgb, alpha);
 
-    // Debug (show raw noise)
-    // alpha = 1.0 - noise;
+  // Debug (show raw noise)
+  // alpha = 1.0 - noise;
 
- 	  gl_FragColor = vec4(color, alpha);
+	gl_FragColor = color;
 
   //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
 
