@@ -43,10 +43,10 @@ void draw() {
   sprayBrush = loadShader("shader.glsl");
 
   sprayBrush.set( "resolution", float(width), float(height) );
-  sprayBrush.set( "rotation", random(1.0), random(1.0) );
+  sprayBrush.set( "depthAngle", random(1.0), random(1.0) );
   sprayBrush.set( "direction", cos(radians(frameCount)), sin(radians(frameCount)) );
-  sprayBrush.set( "scale", 1.0 );
-  sprayBrush.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
+  sprayBrush.set( "scale", 0.66 );
+  sprayBrush.set( "soften", 1.4 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
   sprayBrush.set( "sprayMap", sprayMap );
   
   sprayBrush.set( "depthOffset", random(0,1) );
@@ -61,6 +61,9 @@ void draw() {
 void keyPressed() {
   if (key == 'd' || key == 'D') {
     debug = !debug;
+  }
+  else if (key == 'r' || key == 'R') {
+    background(0);
   }
 }
 

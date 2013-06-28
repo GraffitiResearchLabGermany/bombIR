@@ -156,14 +156,11 @@ void main() {
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
-
- 	// Color to display
-    float red   = 0.4;
-    float green = 0.8;
-    float blue  = 0.86;
-
     // Map the alpha to the gradient texture
     float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - soften;
+
+    // color of the spray 
+    vec3 color = vertColor.rgb;
 
     // The farther from the center of the window, the more transparent
     float alpha = gradient - noise;
@@ -171,7 +168,7 @@ void main() {
     // Debug (show raw noise)
     // alpha = 1.0 - noise;
 
- 	  gl_FragColor = vec4(red, green, blue, alpha);
+ 	  gl_FragColor = vec4(color, alpha);
 
   //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
 
