@@ -1,23 +1,18 @@
- // This shader example is adapted from the Andrew Baldwin's 
- // introductory tutorials to GLSL. Find them at http://thndl.com
-
-// This shader belongs to 
-// color_03_radial_gradient.pde
-
 #ifdef GL_ES
 precision mediump float;
 precision mediump int;
 #endif
 
-#define PROCESSING_POINT_SHADER
+uniform float weight;
+uniform float sharpness;
 
-uniform vec2 resolution;
-
-uniform float dispersion;    // size of the airbrush
-
+uniform float dispersion;
+uniform float depthOffset;
 uniform vec2 refAngle;
 
-uniform float depthOffset;
+varying vec4 vertColor;
+varying vec2 center;
+varying vec2 pos;
 
 
 //--------------------------------------------------------------------
@@ -128,11 +123,14 @@ float simplexNoise3(vec3 v)
 //--------------------------------------------------------------------
 
 
+void main() {  
 
-void main(void)
-{ 
-	// We compute the position of the current fragment (from [-1,-1] to [1,1])
- 	vec2 coord = vec2 (-1.0 + 2.0 * gl_FragCoord.x / resolution.x, 1.0 - 2.0 * gl_FragCoord.y / resolution.y) ;
+
+
+  float len = 1.0 - length(pos)/weight;
+
+  // We compute the position of the current fragment (from [-1,-1] to [1,1])
+  vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
 
   // We calculate a value depending on the angle at the center
   float cosAngle = dot( coord, refAngle );
@@ -141,7 +139,7 @@ void main(void)
  	float distance = length( coord.xy );
 
   // Noisedepth map (3rd dimension of the noise)
- 	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
+ 	float depth = (pos.x / weight * (distance + cosAngle) );// distance + cosAngle; 
 
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
@@ -160,11 +158,6 @@ void main(void)
 
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
-    // Debug show noise depth map
-    //gl_FragColor = vec4(depth, depth, depth, 1.0);
-
-    // Debug show noise density map
-    //gl_FragColor = vec4(density, density, density, 1.0);
-
+  //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
 
 }
