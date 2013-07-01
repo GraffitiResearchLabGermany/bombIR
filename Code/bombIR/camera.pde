@@ -22,7 +22,8 @@ void setupCamera() {
   bd.setThreshold(blobThresh);
   
   // Calbration Points
-  corner = new Corner(50, 50, firstWindowWidth - 50, 50, firstWindowWidth - 50, windowHeight - 50, 50, windowHeight - 50);
+  /* set top to 40 because the frame kills 30px */
+  corner = new Corner(10, 40, firstWindowWidth - 10, 40, firstWindowWidth - 10, windowHeight - 10, 10, windowHeight - 10);
   
 }
 
@@ -48,7 +49,7 @@ void runCameraCalibration() {
   if(calibBlb == true) {
     bd.setThreshold(blobThresh);
     bd.computeBlobs(cam.pixels);
-    CalibdrawBlobsAndEdges(true, true);
+    drawBlobsAndEdges(false, true);
   }
   
 }
@@ -74,11 +75,13 @@ class Corner {
  } 
  
  void update() {
-
+   LeftBorder = (tlX + blX) /2;
+   RightBorder = (trX + brX) /2; 
+   TopBorder = (tlY + trY) /2;
+   BottomBorder = (blY + brY) /2;
 
  }
 
- 
  void display() {
    pushStyle();
      noFill();

@@ -9,7 +9,7 @@ float blobX, blobY;
 float sumBlobsX, sumBlobsY;
 int blobCount;
 
-void CalibdrawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {  
+void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {  
   Blob b;
   EdgeVertex eA,eB;
   for (int n = 0 ; n < bd.getBlobNb() ; n++) {
@@ -19,21 +19,24 @@ void CalibdrawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {
       if (b!= null) {
         // Edges
         if (drawEdges) {
-          // Size
-         if(b.w > blobMin && b.w < blobMax) {
-            noFill();
-            strokeWeight(2);
-            stroke(0, 0, 255);
-            beginShape();
-              for (int m = 0; m < b.getEdgeNb(); m++) {
-                eA = b.getEdgeVertexA(m);
-                eB = b.getEdgeVertexB(m);
-                  if (eA != null && eB != null) {
-                    vertex(eA.x * firstWindowWidth, eA.y * windowHeight);
-                  }
-              }
-            endShape(CLOSE); 
-         }   
+           // If Blobs Are Within Crop Area
+          if(b.xMin * firstWindowWidth > LeftBorder && b.xMin * firstWindowWidth < RightBorder && b.yMin * windowHeight > TopBorder && b.yMin * windowHeight < BottomBorder) {    
+            // If The Blob Is Over A Certain Size
+            if(b.w > blobMin && b.w < blobMax) {
+              noFill();
+              strokeWeight(2);
+              stroke(0, 0, 255);
+              beginShape();
+                for (int m = 0; m < b.getEdgeNb(); m++) {
+                  eA = b.getEdgeVertexA(m);
+                  eB = b.getEdgeVertexB(m);
+                    if (eA != null && eB != null) {
+                      vertex(eA.x * firstWindowWidth, eA.y * windowHeight);
+                    }
+                }
+              endShape(CLOSE); 
+            }
+          }   
         }     
         
         // Blobs

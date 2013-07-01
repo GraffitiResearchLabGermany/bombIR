@@ -31,16 +31,27 @@ int saveCount = 0;
  } 
  
  // Crop Scale
+ int lastCS = 0;
  void cropScale(int cs) {
-   corner.tlX += cs;
-   corner.tlY += cs;
-   corner.trX -= cs;
-   corner.trY += cs;
-   corner.brX -= cs;
-   corner.brY -= cs;
-   corner.blX += cs;
-   corner.blY -= cs;
-
+   if(cs > lastCS) {
+     corner.tlX += cs;
+     corner.tlY += cs;
+     corner.trX -= cs;
+     corner.trY += cs;
+     corner.brX -= cs;
+     corner.brY -= cs;
+     corner.blX += cs;
+     corner.blY -= cs;
+   }
+   lastCS = cs;
+ }
+ 
+ // Save Calibration
+ void saveCalib() {
+   background(0);
+   calibrateCamera = false; 
+   paintbg.render(paintbackground);
+   calibMenu.hide();
  }
  
  void keyPressed() {

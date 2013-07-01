@@ -91,6 +91,8 @@ void setupCalibrationMenu() {
   // Show Blobs
   calibMenu.addToggle("calibBlb").setPosition(firstWindowWidth/2, windowHeight/2 + 200).setSize(40, 40);
 
+  // Save Calibration
+  calibMenu.addBang("saveCalib").setPosition(firstWindowWidth/2 + 100, windowHeight/2 + 200).setSize(40, 40);
   
 }
 
