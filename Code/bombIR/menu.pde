@@ -72,28 +72,20 @@ ControlP5 calibMenu;
 void setupCalibrationMenu() {
   // Init
   calibMenu = new ControlP5(this);
-  
   // Scale
   calibMenu.addSlider("cropScale").setPosition(firstWindowWidth/2 - 100, windowHeight/2).setSize(200, 20).setRange(0, 10);
-
   // Blob Threshold
   calibMenu.addSlider("blobThresh").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 50).setSize(200, 20).setRange(0, 1);
-
   // Blob Min
   calibMenu.addSlider("blobMin").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 100).setSize(200, 20).setRange(0, 1);
-
   // Blob Max
   calibMenu.addSlider("blobMax").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 150).setSize(200, 20).setRange(0, 1);
-  
   // Show Cam
   calibMenu.addToggle("calibCam").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 200).setSize(40, 40);
-  
   // Show Blobs
   calibMenu.addToggle("calibBlb").setPosition(firstWindowWidth/2, windowHeight/2 + 200).setSize(40, 40);
-
   // Save Calibration
   calibMenu.addBang("saveCalib").setPosition(firstWindowWidth/2 + 100, windowHeight/2 + 200).setSize(40, 40);
-  
 }
 
 

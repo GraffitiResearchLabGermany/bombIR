@@ -6,7 +6,7 @@ float blobMin = 0.025;
 float blobMax = 0.15;
 float blobThresh = 0.5;
 
-void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {  
+void drawBlobsAndEdges(boolean drawRects, boolean drawEdges) {  
   Blob b;
   EdgeVertex eA,eB;
   for (int n = 0 ; n < bd.getBlobNb() ; n++) {
@@ -37,7 +37,7 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {
       }     
       
       // Blobs
-      if (drawBlobs) {
+      if (drawRects) {
         strokeWeight(1);
         noFill();
         stroke(255,0,0);

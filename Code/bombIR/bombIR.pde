@@ -106,6 +106,7 @@ boolean calibrateCamera = true;
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
 	frame.setLocation(0,0);
+
   } // end SETUP
   
   //-----------------------------------------------------------------------------------------
@@ -117,6 +118,7 @@ boolean calibrateCamera = true;
       runCameraCalibration();
       calibMenu.show();
     }
+    
     // Main Draw Loop
     else {
       PVector surfaceMouse = paintbg.getTransformedMouse();
