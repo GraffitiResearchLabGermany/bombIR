@@ -1,3 +1,7 @@
+
+//-----------------------------------------------------------------------------------------
+// CONTROLLER
+
 PSMove move;
 PSMove [] controllers; // Define an array of controllers
 long lastTime = 0;

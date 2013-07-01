@@ -7,22 +7,23 @@ P5Properties props;
 
 //global variables that should be set with the settings.properties file
 boolean debug = false;
+
+//-----------------------------------------------------------------------------------------
+// CONFIGURATION
+
 int windowHeight;
 int windowWidth;
+int firstWindowWidth;
  
 void readConfiguration() {
   try {
-    props=new P5Properties();
+    props = new P5Properties();
     // load a configuration from a file inside the data folder
     props.load(createInput("settings.properties"));
- 
-    // all values returned by the getProperty() method are Strings
-    // so we need to cast them into the appropriate type ourselves
-    // this is done for us by the convenience P5Properties class below
-    windowWidth = props.getIntProperty("env.viewport.width",1024);
-    windowHeight = props.getIntProperty("env.viewport.height",384);
-    debug = props.getBooleanProperty("env.mode.debug",false);
- 
+    windowWidth = props.getIntProperty("env.viewport.width", 1024);
+    firstWindowWidth = windowWidth/2;
+    windowHeight = props.getIntProperty("env.viewport.height", 384);
+    debug = props.getBooleanProperty("env.mode.debug", false);
   }
   catch(IOException e) {
     println("couldn't read config file...");

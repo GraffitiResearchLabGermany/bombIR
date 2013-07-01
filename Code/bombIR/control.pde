@@ -1,3 +1,7 @@
+
+//-----------------------------------------------------------------------------------------
+// MENU + GUI CONTROL
+
 int saveCount = 0;
 
  void CLEAR(boolean theFlag) {
@@ -21,12 +25,23 @@ int saveCount = 0;
   }
  } 
 
-//adjust brush size
+ //adjust brush size
  void WIDTH(int BrushSize) {
     weight = (BrushSize);
  } 
  
- 
+ // Crop Scale
+ void cropScale(int cs) {
+   corner.tlX += cs;
+   corner.tlY += cs;
+   corner.trX -= cs;
+   corner.trY += cs;
+   corner.brX -= cs;
+   corner.brY -= cs;
+   corner.blX += cs;
+   corner.blY -= cs;
+
+ }
  
  void keyPressed() {
     switch(key) {
@@ -34,7 +49,7 @@ int saveCount = 0;
        // enter/leave calibration mode, where surfaces can be warped 
        // and moved
        ks.toggleCalibration();
-       calib = !calib;       
+       calibrateKeystone = !calibrateKeystone;       
        //redraw background once after calibration
        background(0);
        paintbg.render(paintbackground);
@@ -47,12 +62,12 @@ int saveCount = 0;
  
    }
    
-   //show or hide the menu
-   void toggleMenu(){
-     if(menu.isVisible()){
-          menu.hide();
-          background(0);
-        }else{
-          menu.show();
-        }
-   }
+ //show or hide the menu
+ void toggleMenu(){
+   if(menu.isVisible()){
+        menu.hide();
+        background(0);
+      }else{
+        menu.show();
+      }
+ }
