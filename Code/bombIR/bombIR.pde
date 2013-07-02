@@ -52,7 +52,6 @@ Keystone ks;
 CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
 GSCapture cam;
-//OpenCV cv;
 BlobDetection bd;
 
 

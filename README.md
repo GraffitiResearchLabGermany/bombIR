@@ -3,14 +3,11 @@ bombIR
 
 GRL Project for Digital Graffiti with IR Pen / Camera and Rear Projection Screen
 
-//--------------------------------------------------------------------------------- 
-/*
 
-bombIR
 ---------------------------------------------------------------------------
 
 Graffiti Research Lab Germany
-http://www.graffitiresearchlab.de
+http://www.graffitiresearchlab.de/bombIR
 
 ----------------------------------------------------------------------------
 
@@ -30,13 +27,19 @@ Jesse Scott
 Hauke Altmann
 Raphael de Courville
 
+Made with Processing 2.0
+http://processing.org/
+with lots of great code and ideas taken from smarter people than us.
+
 Libraries:
 OscP5
 ControlP5
-GLGraphics
+PSMove
 GML4U
-ToxiLibs
-SimpleOpenNI
+GSVideo
+blobDetection
+Keystone
 
----------------------------------------------------------------------------- */ 
-//---------------------------------------------------------------------------------
+
+
+---------------------------------------------------------------------------
