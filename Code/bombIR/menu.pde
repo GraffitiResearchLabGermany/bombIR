@@ -80,9 +80,9 @@ void setupCalibrationMenu() {
   // Blob Max
   calibMenu.addSlider("blobMax").setPosition(350, 126).setSize(200, 20).setRange(0, 1);
   // Show Cam
-  calibMenu.addToggle("calibCam").setPosition(350, 151).setSize(40, 40);
+  calibMenu.addToggle("showCam").setPosition(350, 151).setSize(40, 40);
   // Show Blobs
-  calibMenu.addToggle("calibBlb").setPosition(400, 151).setSize(40, 40);
+  calibMenu.addToggle("showBlob").setPosition(400, 151).setSize(40, 40);
   // Save Calibration
   calibMenu.addBang("saveCalib").setPosition(450, 151).setSize(40, 40);
   

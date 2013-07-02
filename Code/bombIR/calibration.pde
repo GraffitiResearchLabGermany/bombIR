@@ -3,8 +3,8 @@
 // CAMERA + CALIBRATION
 
 Corner corner;
-boolean calibCam = true;
-boolean calibBlb  = true;
+boolean showCam = true;
+boolean showBlob  = true;
 float LeftBorder, RightBorder, TopBorder, BottomBorder;
 int cropScale;
 
@@ -12,8 +12,6 @@ void setupCamera() {
   
   // Capture 
   cam = new GSCapture(this, 320, 240);
-  //cv = new OpenCV(this); 
-  //cv.allocate(320, 240);
   cam.start();
   
   // Blob Detection
@@ -40,16 +38,20 @@ void runCameraCalibration() {
   }
   
   // Show Cam ?
-  if(calibCam == true) {
+  if(showCam == true) {
     image(cam, 0, 0, firstWindowWidth, windowHeight);
   } 
   
   // Show Blob ?
-  if(calibBlb == true) {
+  if(showBlob == true) {
     bd.setThreshold(blobThresh);
     bd.computeBlobs(cam.pixels);
-    drawBlobsAndEdges(false, true);
+    drawBlobsAndEdges(true, false);
   }
+  
+}
+
+void getCurrentBlob() {
   
 }
 
