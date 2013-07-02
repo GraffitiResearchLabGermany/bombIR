@@ -24,6 +24,11 @@ int saveCount = 0;
      wallscreen.save("exports/Save_" + saveCount + ".jpg");
   }
  } 
+ 
+ // CLEAR
+ void CLEAR() {
+   // ?? 
+ }
 
  //adjust brush size
  void WIDTH(int BrushSize) {
@@ -55,30 +60,53 @@ int saveCount = 0;
  }
  
  void keyPressed() {
-    switch(key) {
-      case 'c':
-       // enter/leave calibration mode, where surfaces can be warped 
-       // and moved
-       ks.toggleCalibration();
-       calibrateKeystone = !calibrateKeystone;       
-       //redraw background once after calibration
-       background(0);
-       paintbg.render(paintbackground);
-       break;
-      case 'm':     
-       toggleMenu();
-       paintbg.render(paintbackground);
-       break;
-      }
- 
+   switch(key) {
+     case 'c':
+       if(!calibrateCamera) { 
+         // enter/leave calibration mode, where surfaces can be warped and moved
+         ks.toggleCalibration();
+         calibrateKeystone = !calibrateKeystone;       
+         //redraw background once after calibration
+         background(0);
+         paintbg.render(paintbackground);
+       }
+     break;
+     case 'm': 
+       if(!calibrateCamera) {   
+         toggleMenu();
+         paintbg.render(paintbackground);
+       }
+     break;
+     case 'b':
+       toggleBlobControl();
+       if(calibrateCamera) {   
+         background(0);
+       }
+       else {
+         paintbg.render(paintbackground);
+       }
+     break;     
    }
+ }
    
  //show or hide the menu
  void toggleMenu(){
    if(menu.isVisible()){
-        menu.hide();
-        background(0);
-      }else{
-        menu.show();
-      }
+     menu.hide();
+     background(0);
+   }
+   else {
+     menu.show();
+   }
+ }
+ 
+ //show or hide blob control
+ void toggleBlobControl(){
+   if(calibMenu.isVisible()){
+     calibMenu.hide();
+     background(0);
+   }
+   else {
+     calibMenu.show();
+   }
  }

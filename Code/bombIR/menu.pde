@@ -6,7 +6,7 @@ ControlP5 menu;
 int cpsize = 200;
 int picker;
 float brushR, brushG, brushB;
-int activeColorSlot=0;
+int activeColorSlot = 0;
 ColorSlotCanvas cs;
 RadioButton rb;
 ColorPicker cp;
@@ -16,11 +16,11 @@ ColorPicker cp;
 void setupMenu(){
     menu = new ControlP5(this);
     
-    cp = new ColorPicker(50,80,200,200,45);
+    cp = new ColorPicker(50, 80, 200, 200, 45);
     
     cs = (ColorSlotCanvas)menu.addGroup("cs")
-                .setPosition(cpsize+50,80)
-                .setBackgroundHeight(cpsize+1)
+                .setPosition(cpsize + 50, 80)
+                .setBackgroundHeight(cpsize + 1)
                 .setWidth(90)
                 .setBackgroundColor(color(0))
                 .hideBar()
@@ -28,16 +28,16 @@ void setupMenu(){
                 ;       
     
     menu.addGroup("misc")
-                .setPosition(50,280)
+                .setPosition(50, 280)
                 .setBackgroundHeight(50)
-                .setWidth(cpsize+90)
+                .setWidth(cpsize + 90)
                 .setBackgroundColor(color(0))
                 .hideBar()
                 ;
     menu.addGroup("width")
-                  .setPosition(50,51)
+                  .setPosition(50, 51)
                   .setBackgroundHeight(30)
-                  .setWidth(cpsize+90)
+                  .setWidth(cpsize + 90)
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
@@ -72,19 +72,21 @@ void setupCalibrationMenu() {
   // Init
   calibMenu = new ControlP5(this);
   // Scale
-  calibMenu.addSlider("cropScale").setPosition(firstWindowWidth/2 - 100, windowHeight/2).setSize(200, 20).setRange(0, 10);
+  calibMenu.addSlider("cropScale").setPosition(350, 51).setSize(200, 20).setRange(0, 10);
   // Blob Threshold
-  calibMenu.addSlider("blobThresh").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 50).setSize(200, 20).setRange(0, 1);
+  calibMenu.addSlider("blobThresh").setPosition(350, 76).setSize(200, 20).setRange(0, 1);
   // Blob Min
-  calibMenu.addSlider("blobMin").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 100).setSize(200, 20).setRange(0, 1);
+  calibMenu.addSlider("blobMin").setPosition(350, 101).setSize(200, 20).setRange(0, 1);
   // Blob Max
-  calibMenu.addSlider("blobMax").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 150).setSize(200, 20).setRange(0, 1);
+  calibMenu.addSlider("blobMax").setPosition(350, 126).setSize(200, 20).setRange(0, 1);
   // Show Cam
-  calibMenu.addToggle("calibCam").setPosition(firstWindowWidth/2 - 100, windowHeight/2 + 200).setSize(40, 40);
+  calibMenu.addToggle("calibCam").setPosition(350, 151).setSize(40, 40);
   // Show Blobs
-  calibMenu.addToggle("calibBlb").setPosition(firstWindowWidth/2, windowHeight/2 + 200).setSize(40, 40);
+  calibMenu.addToggle("calibBlb").setPosition(400, 151).setSize(40, 40);
   // Save Calibration
-  calibMenu.addBang("saveCalib").setPosition(firstWindowWidth/2 + 100, windowHeight/2 + 200).setSize(40, 40);
+  calibMenu.addBang("saveCalib").setPosition(450, 151).setSize(40, 40);
+  
+  calibMenu.hide();
 }
 
 

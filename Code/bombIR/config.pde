@@ -1,16 +1,10 @@
-/**
- * configfiles taken from http://wiki.processing.org/index.php/External_configuration_files
- * @author toxi
-*/
- 
-P5Properties props;
-
-//global variables that should be set with the settings.properties file
-boolean debug = false;
 
 //-----------------------------------------------------------------------------------------
 // CONFIGURATION
-
+ 
+P5Properties props;
+boolean debug = false;
+boolean calibrateCamera = false;
 int windowHeight;
 int windowWidth;
 int firstWindowWidth;
@@ -20,10 +14,10 @@ void readConfiguration() {
     props = new P5Properties();
     // load a configuration from a file inside the data folder
     props.load(createInput("settings.properties"));
-    windowWidth = props.getIntProperty("env.viewport.width", 1024);
-    firstWindowWidth = windowWidth/2;
+    windowWidth = props.getIntProperty("env.viewport.width", 1024); firstWindowWidth = windowWidth/2;
     windowHeight = props.getIntProperty("env.viewport.height", 384);
     debug = props.getBooleanProperty("env.mode.debug", false);
+    calibrateCamera = props.getBooleanProperty("env.mode.calib", false);
   }
   catch(IOException e) {
     println("couldn't read config file...");

@@ -60,7 +60,6 @@ BlobDetection bd;
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
 boolean calibrateKeystone = false;
-boolean calibrateCamera = true;
 
 //-----------------------------------------------------------------------------------------
 
@@ -118,7 +117,6 @@ public void init() {
     // Calibration Stage
     if(calibrateCamera) {
       runCameraCalibration();
-      calibMenu.show();
     }
     
     // Main Draw Loop
@@ -133,7 +131,7 @@ public void init() {
      	
       //draw painting screen
       paintscreen.beginDraw();
-        if(!menu.isVisible() && calibrateKeystone == false) {
+        if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
           spray();
         }
       paintscreen.endDraw();
@@ -166,7 +164,6 @@ public void init() {
         cp.render();
         pickColor();
       }
-      calibMenu.hide();
     
     } 
     
