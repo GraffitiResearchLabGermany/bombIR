@@ -1,3 +1,7 @@
+
+//-----------------------------------------------------------------------------------------
+// MENU + GUI CONTROL
+
 int saveCount = 0;
 
  void CLEAR(boolean theFlag) {
@@ -20,39 +24,89 @@ int saveCount = 0;
      wallscreen.save("exports/Save_" + saveCount + ".jpg");
   }
  } 
+ 
+ // CLEAR
+ void CLEAR() {
+   // ?? 
+ }
 
-//adjust brush size
+ //adjust brush size
  void WIDTH(int BrushSize) {
     weight = (BrushSize);
  } 
  
+ // Crop Scale
+ int lastCS = 0;
+ void cropScale(int cs) {
+   if(cs > lastCS) {
+     corner.tlX += cs;
+     corner.tlY += cs;
+     corner.trX -= cs;
+     corner.trY += cs;
+     corner.brX -= cs;
+     corner.brY -= cs;
+     corner.blX += cs;
+     corner.blY -= cs;
+   }
+   lastCS = cs;
+ }
  
+ // Save Calibration
+ void saveCalib() {
+   background(0);
+   calibrateCamera = false; 
+   paintbg.render(paintbackground);
+   calibMenu.hide();
+ }
  
  void keyPressed() {
-    switch(key) {
-      case 'c':
-       // enter/leave calibration mode, where surfaces can be warped 
-       // and moved
-       ks.toggleCalibration();
-       calib = !calib;       
-       //redraw background once after calibration
-       background(0);
-       paintbg.render(paintbackground);
-       break;
-      case 'm':     
-       toggleMenu();
-       paintbg.render(paintbackground);
-       break;
-      }
- 
+   switch(key) {
+     case 'c':
+       if(!calibrateCamera) { 
+         // enter/leave calibration mode, where surfaces can be warped and moved
+         ks.toggleCalibration();
+         calibrateKeystone = !calibrateKeystone;       
+         //redraw background once after calibration
+         background(0);
+         paintbg.render(paintbackground);
+       }
+     break;
+     case 'm': 
+       if(!calibrateCamera) {   
+         toggleMenu();
+         paintbg.render(paintbackground);
+       }
+     break;
+     case 'b':
+       toggleBlobControl();
+       if(calibrateCamera) {   
+         background(0);
+       }
+       else {
+         paintbg.render(paintbackground);
+       }
+     break;     
    }
+ }
    
-   //show or hide the menu
-   void toggleMenu(){
-     if(menu.isVisible()){
-          menu.hide();
-          background(0);
-        }else{
-          menu.show();
-        }
+ //show or hide the menu
+ void toggleMenu(){
+   if(menu.isVisible()){
+     menu.hide();
+     background(0);
    }
+   else {
+     menu.show();
+   }
+ }
+ 
+ //show or hide blob control
+ void toggleBlobControl(){
+   if(calibMenu.isVisible()){
+     calibMenu.hide();
+     background(0);
+   }
+   else {
+     calibMenu.show();
+   }
+ }
