@@ -40,6 +40,9 @@ import deadpixel.keystone.*;
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
+import codeanticode.gsvideo.*;
+//import monclubelec.javacvPro.*; 
+import blobDetection.*;
 
 
   
@@ -48,22 +51,24 @@ import java.util.Properties;
 Keystone ks;
 CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
+GSCapture cam;
+BlobDetection bd;
 
 
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
-boolean calib=false;
+boolean calibrateKeystone = false;
 
+//-----------------------------------------------------------------------------------------
 
-  public void init() {
-    
-    // remove the window frame
-    frame.removeNotify(); 
-    frame.setUndecorated(true);
-    frame.addNotify();
-    super.init();
-  }
+public void init() {
+  // remove the window frame
+  frame.removeNotify(); 
+  frame.setUndecorated(true);
+  frame.addNotify();
+  super.init();
+}
 
 //-----------------------------------------------------------------------------------------
   
@@ -77,8 +82,11 @@ boolean calib=false;
   	size(windowWidth, windowHeight, P3D);
         
         //create painting screen
-        paintscreen = createGraphics(windowWidth/2,windowHeight,P3D);
+        paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         paintscreen.background(255,255,255,0);
+        
+        //setup opencv & video capture
+        setupCamera();
         
         //setup wall screen
 	setupKeystone(); 
@@ -89,64 +97,81 @@ boolean calib=false;
         //setup the control menu (colorpicker, clear screen, save, etc.)
         setupMenu();
         
+        // setup the menu for the calibration screen
+        setupCalibrationMenu();
+        
         //Init the PSMove controller
         psmoveInit();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
 	frame.setLocation(0,0);
+
   } // end SETUP
   
   //-----------------------------------------------------------------------------------------
   
   void draw() {
-   	PVector surfaceMouse = paintbg.getTransformedMouse();
-        //draw background for painting screen on first frame
-        if(frameCount == 1 ) {
-          paintbg.render(paintbackground);
-        }
-       	
-	//draw painting screen
-        paintscreen.beginDraw();
-        if(!menu.isVisible() && calib == false){
+    
+    // Calibration Stage
+    if(calibrateCamera) {
+      runCameraCalibration();
+    }
+    
+    // Main Draw Loop
+    else {
+      
+      PVector surfaceMouse = paintbg.getTransformedMouse();
+      
+      //draw background for painting screen on first frame
+      if(frameCount == 1 ) {
+        paintbg.render(paintbackground);
+      }
+     	
+      //draw painting screen
+      paintscreen.beginDraw();
+        if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
           spray();
         }
-        paintscreen.endDraw();
-        
-	//draw wall screen
-        wallscreen.beginDraw();
+      paintscreen.endDraw();
+      
+      //draw wall screen
+      wallscreen.beginDraw();
         //redraw the background of the wallscreen during calibration  
         //for the calibration view to work
         if(ks.isCalibrating()){
           wallscreen.background(0);
         }
         wallscreen.image(paintscreen,0,0); 
-        
-        wallscreen.endDraw();
-        //redraw the main backgound for calibration and male sure
-        //that the imagebackground is drawn as well
-        if(ks.isCalibrating()){
-          background(0);
-          paintbg.render(paintbackground);
-        }
+      wallscreen.endDraw();
       
-        //draw painting area
-        image(paintscreen,0,0);
-            
-        //render the wall screen
-	surface.render(wallscreen);
-
-        if(menu.isVisible()){
-          cp.render();
-          pickColor();
-        }
-        
-         // Playstation Move udptate
-        psmoveUpdate();
-        
-        if(debug){
-           println("Framerate: " + int(frameRate));
-        }
+      //redraw the main backgound for calibration and make sure
+      //that the imagebackground is drawn as well
+      if(ks.isCalibrating()){
+        background(0);
+        paintbg.render(paintbackground);
+      }
+    
+      //draw painting area
+      image(paintscreen,0,0);
+          
+      //render the wall screen
+  	surface.render(wallscreen);
+  
+      // GUI
+      if(menu.isVisible()){
+        cp.render();
+        pickColor();
+      }
+    
+    } 
+    
+    // Playstation Move udptate
+    psmoveUpdate();
+    
+    if(debug){
+       println("Framerate: " + int(frameRate));
+    }
     
   } // end DRAW
 
