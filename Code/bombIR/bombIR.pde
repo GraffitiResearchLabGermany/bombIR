@@ -133,7 +133,7 @@ public void init() {
      	
       //draw painting screen
       paintscreen.beginDraw();
-        if(!menu.isVisible() && calibrateKeystone == false){
+        if(!menu.isVisible() && calibrateKeystone == false) {
           spray();
         }
       paintscreen.endDraw();
