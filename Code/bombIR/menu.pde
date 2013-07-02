@@ -25,8 +25,7 @@ void setupMenu(){
                 .setBackgroundColor(color(0))
                 .hideBar()
                 .addCanvas(new ColorSlotCanvas())
-                ;
-                
+                ;       
     
     menu.addGroup("misc")
                 .setPosition(50,280)

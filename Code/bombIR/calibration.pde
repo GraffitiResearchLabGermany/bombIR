@@ -34,7 +34,6 @@ void runCameraCalibration() {
   corner.update();
   corner.display();
   
-  
   // Read Cam
   if (cam.available() == true) {
     cam.read();
@@ -57,11 +56,9 @@ void runCameraCalibration() {
 
 class Corner {
   
- int w, h;
  int tlX, tlY, trX, trY, brX, brY, blX, blY;
   
  Corner(int _tlX, int _tlY, int _trX, int _trY, int _brX, int _brY, int _blX, int _blY) {
-
    tlX = _tlX;
    tlY = _tlY;
    trX = _trX;
@@ -70,18 +67,17 @@ class Corner {
    brY = _brY;
    blX = _blX;
    blY = _blY;   
-   
-   
  } 
  
+ // Update Cropping Points
  void update() {
    LeftBorder = (tlX + blX) /2;
    RightBorder = (trX + brX) /2; 
    TopBorder = (tlY + trY) /2;
    BottomBorder = (blY + brY) /2;
-
  }
 
+ // Show Cropping Polygon
  void display() {
    pushStyle();
      noFill();

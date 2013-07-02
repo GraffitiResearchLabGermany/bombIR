@@ -62,15 +62,15 @@ boolean clicked = false;
 boolean calibrateKeystone = false;
 boolean calibrateCamera = true;
 
+//-----------------------------------------------------------------------------------------
 
-  public void init() {
-    
-    // remove the window frame
-    frame.removeNotify(); 
-    frame.setUndecorated(true);
-    frame.addNotify();
-    super.init();
-  }
+public void init() {
+  // remove the window frame
+  frame.removeNotify(); 
+  frame.setUndecorated(true);
+  frame.addNotify();
+  super.init();
+}
 
 //-----------------------------------------------------------------------------------------
   
@@ -98,6 +98,8 @@ boolean calibrateCamera = true;
         
         //setup the control menu (colorpicker, clear screen, save, etc.)
         setupMenu();
+        
+        // setup the menu for the calibration screen
         setupCalibrationMenu();
         
         //Init the PSMove controller
@@ -113,7 +115,7 @@ boolean calibrateCamera = true;
   
   void draw() {
     
-    // Calibrate Camera
+    // Calibration Stage
     if(calibrateCamera) {
       runCameraCalibration();
       calibMenu.show();
@@ -121,20 +123,22 @@ boolean calibrateCamera = true;
     
     // Main Draw Loop
     else {
+      
       PVector surfaceMouse = paintbg.getTransformedMouse();
+      
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
         paintbg.render(paintbackground);
       }
      	
-  	//draw painting screen
+      //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && calibrateKeystone == false){
           spray();
         }
       paintscreen.endDraw();
       
-  	//draw wall screen
+      //draw wall screen
       wallscreen.beginDraw();
         //redraw the background of the wallscreen during calibration  
         //for the calibration view to work
@@ -144,7 +148,7 @@ boolean calibrateCamera = true;
         wallscreen.image(paintscreen,0,0); 
       wallscreen.endDraw();
       
-      //redraw the main backgound for calibration and male sure
+      //redraw the main backgound for calibration and make sure
       //that the imagebackground is drawn as well
       if(ks.isCalibrating()){
         background(0);
