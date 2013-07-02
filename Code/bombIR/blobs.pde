@@ -39,6 +39,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
             blobX = (b.xMin * firstWindowWidth);
             //blobX = map(blobX, 0, firstWindowWidth, 
             blobY = (b.yMin * windowHeight);
+            //println("BX: " + blobX + "  BY: " + blobY); 
             
           }
         }   
