@@ -5,13 +5,18 @@ precision mediump int;
 
 #define PROCESSING_COLOR_SHADER
 
-uniform vec2 iResolution;
-uniform float iGlobalTime;
+uniform vec2 iResolution;      // viewport resolution (in pixels)
+uniform float iGlobalTime;     // shader playback time (in seconds)
+uniform vec4 iMouse;           // mouse pixel coords. xy: current (if MLB down), zw: click
+
 
 // not implemented yet
-uniform float iChannelTime[4]; 
-uniform vec4 iMouse;
-uniform vec4 iDate;
+
+uniform float iChannelTime[4]; // channel playback time (in seconds)
+uniform vec4 iDate;            // (year, month, day, time in seconds)
+
+
+// Channels can be either 2D maps or Cubemaps. Pick the ones you need.
 
 /*
 uniform sampler2D iChannel0;
@@ -26,38 +31,57 @@ uniform samplerCube iChannel3;
 */
 
 
-// -------- Compatible Shadertoy code ---------------------
+// -------- Below is the code you can directly paste back and forth from www.shadertoy.com ---------
 
 #define TWO_PI 6.2831853071795865
+#define PI 3.1415926535897932384
 
+// smoothing
+float smoother(float y) {
+	float s = 1.0 / iResolution.y;
+	float shade = smoothstep( y+s, y-s, gl_FragCoord.y / iResolution.y );
+	return shade;
+}
 
 void main(void)
 {
-	float scaleX = iResolution.x;// horizontal scaling factor
-	float scaleY = iResolution.y;// vertical scaling factor
+	vec2 scale = iResolution.xy; // scaling factor
+
+	vec2 pos = gl_FragCoord.xy / scale;
 	
-	float animation = sin(radians(iGlobalTime * 50.0));
+	float animate = sin(radians(iGlobalTime * 50.0)) / 2.0 + 0.5; // goes from 0.0 to 1.0
 	
-	// Gamma correction
-	float gA = scaleY * animation; // proportionnality constant
-	float gC = scaleX; // horizontal scale of the gamma
-	float gamma = 0.5; // Gamma value
-	float gCenter = scaleY/2.0 - animation * scaleY/2.0; // vertical offset
-	
-    float g = (gA * pow(gl_FragCoord.x * gC, gamma) / scaleX + gCenter) / scaleY ;
+	// Power function
+	float exp = 0.5;//animate * 1.2 + 0.5 ; // Exponent	
+    float Pow = pow(pos.x, exp);
+
+    // Linear function
+    float Lin = pos.x;
+
+    float Arc = acos( - pos.x * 2.0 + 1.0 ) / PI;
+
+
+    // x = x^3
+    float Test = (pow( pos.x * 6.0 - 3.0, 3.0 ) + 27.0) / 54.0;
+
+    // The envelope is the diff between the power and linear functions
+    float Env = Test - Lin;
 	
 	// Target function
-	float A = (scaleY / 2.0); // Amplitude
-	float p = scaleX; // period
-	float t = gl_FragCoord.x + (g * scaleY); // time
-	float d = 0.0; //shift 
-    float B = scaleY / 2.0; // center
-	float range = TWO_PI * g;
+	float A = 0.5; // Amplitude
+	float p = 1.0; // period
+	float t = pos.x + Env; // time
+	float d = 0.25; //shift 
+    float B = 0.5; // center
+	float range = TWO_PI;
 	
-	float y = A * sin( (range / p) * (d - t) ) + B;
+	float Sin = A * sin( (range / p) * (d - t) ) + B;
 	
-	float sineColor = smoothstep(y+1.0, y-1.0, gl_FragCoord.y);
-	float gammaColor = smoothstep(g*scaleY+1.0, g*scaleY-1.0, gl_FragCoord.y);
+	float sinColor = smoother(Sin);
+	float linColor = smoother(Lin);
+	float powColor = smoother(Pow);
+	float arcColor = smoother(Arc);
+	float testColor = smoother(Test);
 	
-	gl_FragColor = vec4(sineColor, 0.0, gammaColor, 1.0);
+	gl_FragColor = vec4(sinColor, testColor, linColor, 1.0);
 }

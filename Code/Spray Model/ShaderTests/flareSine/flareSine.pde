@@ -1,20 +1,28 @@
 PShader myShader;
 
+// Mouse clicks
+float left = 0.0, right = 0.0;
 
-// Executed once
+
 void setup() {
-  size(640, 360, P2D);
- 
-  myShader = loadShader("shader.glsl");
-  myShader.set("iResolution", (float)width, (float)height);
-  
+  size(640, 360, P2D);  
 }
 
 
-// Executed every frame
 void draw() {
-  
+  myShader = loadShader("shader.glsl");
+  myShader.set("iResolution", float(width), float(height));
   myShader.set("iGlobalTime", millis()/1000.0);
+  
+  if(mousePressed) {
+    
+    if(mouseButton == LEFT) left = 1.0;
+    else left = 0.0;
+    if(mouseButton == RIGHT) right = 1.0;
+    else right = 0.0;
+    
+    myShader.set("iMouse", float(mouseX), float(mouseY), left, right);
+  }
 
   // Apply the specified shader to any geometry drawn from this point  
   shader(myShader);
