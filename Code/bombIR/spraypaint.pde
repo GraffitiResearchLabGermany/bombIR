@@ -45,7 +45,7 @@ void spray() {
   }
   // if no controller present, spray on mouse click
   else if(moveConnected == false && mousePressed == true) {
-    paintscreen.point(blobX, blobY);    
+    paintscreen.point(mouseX, mouseY);    
   }
   
 }
