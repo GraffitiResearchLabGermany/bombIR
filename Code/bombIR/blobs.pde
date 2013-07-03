@@ -5,6 +5,7 @@
 float blobMin = 0.025;      
 float blobMax = 0.15;
 float blobThresh = 0.5;
+float blobX, blobY;
 
 void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {  
   Blob b;
@@ -20,6 +21,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
         if(b.xMin * firstWindowWidth > LeftBorder && b.xMin * firstWindowWidth < RightBorder && b.yMin * windowHeight > TopBorder && b.yMin * windowHeight < BottomBorder) {    
           // If The Blob Is Over A Certain Size
           if(b.w > blobMin && b.w < blobMax) {
+            
             noFill();
             strokeWeight(2);
             stroke(0, 0, 255);
@@ -32,6 +34,15 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
                   }
               }
             endShape(CLOSE); 
+            
+            // Return Valid Blobs
+            blobX = (b.xMin * firstWindowWidth);
+            //blobX = map(blobX, 0, firstWindowWidth, LeftBorder, RightBorder - LeftBorder);
+            blobY = (b.yMin * windowHeight);
+            //blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
+
+            //println("BX: " + blobX + "  BY: " + blobY); 
+            
           }
         }   
       }     
