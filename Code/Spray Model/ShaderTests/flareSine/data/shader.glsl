@@ -60,12 +60,11 @@ void main(void)
 
     float Arc = acos( - pos.x * 2.0 + 1.0 ) / PI;
 
-
     // x = x^3
-    float Test = (pow( pos.x * 6.0 - 3.0, 3.0 ) + 27.0) / 54.0;
+    float Pw3 = (pow( pos.x * 6.0 - 3.0, 3.0 ) + 27.0) / 54.0;
 
     // The envelope is the diff between the power and linear functions
-    float Env = Test - Lin;
+    float Env = mix( Pw3, Lin, animate ) - Lin;
 	
 	// Target function
 	float A = 0.5; // Amplitude
@@ -81,7 +80,7 @@ void main(void)
 	float linColor = smoother(Lin);
 	float powColor = smoother(Pow);
 	float arcColor = smoother(Arc);
-	float testColor = smoother(Test);
+	float testColor = smoother(Pw3);
 	
 	gl_FragColor = vec4(sinColor, testColor, linColor, 1.0);
 }
