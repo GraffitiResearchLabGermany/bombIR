@@ -50,13 +50,41 @@ int saveCount = 0;
    }
    lastCS = cs;
  }
+
+ // Show Blob
+ void showBlob() {
+   if(calibrateCamera) {
+     showBlob =! showBlob;
+   }
+   if(!calibrateCamera) {
+     showBlob =! showBlob;
+     background(0);
+     paintbg.render(paintbackground);
+   }   
+ }
+ 
+ // Show Cam
+ void showCam() {
+   if(calibrateCamera) {
+     showCam =! showCam;
+   }
+   if(!calibrateCamera) {
+     showCam =! showCam;
+     background(0);
+     paintbg.render(paintbackground);
+   }   
+ }
  
  // Save Calibration
  void saveCalib() {
-   background(0);
-   calibrateCamera = false; 
-   paintbg.render(paintbackground);
-   calibMenu.hide();
+   if(calibrateCamera) {
+     background(0);
+     calibrateCamera = false; 
+     showCam = false;
+     showBlob = false;
+     paintbg.render(paintbackground);
+     calibMenu.hide();
+   }
  }
  
  void keyPressed() {

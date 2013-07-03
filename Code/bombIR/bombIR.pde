@@ -127,6 +127,29 @@ public void init() {
       if(frameCount == 1 ) {
         paintbg.render(paintbackground);
       }
+      
+      // Read Cam
+      if (cam.available() == true) {
+        cam.read();
+      }
+      
+      // Compute Blobs
+      bd.setThreshold(blobThresh);
+      bd.computeBlobs(cam.pixels);
+      
+      // Show Cam ?
+      if(showCam == true) {
+        image(cam, 0, 0, firstWindowWidth, windowHeight);
+      } 
+      
+      // Show Blob ?
+      if(showBlob == true) {
+        if(!showCam) {
+          background(0);
+          paintbg.render(paintbackground);
+        }
+        drawBlobsAndEdges(true, false);
+      }
      	
       //draw painting screen
       paintscreen.beginDraw();
@@ -156,7 +179,7 @@ public void init() {
       image(paintscreen,0,0);
           
       //render the wall screen
-  	surface.render(wallscreen);
+      surface.render(wallscreen);
   
       // GUI
       if(menu.isVisible()){

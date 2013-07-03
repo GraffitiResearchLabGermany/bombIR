@@ -48,16 +48,14 @@ void drawBlobsAndEdges(boolean drawBlobs, boolean drawEdges) {
               
               sumBlobsX += b.xMin + (b.w / 2);
               sumBlobsY += b.yMin + (b.h / 2);
-//              sumBlobsX += bx + (b.w / 2);
-//              sumBlobsY += by + (b.h / 2);
+              //sumBlobsX += bx + (b.w / 2);
+              //sumBlobsY += by + (b.h / 2);
               blobCount ++;
               
               //blobX = (1.0 - (sumBlobsX / blobCount)) * FirstScreenWidth;
               //blobX = (sumBlobsX / blobCount) * FirstScreenWidth;
               //blobY = (sumBlobsY / blobCount) * FirstScreenHeight;
-              
-              
-              
+           
               //println("\t X is " + blobX + "\t Y is " + blobY + "\t based off of a Count of " + blobCount);
              
               // Set XY to largest blob XY
