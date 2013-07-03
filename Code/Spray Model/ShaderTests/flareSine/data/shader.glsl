@@ -63,8 +63,10 @@ void main(void)
     // x = x^3
     float Pw3 = (pow( pos.x * 6.0 - 3.0, 3.0 ) + 27.0) / 54.0;
 
+    float mix = mix( Pw3, Lin, animate );
+
     // The envelope is the diff between the power and linear functions
-    float Env = mix( Pw3, Lin, animate ) - Lin;
+    float Env = mix - Lin;
 	
 	// Target function
 	float A = 0.5; // Amplitude
