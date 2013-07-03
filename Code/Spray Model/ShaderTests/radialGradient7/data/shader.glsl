@@ -1,9 +1,3 @@
- // This shader example is adapted from the Andrew Baldwin's 
- // introductory tutorials to GLSL. Find them at http://thndl.com
-
-// This shader belongs to 
-// color_03_radial_gradient.pde
-
 #ifdef GL_ES
 precision mediump float;
 precision mediump int;
@@ -11,14 +5,15 @@ precision mediump int;
 
 #define PROCESSING_COLOR_SHADER
 
-varying vec4 vertColor;
-varying vec2 center;
-varying vec2 pos;
+#define TWO_PI 6.2831853071795865
+#define PI 3.1415926535897932384
 
 uniform vec2 resolution;
 uniform float scale;
 uniform float soften;
-uniform vec2 refAngle;
+
+uniform vec2 direction;
+uniform vec2 depthAngle;
 uniform float depthOffset;
 uniform sampler2D sprayMap;
 
@@ -130,7 +125,34 @@ float simplexNoise3(vec3 v)
 
 //--------------------------------------------------------------------
 
+float getFlareDelta(float angle, float incidence) {
+  
+  // Linear function
+  float Lin = angle;
 
+  // x = x^3
+  float Pw3 = (pow( angle * 6.0 - 3.0, 3.0 ) + 27.0) / 54.0;
+
+  // The angle of incidence defines how much the spray actually flares
+  float mix = mix( Pw3, Lin, incidence );
+
+  // The envelope is the diff between the power and linear functions
+  float Env = mix - Lin;
+  
+  // Target function
+  float A = 0.5; // Amplitude
+  float p = 1.0; // period
+  float t = angle + Env; // time
+  float d = 0.25; //shift 
+    float B = 0.5; // center
+  float range = TWO_PI;
+  
+  float Sin = A * sin( (range / p) * (d - t) ) + B;
+
+  float flareDelta = Sin;
+
+  return flareDelta;
+}
 
 void main(void)
 { 
@@ -138,13 +160,18 @@ void main(void)
  	vec2 coord = vec2 (-1.0 + 2.0 * gl_FragCoord.x / resolution.x, 1.0 - 2.0 * gl_FragCoord.y / resolution.y) ;
 
   // We calculate a value depending on the angle at the center
-  float cosAngle = dot( coord, refAngle );
+  float cosAngle = dot( coord, direction );
+  float sinAngle = 1.0 - cosAngle;
+
+  // Controls how much the brush expands depending on the orientation of the spray
+  float flare = getFlareDelta(acos(cosAngle), 1.0);
 
  	// How far are we from the center?
  	float distance = length( coord.xy );
 
   // Noisedepth map (3rd dimension of the noise)
- 	float depth = (gl_FragCoord.x / resolution.x * (distance + cosAngle) );// distance + cosAngle; 
+  float r = dot( coord, depthAngle );
+ 	float depth = (gl_FragCoord.x / resolution.x * (distance + r) );// distance + cosAngle; 
 
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 4.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
@@ -161,7 +188,7 @@ void main(void)
     //alpha = (-sin( 2.0 * 3.14159265359 * (distance-depthOffset*4.0) * 2.0) ) + 1.0 * 0.5 - noise - 0.7;
 
     // Map the alpha to the gradient texture
-    float gradient = texture2D( sprayMap, vec2( distance / scale, 0.5 ) ).r - soften;
+    float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 )  ).r - soften;
 
     // Apply noise
     float alpha = gradient - noise;
@@ -172,10 +199,10 @@ void main(void)
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
     // Debug show noise depth map
-    // gl_FragColor = vec4(depth, depth, depth, 1.0);
+    //gl_FragColor = vec4(depth, depth, depth, 1.0);
 
     // Debug show noise density map
-    // gl_FragColor = vec4(density, density, density, 1.0);
+    //gl_FragColor = vec4(density, density, density, 1.0);
 
     // Debug show spray map
     // gl_FragColor = vec4(gradient, gradient, gradient, 1.0);
