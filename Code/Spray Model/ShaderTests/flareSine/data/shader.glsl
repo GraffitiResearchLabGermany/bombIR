@@ -80,7 +80,8 @@ void main(void)
 	float linColor = smoother(Lin);
 	float powColor = smoother(Pow);
 	float arcColor = smoother(Arc);
-	float testColor = smoother(Pw3);
+	float pw3Color = smoother(Pw3);
+	float envColor = smoother(mix( Pw3, Lin, animate ));
 	
-	gl_FragColor = vec4(sinColor, testColor, linColor, 1.0);
+	gl_FragColor = vec4(sinColor, envColor, envColor/2.0, 1.0);
 }

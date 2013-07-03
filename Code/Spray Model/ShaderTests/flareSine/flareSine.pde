@@ -5,7 +5,8 @@ float left = 0.0, right = 0.0;
 
 
 void setup() {
-  size(640, 360, P2D);  
+  //size(640, 360, P2D);
+  size(640, 640, P2D);    
 }
 
 
