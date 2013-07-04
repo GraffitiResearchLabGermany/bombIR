@@ -62,16 +62,16 @@ void main(void)
 	float cosAngle = dot( coord, direction );
 	float angle    = acos(cosAngle) / TWO_PI;
 
-    float red   = 0.0;
-    float green = 0.0;
-    float blue  = 0.0;
+  float red   = 0.0;
+  float green = 0.0;
+  float blue  = 0.0;
 
-    float curve = smoother(angle);
+  float curve = smoother(angle);
 
- 	float distance = length(coord) / getFlare(angle, 0.0);
+ 	float distance = length(coord) ;
 
-    float circle = smoothstep( 0.51, 0.52, 1.0 - distance );
+  float circle = smoothstep( 0.51, 0.52, 1.0 - distance );
 
- 	gl_FragColor = vec4(angle, 0.0, 0.0, 1.0);
+ 	gl_FragColor = vec4(angle, circle/2.0 + curve / 2.0, circle, 1.0);
 
 }

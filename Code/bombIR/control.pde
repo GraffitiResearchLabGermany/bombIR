@@ -36,19 +36,17 @@ int saveCount = 0;
  } 
  
  // Crop Scale
- int lastCS = 0;
- void cropScale(int cs) {
-   if(cs > lastCS) {
-     corner.tlX += cs;
-     corner.tlY += cs;
-     corner.trX -= cs;
-     corner.trY += cs;
-     corner.brX -= cs;
-     corner.brY -= cs;
-     corner.blX += cs;
-     corner.blY -= cs;
-   }
-   lastCS = cs;
+ void cropScale(float cs) {
+     float w = paintscreen.width;
+     float h = paintscreen.height;
+     corner.tlX = int( w / 2.0 * cs );
+     corner.tlY = int( h / 2.0 * cs );
+     corner.trX = int( w - ( w  / 2.0 * cs ) );
+     corner.trY = int( h / 2.0 * cs );
+     corner.brX = int( w - ( w  / 2.0 * cs ) );
+     corner.brY = int( h - ( h  / 2.0 * cs ) );
+     corner.blX = int( w / 2.0 * cs );
+     corner.blY = int( h - ( h  / 2.0 * cs ) );
  }
 
  // Show Blob

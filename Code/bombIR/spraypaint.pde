@@ -9,11 +9,17 @@ float weight = 100;
 float depthOffset;
 float offsetVel;
 
+// Spray density distribution expressed in grayscale gradient
+PImage sprayMap;
+
 void setupSpraypaint() {
   depthOffset = 0.0;
   offsetVel = 0.0005;
   
-  pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");  
+  sprayMap = loadImage("sprayMap.png");
+  
+  pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
+  pointShader.set( "sprayMap", sprayMap );
   //pointShader.set("sharpness", 0.9);
   
   paintscreen.strokeCap(SQUARE);
@@ -28,7 +34,7 @@ void spray() {
 
   //use the psmove trigger to change the weight of the spraypaint
   //pointShader.set( "weight", weight+trigger/5);
-  pointShader.set( "refAngle", -1.0, 0.0 );
+  pointShader.set( "direction", -1.0, 0.0 );
   pointShader.set( "weight", weight + random(0,20));
   pointShader.set( "dispersion", 0.2 );
   pointShader.set( "depthOffset", depthOffset );
