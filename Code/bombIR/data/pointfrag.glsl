@@ -12,7 +12,9 @@ uniform float blue;
 
 uniform float dispersion;
 uniform float depthOffset;
-uniform vec2 refAngle;
+uniform vec2 direction;
+uniform vec2 rotation;
+uniform sampler2D sprayMap;
 
 varying vec4 vertColor;
 varying vec2 center;
@@ -134,7 +136,7 @@ void main() {
   vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
 
   // We calculate a value depending on the angle at the center
-  float cosAngle = dot( coord, refAngle );
+  float cosAngle = dot( coord, direction );
 
  	// How far are we from the center?
  	float distance = length( coord.xy );
