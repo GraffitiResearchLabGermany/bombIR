@@ -6,7 +6,7 @@ Corner corner;
 boolean showCam = true;
 boolean showBlob  = true;
 float LeftBorder, RightBorder, TopBorder, BottomBorder;
-int cropScale;
+float cropScale;
 
 void setupCamera() {
   

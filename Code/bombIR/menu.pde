@@ -72,7 +72,7 @@ void setupCalibrationMenu() {
   // Init
   calibMenu = new ControlP5(this);
   // Scale
-  calibMenu.addSlider("cropScale").setPosition(350, 51).setSize(200, 20).setRange(0, 10);
+  calibMenu.addSlider("cropScale").setPosition(350, 51).setSize(200, 20).setRange(0, 1);
   // Blob Threshold
   calibMenu.addSlider("blobThresh").setPosition(350, 76).setSize(200, 20).setRange(0, 1);
   // Blob Min
