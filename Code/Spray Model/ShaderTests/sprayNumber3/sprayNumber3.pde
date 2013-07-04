@@ -14,12 +14,16 @@ float weight;
 float depthOffset;
 float offsetVel;
 
+PImage wall;
+
 Path s;
 
 void setup() {
   //size(640, 360, P3D);
   size(displayWidth, displayHeight, P3D);
   frameRate(60);
+  
+  wall = loadImage("wallTexture.jpg");
   
   sprayCan = new SprayManager();
 
@@ -33,16 +37,17 @@ void setup() {
   pointShader.set( "sprayMap", sprayMap );
 
   strokeCap(SQUARE);
-  background(0);
+  //background(0);
+  image(wall,0,0);
 }
 
 void draw() {
 
-  weight = sin(radians(frameCount)) * 100.0;
+  weight = 100;//((sin(radians(frameCount)) + 1.0) / 2.0) * 50.0 + 50.0;
   pointShader.set( "weight", weight );
   strokeWeight(weight);
-  stroke(100, 255, 150);  
-  println(weight);
+  stroke(0,0,0);  
+  //println(weight);
 
   if (mousePressed) {
     if ( null!= sprayCan ) 
@@ -58,7 +63,9 @@ void mousePressed() {
 
 void keyPressed() {
   if (key == 'r' || key == 'R') {
-    background(0);
+    //background(0);
+    image(wall,0,0);
+    sprayCan.clearAll();
   }
 }
 
