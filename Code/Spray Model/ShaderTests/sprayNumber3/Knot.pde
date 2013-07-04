@@ -2,32 +2,26 @@ class Knot extends PVector {
   
   float size;
   float angle;    
-  color tint;
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
+  PGraphics targetBuffer;
 
   boolean isDrawn = false;
   
-  Knot(float posX, float posY, float weight) {
-    super(posX, posY);
+  Knot(float x, float y, float weight) {
+    super(x, y);
     size  = weight;
     angle = 0.0;
-    tint = color(255,0,0);
     noiseDepth = random(1.0);
     timestamp  = millis();
   }
   
-  Knot(float posX, float posY, float size, float angle, color tint, float noiseDepth, float timeStamp) {
-    super(posX, posY);
+  Knot(float x, float y, float size, float angle, float noiseDepth, float timeStamp) {
+    super(x, y);
     size = size;
     angle = angle;
-    tint = tint;
     noiseDepth = noiseDepth;
     timestamp = timeStamp;
-  }
-  
-  void setColor(color c) {
-    tint = c;
   }
   
   PVector getPos() {
@@ -36,6 +30,10 @@ class Knot extends PVector {
   
   float getSize() {
     return size;
+  }
+  
+  void setBuffer(PGraphics target) {
+    targetBuffer = target;
   }
   
   void draw() {
@@ -47,16 +45,20 @@ class Knot extends PVector {
     dir.normalize();
 
     if(!isDrawn) {
-      sprayBrush.set( "weight", size );
-      sprayBrush.set( "direction", dir.x, dir.y );
-      sprayBrush.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
-      sprayBrush.set( "scale", 0.5 ); 
-      sprayBrush.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
-      sprayBrush.set( "depthOffset", noiseDepth );
+      pointShader.set( "weight", size );
+      pointShader.set( "direction", dir.x, dir.y );
+      pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
+      pointShader.set( "scale", 0.5 ); 
+      pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
+      pointShader.set( "depthOffset", noiseDepth );
       strokeWeight(size);
       
-      shader(sprayBrush, POINTS);
-      point(x,y);
+      shader(pointShader, POINTS);
+      
+      // Draw in the buffer (if one was defined) or directly on the viewport
+      if (null!=targetBuffer)  targetBuffer.point(x,y);
+      else                      point(x,y);
+      
       resetShader();
       
       isDrawn = true;
@@ -65,7 +67,7 @@ class Knot extends PVector {
     if(debug) {
       pushMatrix();
         pushStyle();
-          fill(tint);
+          fill(255,0,0);
           noStroke();
           translate(x,y);
           ellipse(0,0,5,5);
