@@ -10,8 +10,8 @@ class Path {
   
   float mag;
   float numSteps;
-  float distMin = 1;
-  float stepSize = 3;
+  float distMin = 0;
+  float stepSize = 1;
   
   Path() {
   }
@@ -73,6 +73,10 @@ class Path {
     for(Knot p: pointList) {
       p.draw();
     }
+  }
+  
+  void clear() {
+    
   }
   
 }
