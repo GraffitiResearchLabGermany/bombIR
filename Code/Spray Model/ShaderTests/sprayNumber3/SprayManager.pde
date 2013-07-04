@@ -2,17 +2,21 @@
 class SprayManager {
  
  ArrayList<Path> strokeList;
- PGraphics canevas;
+ PGraphics targetBuffer;
+ 
+ SprayManager() {
+   strokeList = new ArrayList<Path>();
+ }
   
- SprayManager(PGraphics c) {
-   canevas = c;
+ SprayManager(PGraphics buffer) {
+   targetBuffer = buffer;
    strokeList = new ArrayList<Path>();
  }
  
  // Draw newly added points
  void draw() {
    for(Path p: strokeList) {
-     p.draw(canevas);
+     p.draw();
    }
  }
  
@@ -27,15 +31,22 @@ class SprayManager {
    
  }
  
- void newStroke() {
-   Path p = new Path();
+ void newStroke(float x, float y, float weight) {
+   
+   Knot startingKnot = new Knot(x, y, weight);
+   
+   Path p = new Path(startingKnot);
+
+   if (null!=targetBuffer)  
+     p.setBuffer(targetBuffer);
+ 
    strokeList.add(p);
+   
  }
  
- // 
- void addPoint(PVector pos, float weight, color col) {
+ void newKnot(float x, float y, float weight) {
    
-   Knot newKnot    = new Knot(pos, weight, col);
+   Knot newKnot = new Knot(x, y, weight);
    
    Path activePath = getActivePath();
    activePath.add(newKnot);

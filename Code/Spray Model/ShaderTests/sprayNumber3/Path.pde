@@ -3,6 +3,8 @@
 
 class Path {
   
+  PGraphics targetBuffer;
+  
   ArrayList<Knot> pointList;       // raw point list
   
   Knot previousKnot;
@@ -17,15 +19,38 @@ class Path {
   }
 
   Path(Knot startingPoint) {
-    initialize(startingPoint);
+    add(startingPoint);
   }
+  
   
   Path(Knot startingPoint, float d) {
     stepSize = d;
-    initialize(startingPoint);
+    add(startingPoint);
   }
   
-  void initialize(Knot k) {
+  
+  void setBuffer(PGraphics target) {
+    targetBuffer = target;
+  }
+  
+  
+  void add(Knot k) {
+    
+    if( null != targetBuffer) 
+      k.setBuffer(targetBuffer);
+      
+    if( null == pointList ) {
+      createList(k);
+    }
+    else {
+      newKnot(k);
+    }
+    
+  }
+  
+  
+  // When the first knot is added, we want to create the list
+  void createList(Knot k) {
     
     previousKnot = k;
     currentKnot  = k;
@@ -36,12 +61,15 @@ class Path {
     pointList.add(currentKnot);
   }
   
-  void add(Knot p) {
   
+  // Add a new knot and all knots between it and 
+  // the previous knot, based on the defined step size
+  void newKnot(Knot k) {
+    
     int size = pointList.size();
 
     previousKnot = pointList.get(size-1);
-    currentKnot = p;
+    currentKnot = k;
     
     // Compute the vector from previous to current knot
     PVector prevPos = previousKnot.getPos();
@@ -57,17 +85,16 @@ class Path {
         PVector stepper = new PVector();
         PVector.mult(velocity, 1/numSteps*i, stepper);
         stepper.add(prevPos);
-        Knot k = new Knot(stepper.x, stepper.y, previousKnot.getSize());
-        p.setColor(color(0,255,0));
-        pointList.add(k);
+        Knot stepKnot = new Knot(stepper.x, stepper.y, previousKnot.getSize());
+        pointList.add(stepKnot);
       }
     }
     else {
-      p.setColor(color(255,0,0));
-      pointList.add(p);
+      pointList.add(k);
     }
     
   }
+  
   
   void draw() {
     for(Knot p: pointList) {
@@ -75,8 +102,9 @@ class Path {
     }
   }
   
+  
   void clear() {
-    
+    pointList.clear();
   }
   
 }
