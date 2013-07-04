@@ -3,6 +3,7 @@
 // SHADER / PAINT
 
 PShader pointShader;
+Path s;
 
 float weight = 100;
 
@@ -51,7 +52,7 @@ void spray() {
   }
   // if no controller present, spray on mouse click
   else if(moveConnected == false && mousePressed == true) {
-    paintscreen.point(mouseX, mouseY);    
+    paintscreen.point(mouseX, mouseY);  
   }
   
 }
@@ -181,10 +182,19 @@ class Knot extends PVector {
     return size;
   }
   
-  void draw() {
+  void draw(PGraphics canevas) {
     
     float x = this.x;
     float y = this.y;
+    
+    // spray when controller trigger is pressed
+    if (moveConnected == true && clicked == true) {
+      paintscreen.point(blobX, blobY);  
+    }
+    // if no controller present, spray on mouse click
+    else if(moveConnected == false && mousePressed == true) {
+      paintscreen.point(mouseX, mouseY);    
+    }
     
     PVector dir = new PVector(x, y);
     dir.normalize();
@@ -198,9 +208,9 @@ class Knot extends PVector {
       sprayBrush.set( "depthOffset", noiseDepth );
       strokeWeight(size);
       
-      shader(sprayBrush, POINTS);
-      point(x,y);
-      resetShader();
+      canevas.shader(sprayBrush, POINTS);
+      canevas.point(x,y);
+      canevas.resetShader();
       
       isDrawn = true;
     }

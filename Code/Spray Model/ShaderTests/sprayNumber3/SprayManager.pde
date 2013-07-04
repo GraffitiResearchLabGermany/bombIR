@@ -28,7 +28,6 @@ class SprayManager {
    }
    
    strokeList.clear();
-   
  }
  
  void newStroke(float x, float y, float weight) {
