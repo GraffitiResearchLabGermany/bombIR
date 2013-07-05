@@ -79,6 +79,8 @@ void spray() {
 
 
 
+
+
 class SprayManager {
  
  ArrayList<Path> strokeList;
@@ -106,6 +108,15 @@ class SprayManager {
    }
  }
  
+ void reset() {
+   if(null!=targetBuffer) {
+    targetBuffer.beginDraw();
+    targetBuffer.image(bg,0,0);
+    targetBuffer.endDraw();
+   }
+   clearAll();
+ }
+ 
  // Delete all the strokes
  void clearAll() {
    
@@ -118,21 +129,21 @@ class SprayManager {
  
  void newStroke(float x, float y, float weight) {
    
-   Knot startingKnot = new Knot(x, y, weight, col);
-   
-   Path p = new Path(startingKnot);
-
-   if (null!=targetBuffer)  
-     p.setBuffer(targetBuffer);
- 
-   strokeList.add(p);
+   if (null!=targetBuffer) {
+     Knot startingKnot = new Knot(x, y, weight, col, targetBuffer);
+     Path p = new Path(startingKnot);
+     strokeList.add(p);
+   }
+   else {
+     println("ERROR in SprayManager.newStroke(): no target buffer specified in SprayManager");
+   }
    
  }
  
  // Add a point the the current path
  void newKnot(float x, float y, float weight) {
    
-   Knot newKnot = new Knot(x, y, weight, col);
+   Knot newKnot = new Knot(x, y, weight, col, targetBuffer);
    
    Path activePath = getActivePath();
    activePath.add(newKnot);
@@ -164,6 +175,9 @@ class SprayManager {
 //-----------------------------------------------------------------------------------------
 // The Path object contains a list of knots (points)
 
+
+
+// The Path object contains a list of points
 
 class Path {
   
@@ -255,7 +269,8 @@ class Path {
         float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
         color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
         
-        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
+        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor, previousKnot.getBuffer());
+        
         pointList.add(stepKnot);
         
       }
@@ -295,10 +310,11 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight, color tint) {
+  Knot(float x, float y, float weight, color tint, PGraphics buffer) {
     super(x, y);
     size  = weight;
     col   = tint;
+    targetBuffer = buffer;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
@@ -328,6 +344,10 @@ class Knot extends PVector {
     targetBuffer = target;
   }
   
+  PGraphics getBuffer() {
+    return targetBuffer; 
+  }
+  
   void draw() {
     
     float x = this.x;
@@ -344,22 +364,22 @@ class Knot extends PVector {
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
       
-      strokeWeight(size);
-      stroke(col);
       
       // Draw in the buffer (if one was defined) or directly on the viewport
-      if (null!=targetBuffer) {
+      if (null!=targetBuffer)  {
+        println("drawing");
+        targetBuffer.strokeWeight(size);
+        targetBuffer.stroke(col);
         targetBuffer.shader(pointShader, POINTS);
-        targetBuffer.point(x,y);
+        targetBuffer.point(x,y); 
       }
-      //else point(x,y);
+      //else                      point(x,y);
       
-      resetShader();
+      //targetBuffer.resetShader();
       
       isDrawn = true;
     }
     
   }
-
 
 }

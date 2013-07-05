@@ -87,6 +87,9 @@ int saveCount = 0;
  
  void keyPressed() {
    switch(key) {
+     case 'r': 
+       sprayCan.reset(); // clear the screen
+     break;
      case 'c':
        if(!calibrateCamera) { 
          // enter/leave calibration mode, where surfaces can be warped and moved

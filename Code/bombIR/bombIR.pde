@@ -86,16 +86,16 @@ public void init() {
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         
+        //setup wall screen
+        setupKeystone(); 
+        
         paintscreen.beginDraw();
-        paintscreen.background(0,0,0,0);
+        paintscreen.image(bg,0,0); // loaded in setupKeystone
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
         
         //setup opencv & video capture
         setupCamera();
-        
-        //setup wall screen
-	setupKeystone(); 
                 
         //setup the spraypaint shader
         setupSpraypaint();
