@@ -45,7 +45,10 @@ void setup() {
 
 void draw() {
 
-  weight = 100;//((sin(radians(frameCount)) + 1.0) / 2.0) * 50.0 + 50.0;
+  float animSpeed = 10;
+  float animate = ((sin(radians(frameCount * animSpeed)) + 1.0) / 2.0);
+  weight = animate * 100.0 + 100.0;
+  
   pointShader.set( "weight", weight );
   strokeWeight(weight);
   stroke(10,12,9);  
