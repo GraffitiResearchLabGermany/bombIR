@@ -48,7 +48,7 @@ class Knot extends PVector {
       pointShader.set( "weight", size );
       pointShader.set( "direction", dir.x, dir.y );
       pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
-      pointShader.set( "scale", 0.5 ); 
+      pointShader.set( "scale", 0.3 ); 
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
       strokeWeight(size);
