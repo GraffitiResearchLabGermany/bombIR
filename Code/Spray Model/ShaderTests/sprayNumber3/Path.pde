@@ -79,18 +79,20 @@ class Path {
     // How many points can we fit between the two last knots?
     float mag = velocity.mag();
     
+    // Create intermediate knots and pass them interpolated parameters
     if( mag > stepSize ) {
       numSteps = mag/stepSize;
       for(int i=1; i<numSteps; i++ ) {
         PVector stepper = new PVector();
         PVector.mult(velocity, 1/numSteps*i, stepper);
         stepper.add(prevPos);
-        Knot stepKnot = new Knot(stepper.x, stepper.y, previousKnot.getSize());
+        float interpolatedSize = map( i, 0, numSteps, previousKnot.getSize(), currentKnot.getSize());
+        Knot stepKnot = new Knot(stepper.x, stepper.y, interpolatedSize );
         pointList.add(stepKnot);
       }
     }
     else {
-      pointList.add(k);
+      pointList.add(currentKnot);
     }
     
   }
