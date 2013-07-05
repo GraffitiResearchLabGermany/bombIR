@@ -45,13 +45,19 @@ void setup() {
 
 void draw() {
 
-  float animSpeed = 10;
+  float animSpeed = 4;
   float animate = ((sin(radians(frameCount * animSpeed)) + 1.0) / 2.0);
+  
   weight = animate * 100.0 + 100.0;
   
-  pointShader.set( "weight", weight );
-  strokeWeight(weight);
-  stroke(10,12,9);  
+  colorMode(HSB);
+  float hue = animate * 255;
+  color col = color( hue, 255, 255 );
+  colorMode(RGB);
+  
+  sprayCan.setColor(col);
+  sprayCan.setWeight(weight);
+
   //println(weight);
 
   if (mousePressed) {
