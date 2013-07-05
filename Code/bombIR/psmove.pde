@@ -2,8 +2,11 @@
 //-----------------------------------------------------------------------------------------
 // CONTROLLER
 
-MoveController move;
+//MoveController move;
 MoveController [] controllers; // Define an array of controllers
+
+int rumbleLevel;
+color sphereColor;
 
 boolean moveConnected = true;
 
@@ -26,16 +29,26 @@ void psmoveInit() {
 
   // This is only fun if we actually have controllers
   if (connected == 0) {
-    print("WARNING: No controllers connected.");
+    println("WARNING: No controllers connected.");
     moveConnected = false;
+  }
+  else if (printDebug) { 
+    String plural = (connected > 1) ? "s":"";
+    println("Found "+ connected + " connected controller" + plural);
   }
 
   controllers = new MoveController[connected];
 
   // Fill the array with controllers and light them up
   for (int i = 0; i<controllers.length; i++) {
+    if(printDebug) println("Before calling MoveController("+i+") constructor");
     controllers[i] = new MoveController(i);
+    if(printDebug) println("After calling MoveController("+i+") constructor");
+    
+    /*
     controllers[i].update(color(255, 0, 0), 0);
+    */
+    
   }
 } 
 // END OF INIT
@@ -45,34 +58,45 @@ void psmoveInit() {
 
 void psmoveUpdate() {
   
+  if(printDebug) println("psmoveUpdate() Top");
+  
+  
   for (int i = 0; i<controllers.length; i++) {
     
-    int rumbleLevel = 0;
+    // Poll controller and update actuators
+    controllers[i].update( rumbleLevel, sphereColor );
     
-    color sphereColor = color(
+    rumbleLevel = 0;
+    
+    /*
+    sphereColor = color(
       (int)cs.getColorSlot(activeColorSlot).getRed(), 
       (int)cs.getColorSlot(activeColorSlot).getGreen(), 
       (int)cs.getColorSlot(activeColorSlot).getBlue()
     );
 
-    // Start writing
-    clicked = controllers[i].isTriggerPressed() ? true : false;
-
+    // Detect presses on the cap
+    clicked = controllers[i].isTriggerPressed();
+    clickedEvent = controllers[i].isTriggerPressedEvent();
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
        switchColorSlot();
     }
     
-    // 
+    // Show/hide menu
     if ( controllers[i].isTrianglePressedEvent() ) {
        toggleMenu();
        paintbg.render(paintbackground);
     }
+    */
     
-    controllers[i].update( rumbleLevel, sphereColor ); // Get the buttons value (trigger only) and presses, and update actuators/indicators
+
+    //controllers[i].set_leds(255,255,255);
+    //controllers[i].update_leds();
   }
   
+  if(printDebug) println("psmoveUpdate() Bottom");
 }
 
 
@@ -82,28 +106,35 @@ void psmoveUpdate() {
 
 class MoveController extends PSMove {
   
+  /*
   int triggerValue, previousTriggerValue;
   
-  private long [] pressed = {0};                         // Button press events
-  private long [] released = {0};                        // Button release events 
+  long [] pressed = {0};                         // Button press events
+  long [] released = {0};                        // Button release events 
   
-  MoveButton[] buttonList;
+  MoveButton[] buttonList = new MoveButton[9];  // The move controller has 9 buttons
+  
   boolean isTriggerPressed, isMovePressed, isSquarePressed, isTrianglePressed, isCrossPressed, isCirclePressed, isStartPressed, isSelectPressed, isPsPressed; 
+  */
   
   MoveController(int i) {
     super(i);
-    buttonList = new MoveButton[9];  // The move controller has 9 buttons
+
+    if (printDebug) println("After calling super("+i+") constructor");
+    
+    if (printDebug) println("Before calling updatePoll()");
+    movePoll();
+    if (printDebug) println("After calling updatePoll()");
   }
   
-  // --------------------------------------------------------
-  // Trigger value 
+  /*
+  // Trigger value --------------------------------------------------------
   
   int getTriggerValue() {
     return buttonList[TRIGGER_BTN].getValue();
   }
 
-  // --------------------------------------------------------
-  // Button presses
+  // Button presses --------------------------------------------------------
   
   boolean isTriggerPressed() {
     return buttonList[TRIGGER_BTN].isPressed();
@@ -195,8 +226,7 @@ class MoveController extends PSMove {
     return event;
   }   
 
-  // --------------------------------------------------------
-  // Released
+  // Released --------------------------------------------------------
 
   boolean isTriggerReleasedEvent() {
     boolean event = buttonList[TRIGGER_BTN].isReleasedEvent();
@@ -242,13 +272,14 @@ class MoveController extends PSMove {
     boolean event = buttonList[PS_BTN].isReleasedEvent();
     return event;
   }
+  */
 
-
-  // --------------------------------------------------------
+  
+  // Update --------------------------------------------------------
 
   void update(int _rumbleLevel, color _sphereColor) {
     
-    updatePoll();
+    movePoll();
     
     int r, g, b;
     
@@ -262,31 +293,41 @@ class MoveController extends PSMove {
     
     super.update_leds(); // actually, it also updates the rumble... don't ask
     
-  }
+  } // END OF UPDATE
   
   
-  // --------------------------------------------------------
+  
+  // updatePoll --------------------------------------------------------
   // Read inputs from the Move controller (buttons and sensors)
 
 
-  void updatePoll() { 
-
+  void movePoll() { 
       
     // Update all readings in the PSMove object
       
-    while (super.poll () != 0) {} 
-
+    if (printDebug) println("Before calling super.poll()");  
+    
+    while ( super.poll() != 0 ) { 
+       if (printDebug) println("Inside of while( super.poll() != 0 ) {...}");
+    }
+    
+    if (printDebug) println("After calling super.poll()");  
     
     // Start by reading all the buttons from the controller
     
-    int buttons = super.get_buttons();
+    if (printDebug) println("Before calling super.get_buttons()"); 
+    
+    int buttons = super.get_buttons();  
+    
+    if (printDebug) println("Before calling  super.get_buttons() [buttons = "+ buttons +"]"); 
     
     
-    // Then update individual MoveButton objects in the moveButton array
+    /*      
+    // Then update individual MoveButton objects in the buttonList array
     
     if ((buttons & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
       buttonList[MOVE_BTN].press();
-    } 
+    }
     else if (buttonList[MOVE_BTN].isPressed()) {
       buttonList[MOVE_BTN].release();
     }
@@ -338,69 +379,69 @@ class MoveController extends PSMove {
     // Start by reading all events from the controller
     
     super.get_button_events(pressed, released);
-    // Then register the current individual events to the corresponding MoveButton objects in the moveButtons array
+    // Then register the current individual events to the corresponding MoveButton objects in the buttonList array
     if ((pressed[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just pressed.");
+      if (printDebug) println("The Move button was just pressed.");
       buttonList[MOVE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just released.");
+      if (printDebug) println("The Move button was just released.");
       buttonList[MOVE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just pressed.");
+      if (printDebug) println("The Square button was just pressed.");
       buttonList[SQUARE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just released.");
+      if (printDebug) println("The Square button was just released.");
       buttonList[SQUARE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just pressed.");
+      if (printDebug) println("The Triangle button was just pressed.");
       buttonList[TRIANGLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just released.");
+      if (printDebug) println("The Triangle button was just released.");
       buttonList[TRIANGLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just pressed.");
+      if (printDebug) println("The Cross button was just pressed.");
       buttonList[CROSS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just released.");
+      if (printDebug) println("The Cross button was just released.");
       buttonList[CROSS_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just pressed.");
+      if (printDebug) println("The Circle button was just pressed.");
       buttonList[CIRCLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just released.");
+      if (printDebug) println("The Circle button was just released.");
       buttonList[CIRCLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just pressed.");
+      if (printDebug) println("The Start button was just pressed.");
       buttonList[START_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just released.");
+      if (printDebug) println("The Start button was just released.");
       buttonList[START_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just pressed.");
+      if (printDebug) println("The Select button was just pressed.");
       buttonList[SELECT_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just released.");
+      if (printDebug) println("The Select button was just released.");
       buttonList[SELECT_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just pressed.");
+      if (printDebug) println("The PS button was just pressed.");
       buttonList[PS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just released.");
+      if (printDebug) println("The PS button was just released.");
       buttonList[PS_BTN].eventRelease();
     }
 
@@ -417,21 +458,32 @@ class MoveController extends PSMove {
     if (triggerValue>0) {
       buttonList[TRIGGER_BTN].press();
       if (previousTriggerValue == 0) { // Catch trigger presses
-        if (debug) println("The Trigger button was just pressed.");
+        if (printDebug) println("The Trigger button was just pressed.");
         buttonList[TRIGGER_BTN].eventPress();
       }
     }
     else if (previousTriggerValue>0) { // Catch trigger releases
-      if (debug) println("The Trigger button was just released.");
+      if (printDebug) println("The Trigger button was just released.");
       buttonList[TRIGGER_BTN].eventRelease();
       buttonList[TRIGGER_BTN].release();
     }
     else buttonList[TRIGGER_BTN].release();
   }
-
+  // END OF UPDATE POLL
+  
+  void shutdown() {
+      super.set_rumble(0);
+      super.set_leds(0, 0, 0);
+      super.update_leds();
+  }
+  
+  */
 }
 
+// END OF MOVE CONTROLLER
 
+
+/*
 // Button class -------------------------------------------------------------
 
 class MoveButton {
@@ -532,6 +584,6 @@ class MoveButton {
   int getValue() {    
     return value;
   }
-    
+*/    
 }
 
