@@ -156,6 +156,7 @@ public void init() {
       //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
+          getCurrentBlob();
           spray();
         }
       paintscreen.endDraw();

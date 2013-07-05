@@ -12,6 +12,7 @@ void setupCamera() {
   
   // Capture 
   cam = new GSCapture(this, 320, 240);
+  //cam = new GSCapture(this, 640, 480, "/dev/video1");
   cam.start();
   
   // Blob Detection
@@ -51,9 +52,7 @@ void runCameraCalibration() {
   
 }
 
-void getCurrentBlob() {
-  
-}
+
 
 
 class Corner {
