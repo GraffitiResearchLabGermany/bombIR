@@ -13,7 +13,10 @@ float offsetVel;
 // Spray density distribution expressed in grayscale gradient
 PImage sprayMap;
 
-SprayManager sprayCan;
+// Spray renderers
+SprayManager sprayPaintScreen; // paint screen (left)
+SprayManager sprayWallScreen;  // wall screen (right)
+
 
 void setupSpraypaint() {
   
@@ -25,14 +28,18 @@ void setupSpraypaint() {
   pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
   pointShader.set( "sprayMap", sprayMap );
   
-  sprayCan = new SprayManager(paintscreen);
+  sprayPaintScreen = new SprayManager(paintscreen);
+  sprayWallScreen  = new SprayManager(wallscreen);
   
 }
+
 
 void spray() {
   // Setup the Shader
   ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
-  paintscreen.shader(pointShader, POINTS);
+  
+  //paintscreen.shader(pointShader, POINTS);
+  //wallscreen.shader(pointShader, POINTS);
   
   depthOffset += offsetVel;
 
@@ -47,38 +54,46 @@ void spray() {
   //pointShader.set( "blue", activeCS.getBlue()/255);
   //paintscreen.strokeWeight(weight+trigger/5);
   
-  paintscreen.strokeWeight(weight + random(0,20));
-  paintscreen.stroke(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue()); 
+  color selectedColor = color(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue());
+  
+  sprayPaintScreen.setWeight(weight + random(0,20));
+  sprayPaintScreen.setColor(selectedColor);
+ 
+  sprayWallScreen.setWeight(weight + random(0,20));
+  sprayWallScreen.setColor(selectedColor); 
 
   // spray when controller trigger is pressed
   if (moveConnected == true && clicked == true) {
     if(clickedEvent) { 
-      sprayCan.newStroke(blobX, blobY, weight);
+      sprayPaintScreen.newStroke(blobX, blobY, weight);
+      sprayWallScreen.newStroke(blobX, blobY, weight);
       clickedEvent = false;
     } else { 
-      sprayCan.newKnot(blobX, blobY, weight);
+      sprayPaintScreen.newKnot(blobX, blobY, weight);
+      sprayWallScreen.newKnot(blobX, blobY, weight);
     }
   }
   
   // if no controller present, spray on mouse click
   else if(moveConnected == false && mousePressed == true) {
     if(clickedEvent) {
-      sprayCan.newStroke(mouseX, mouseY, weight);
+      sprayPaintScreen.newStroke(mouseX, mouseY, weight);
+      sprayWallScreen.newStroke(mouseX, mouseY, weight);
       clickedEvent = false;
     } else {
-      sprayCan.newKnot(mouseX, mouseY, weight);
+      sprayPaintScreen.newKnot(mouseX, mouseY, weight);
+      sprayWallScreen.newKnot(mouseX, mouseY, weight);
     }
   }
   
-  sprayCan.draw();
+  sprayPaintScreen.draw();
+  sprayWallScreen.draw();
   
 }
 
+
 //-----------------------------------------------------------------------------------------
 // The Spray Manager creates, updates, draws and deletes strokes
-
-
-
 
 
 class SprayManager {
@@ -108,12 +123,33 @@ class SprayManager {
    }
  }
  
- void reset() {
-   if(null!=targetBuffer) {
-    targetBuffer.beginDraw();
-    targetBuffer.image(bg,0,0);
-    targetBuffer.endDraw();
-   }
+ 
+ // Clear the screen with a solid color
+ 
+ void reset(color background) {
+   targetBuffer.beginDraw();
+   targetBuffer.background(background);
+   targetBuffer.endDraw();
+   clearAll();
+ }
+ 
+ 
+ // Clear the screen with an image buffer
+ 
+ void reset(PGraphics background) {
+   targetBuffer.beginDraw();
+   targetBuffer.image(background,0,0);
+   targetBuffer.endDraw();
+   clearAll();
+ }
+ 
+ 
+ // Clear the screen with an image
+ 
+ void reset(PImage background) {
+   targetBuffer.beginDraw();
+   targetBuffer.image(background,0,0);
+   targetBuffer.endDraw();
    clearAll();
  }
  
@@ -250,8 +286,8 @@ class Path {
     currentKnot = k;
     
     // Compute the vector from previous to current knot
-    PVector prevPos = previousKnot.getPos();
-    PVector newPos  = currentKnot.getPos();
+    PVector prevPos  = previousKnot.getPos();
+    PVector newPos   = currentKnot.getPos();
     PVector velocity = PVector.sub(newPos, prevPos);
  
     // How many points can we fit between the two last knots?
@@ -270,6 +306,9 @@ class Path {
         color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
         
         Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor, previousKnot.getBuffer());
+        
+        if(previousKnot.getBuffer() == paintscreen) println("paintScreen");
+        if(previousKnot.getBuffer() == wallscreen) println("wallScreen");
         
         pointList.add(stepKnot);
         
@@ -357,6 +396,7 @@ class Knot extends PVector {
     dir.normalize();
 
     if(!isDrawn) {
+      
       pointShader.set( "weight", size );
       pointShader.set( "direction", dir.x, dir.y );
       pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
@@ -364,14 +404,12 @@ class Knot extends PVector {
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
       
-      
       // Draw in the buffer (if one was defined) or directly on the viewport
       if (null!=targetBuffer)  {
-        println("drawing");
+        targetBuffer.shader(pointShader, POINTS);
         targetBuffer.strokeWeight(size);
         targetBuffer.stroke(col);
-        targetBuffer.shader(pointShader, POINTS);
-        targetBuffer.point(x,y); 
+        targetBuffer.point(x,y);
       }
       //else                      point(x,y);
       

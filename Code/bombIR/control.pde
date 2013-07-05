@@ -88,7 +88,10 @@ int saveCount = 0;
  void keyPressed() {
    switch(key) {
      case 'r': 
-       sprayCan.reset(); // clear the screen
+       // clear the paint screen (left)
+       sprayPaintScreen.reset(bg); 
+       // clear the wall screen (right)
+       sprayWallScreen.reset(color(0));
      break;
      case 'c':
        if(!calibrateCamera) { 

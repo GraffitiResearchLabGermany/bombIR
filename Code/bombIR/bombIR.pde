@@ -90,9 +90,14 @@ public void init() {
         setupKeystone(); 
         
         paintscreen.beginDraw();
-        paintscreen.image(bg,0,0); // loaded in setupKeystone
+        paintscreen.image(paintbackground,0,0); // loaded in setupKeystone
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
+        
+        wallscreen.beginDraw();
+        wallscreen.background(0);
+        wallscreen.strokeCap(SQUARE);
+        wallscreen.endDraw();
         
         //setup opencv & video capture
         setupCamera();
@@ -167,26 +172,30 @@ public void init() {
       
       //draw wall screen
       wallscreen.beginDraw();
-        //redraw the background of the wallscreen during calibration  
-        //for the calibration view to work
-        if(ks.isCalibrating()){
-          wallscreen.background(0);
-        }
-        wallscreen.image(paintscreen,0,0); 
+          //redraw the background of the wallscreen during calibration  
+          //for the calibration view to work
+          if(ks.isCalibrating()){
+            wallscreen.background(0);
+          }
+          getCurrentBlob();
+          spray();
       wallscreen.endDraw();
       
       //redraw the main backgound for calibration and make sure
       //that the imagebackground is drawn as well
       if(ks.isCalibrating()){
-        background(0);
-        paintbg.render(paintbackground);
+        //background(0);
+        //paintbg.render(paintbackground);
       }
     
-      //draw painting area
+      //draw painting area (left)
       image(paintscreen,0,0);
+      
+      //draw the projection area (right)
+      image(wallscreen,width/2,0);
           
-      //render the wall screen
-      surface.render(wallscreen);
+      //render the wall screen with keystone
+      //surface.render(wallscreen);
   
       // GUI
       if(menu.isVisible()){
