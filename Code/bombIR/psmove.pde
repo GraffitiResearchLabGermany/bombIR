@@ -54,11 +54,7 @@ void psmoveUpdate() {
   
   for (int i = 0; i<controllers.length; i++) {
     
-    // Poll controller and update actuators
-    controllers[i].update( rumbleLevel, sphereColor );
-    
     rumbleLevel = 0;
-    
     
     sphereColor = color(
       (int)cs.getColorSlot(activeColorSlot).getRed(), 
@@ -82,11 +78,11 @@ void psmoveUpdate() {
        toggleMenu();
        paintbg.render(paintbackground);
     }
+     
+    //sphereColor = color(controllers[i].getTriggerValue());
     
-    
-
-    //controllers[i].set_leds(255,255,255);
-    //controllers[i].update_leds();
+    // Poll controller and update actuators
+    controllers[i].update( rumbleLevel, sphereColor );
   }
 
 }
