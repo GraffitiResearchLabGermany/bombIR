@@ -54,10 +54,13 @@ void spray() {
 
   // spray when controller trigger is pressed
   if (moveConnected == true && clicked == true) {
+    if(printDebug) println("inside write");
     if(clickedEvent) { 
+      if(printDebug) println("writing started");
       sprayCan.newStroke(blobX, blobY, weight);
       clickedEvent = false;
     } else { 
+      if(printDebug) println("spray writing now");
       sprayCan.newKnot(blobX, blobY, weight);
     }
   }
@@ -71,6 +74,8 @@ void spray() {
       sprayCan.newKnot(mouseX, mouseY, weight);
     }
   }
+  
+  sprayCan.draw();
   
 }
 
