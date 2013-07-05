@@ -1,16 +1,18 @@
 class Knot extends PVector {
   
   float size;
-  float angle;    
+  color col;
+  float angle;  
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
   PGraphics targetBuffer;
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight) {
+  Knot(float x, float y, float weight, color tint) {
     super(x, y);
     size  = weight;
+    col   = tint;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
@@ -32,6 +34,10 @@ class Knot extends PVector {
     return size;
   }
   
+  color getColor() {
+    return col; 
+  }
+  
   void setBuffer(PGraphics target) {
     targetBuffer = target;
   }
@@ -51,7 +57,9 @@ class Knot extends PVector {
       pointShader.set( "scale", 0.3 ); 
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
+      
       strokeWeight(size);
+      stroke(col);
       
       shader(pointShader, POINTS);
       

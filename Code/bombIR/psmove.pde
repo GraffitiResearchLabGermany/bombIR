@@ -55,7 +55,8 @@ void psmoveUpdate() {
   for (int i = 0; i<controllers.length; i++) {
     
     rumbleLevel = 0;
-    
+
+
     sphereColor = color(
       (int)cs.getColorSlot(activeColorSlot).getRed(), 
       (int)cs.getColorSlot(activeColorSlot).getGreen(), 
@@ -73,7 +74,7 @@ void psmoveUpdate() {
        switchColorSlot();
     }
     
-    // Show/hide menu
+    // Show/hide menub
     if ( controllers[i].isTrianglePressedEvent() ) {
        toggleMenu();
        paintbg.render(paintbackground);
