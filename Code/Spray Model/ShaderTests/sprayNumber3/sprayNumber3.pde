@@ -21,7 +21,7 @@ PImage wall;
 Path s;
 
 void setup() {
-  //size(640, 360, P3D);
+  //size(640, , P3D);
   size(displayWidth, displayHeight, P3D);
   frameRate(60);
   
@@ -48,11 +48,11 @@ void draw() {
   float animSpeed = 4;
   float animate = ((sin(radians(frameCount * animSpeed)) + 1.0) / 2.0);
   
-  weight = animate * 100.0 + 100.0;
+  weight = animate * 100.0 + 100.0 + random(-10,10);
   
   colorMode(HSB);
-  float hue = animate * 255;
-  color col = color( hue, 255, 255 );
+  float hue = animate * 50;
+  color col = color( hue, 255, 200 );
   colorMode(RGB);
   
   sprayCan.setColor(col);

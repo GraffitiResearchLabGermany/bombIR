@@ -5,10 +5,8 @@ precision mediump int;
 
 uniform float weight;
 uniform float sharpness;
-
-uniform float red;
-uniform float green;
-uniform float blue;
+uniform float scale;
+uniform float soften;
 
 uniform float dispersion;
 uniform float depthOffset;
@@ -19,6 +17,8 @@ uniform sampler2D sprayMap;
 varying vec4 vertColor;
 varying vec2 center;
 varying vec2 pos;
+
+
 
 
 //--------------------------------------------------------------------
@@ -126,40 +126,49 @@ float simplexNoise3(vec3 v)
                                 dot(p2,x2), dot(p3,x3) ) );
 }
 
+//--------------------------------------------------------------------
+
+
 void main() {  
 
 
 
-  float len = 1.0 - length(pos)/weight;
+  float len = weight/2.0 - length(pos);
 
   // We compute the position of the current fragment (from [-1,-1] to [1,1])
   vec2 coord = vec2 (-1.0 * pos.x / weight, 1.0 * pos.y / weight) ;
 
-  // We calculate a value depending on the angle at the center
+  // We calculate values depending on the angle at the center
   float cosAngle = dot( coord, direction );
+  float sinAngle = 1.0 - cosAngle;
+  float tanAngle = sinAngle/cosAngle;
+
+  // How should the brush expand depending on the direction of the spray?
+  float flare = sinAngle;
 
  	// How far are we from the center?
  	float distance = length( coord.xy );
 
   // Noisedepth map (3rd dimension of the noise)
- 	float depth = (pos.x / weight * (distance + cosAngle) );// distance + cosAngle; 
+  float r = dot( coord, rotation ); // cosine of the rotation
+ 	float depth = (pos.x / weight * (distance + r) ); 
 
  	float density = 100.0;
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
+  // Map the alpha to the gradient texture
+  float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - soften;
 
- 	// Color to display
-    //float red   = 0.4;
-    //float green = 0.8;
-    //float blue  = 0.86;
+  // The farther from the center of the window, the more transparent
+  float alpha = gradient - noise;
 
-    // The farther from the center of the window, the more transparent
-    float alpha = 1.0 - distance / dispersion - noise;
+  // color of the spray 
+  vec4 color = vec4(vertColor.rgb, alpha);
 
-    // Debug (show raw noise)
-    // alpha = 1.0 - noise;
+  // Debug (show raw noise)
+  // alpha = 1.0 - noise;
 
- 	  gl_FragColor = vec4(red, green, blue, alpha);
+	gl_FragColor = color;
 
   //gl_FragColor = vec4(len, 0.0, 0.0, 1.0);
 

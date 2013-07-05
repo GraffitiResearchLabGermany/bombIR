@@ -1,4 +1,5 @@
 
+
 class SprayManager {
  
  ArrayList<Path> strokeList;
@@ -18,14 +19,15 @@ class SprayManager {
    col = color(0);
  }
  
- // Draw newly added points
+ // Draw newly added points 
+ // NOTE: points are only drawn once so you should not redraw the background
  void draw() {
    for(Path p: strokeList) {
      p.draw();
    }
  }
  
- // Clear the strokes
+ // Delete all the strokes
  void clearAll() {
    
    for(Path p: strokeList) {
@@ -48,6 +50,7 @@ class SprayManager {
    
  }
  
+ // Add a point the the current path
  void newKnot(float x, float y, float weight) {
    
    Knot newKnot = new Knot(x, y, weight, col);
@@ -57,14 +60,17 @@ class SprayManager {
    
  }
  
+ // Return the path beeing drawn at the moment
  Path getActivePath() {
    return strokeList.get( strokeList.size() - 1 );
  }
  
+ // Set the size of the spray
  void setWeight(float weight) {
    size = weight;
  }
  
+ // Set the color of the spray
  void setColor(color tint) {
    col = tint;
  }

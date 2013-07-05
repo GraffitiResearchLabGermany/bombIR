@@ -24,7 +24,6 @@ void setupSpraypaint() {
   
   pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
   pointShader.set( "sprayMap", sprayMap );
-  //pointShader.set("sharpness", 0.9);
   
   paintscreen.strokeCap(SQUARE);
   
@@ -41,16 +40,17 @@ void spray() {
 
   //use the psmove trigger to change the weight of the spraypaint
   //pointShader.set( "weight", weight+trigger/5);
-  pointShader.set( "direction", -1.0, 0.0 );
-  pointShader.set( "weight", weight + random(0,20));
-  pointShader.set( "dispersion", 0.2 );
-  pointShader.set( "depthOffset", depthOffset );
-  pointShader.set( "red", activeCS.getRed()/255);
-  pointShader.set( "green", activeCS.getGreen()/255);
-  pointShader.set( "blue", activeCS.getBlue()/255);
+  //pointShader.set( "direction", -1.0, 0.0 );
+  //pointShader.set( "weight", weight + random(0,20));
+  //pointShader.set( "dispersion", 0.2 );
+  //pointShader.set( "depthOffset", depthOffset );
+  //pointShader.set( "red", activeCS.getRed()/255);
+  //pointShader.set( "green", activeCS.getGreen()/255);
+  //pointShader.set( "blue", activeCS.getBlue()/255);
   //paintscreen.strokeWeight(weight+trigger/5);
+  
   paintscreen.strokeWeight(weight + random(0,20));
-  paintscreen.stroke(random(255), random(255), random(255)); 
+  paintscreen.stroke(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue()); 
 
   // spray when controller trigger is pressed
   if (moveConnected == true && clicked == true) {
@@ -79,28 +79,36 @@ void spray() {
 //-----------------------------------------------------------------------------------------
 // The Spray Manager creates, updates, draws and deletes strokes
 
+
+
 class SprayManager {
  
  ArrayList<Path> strokeList;
  PGraphics targetBuffer;
  
+ color col;
+ float size;
+ 
  SprayManager() {
    strokeList = new ArrayList<Path>();
+   col = color(0);
  }
   
  SprayManager(PGraphics buffer) {
    targetBuffer = buffer;
    strokeList = new ArrayList<Path>();
+   col = color(0);
  }
  
- // Draw newly added points
+ // Draw newly added points 
+ // NOTE: points are only drawn once so you should not redraw the background
  void draw() {
    for(Path p: strokeList) {
      p.draw();
    }
  }
  
- // Clear the strokes
+ // Delete all the strokes
  void clearAll() {
    
    for(Path p: strokeList) {
@@ -112,7 +120,7 @@ class SprayManager {
  
  void newStroke(float x, float y, float weight) {
    
-   Knot startingKnot = new Knot(x, y, weight);
+   Knot startingKnot = new Knot(x, y, weight, col);
    
    Path p = new Path(startingKnot);
 
@@ -123,24 +131,41 @@ class SprayManager {
    
  }
  
+ // Add a point the the current path
  void newKnot(float x, float y, float weight) {
    
-   Knot newKnot = new Knot(x, y, weight);
+   Knot newKnot = new Knot(x, y, weight, col);
    
    Path activePath = getActivePath();
    activePath.add(newKnot);
    
  }
  
+ // Return the path beeing drawn at the moment
  Path getActivePath() {
    return strokeList.get( strokeList.size() - 1 );
+ }
+ 
+ // Set the size of the spray
+ void setWeight(float weight) {
+   size = weight;
+ }
+ 
+ // Set the color of the spray
+ void setColor(color tint) {
+   col = tint;
+ }
+ 
+ color getColor() {
+   return col;
  }
 
 }
 
 
 //-----------------------------------------------------------------------------------------
-// The Path object contains a list of points
+// The Path object contains a list of knots (points)
+
 
 class Path {
   
@@ -220,18 +245,25 @@ class Path {
     // How many points can we fit between the two last knots?
     float mag = velocity.mag();
     
+    // Create intermediate knots and pass them interpolated parameters
     if( mag > stepSize ) {
+      
       numSteps = mag/stepSize;
       for(int i=1; i<numSteps; i++ ) {
-        PVector stepper = new PVector();
-        PVector.mult(velocity, 1/numSteps*i, stepper);
-        stepper.add(prevPos);
-        Knot stepKnot = new Knot(stepper.x, stepper.y, previousKnot.getSize());
+        
+        float interpolatedX = lerp ( previousKnot.x,  currentKnot.x,  i/numSteps );
+        float interpolatedY = lerp ( previousKnot.y,  currentKnot.y,  i/numSteps );
+        
+        float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
+        color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
+        
+        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
         pointList.add(stepKnot);
+        
       }
     }
     else {
-      pointList.add(k);
+      pointList.add(currentKnot);
     }
     
   }
@@ -257,16 +289,18 @@ class Path {
 class Knot extends PVector {
   
   float size;
-  float angle;    
+  color col;
+  float angle;  
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
   PGraphics targetBuffer;
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight) {
+  Knot(float x, float y, float weight, color tint) {
     super(x, y);
     size  = weight;
+    col   = tint;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
@@ -288,6 +322,10 @@ class Knot extends PVector {
     return size;
   }
   
+  color getColor() {
+    return col; 
+  }
+  
   void setBuffer(PGraphics target) {
     targetBuffer = target;
   }
@@ -304,10 +342,12 @@ class Knot extends PVector {
       pointShader.set( "weight", size );
       pointShader.set( "direction", dir.x, dir.y );
       pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
-      pointShader.set( "scale", 0.5 ); 
+      pointShader.set( "scale", 0.3 ); 
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
+      
       strokeWeight(size);
+      stroke(col);
       
       shader(pointShader, POINTS);
       
@@ -320,17 +360,7 @@ class Knot extends PVector {
       isDrawn = true;
     }
     
-    if(debug) {
-      pushMatrix();
-        pushStyle();
-          fill(255,0,0);
-          noStroke();
-          translate(x,y);
-          ellipse(0,0,5,5);
-        popStyle();
-      popMatrix();
-    }
-    
   }
+
 
 }
