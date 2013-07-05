@@ -4,7 +4,8 @@
 
 void mousePressed() {
   
-  
+ if( moveConnected == false )  clickedEvent = true; 
+ 
 }
 
 void mouseDragged() {

@@ -58,7 +58,9 @@ BlobDetection bd;
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
+boolean clickedEvent = false;
 boolean calibrateKeystone = false;
+boolean printDebug = true;
 
 //-----------------------------------------------------------------------------------------
 
@@ -100,7 +102,7 @@ public void init() {
         // setup the menu for the calibration screen
         setupCalibrationMenu();
         
-        //Init the PSMove controller
+        //Init the PSMove controller(s)
         psmoveInit();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
@@ -189,17 +191,13 @@ public void init() {
     
     } 
     
-    // Playstation Move udptate
+    // Playstation Move update
     psmoveUpdate();
     
-    if(debug){
-       println("Framerate: " + int(frameRate));
-    }
+    if(debug) println("Framerate: " + int(frameRate));
+
     
   } // end DRAW
-
-  
-  
 
   
   
