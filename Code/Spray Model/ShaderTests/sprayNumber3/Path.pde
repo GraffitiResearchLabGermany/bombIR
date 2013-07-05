@@ -81,14 +81,19 @@ class Path {
     
     // Create intermediate knots and pass them interpolated parameters
     if( mag > stepSize ) {
+      
       numSteps = mag/stepSize;
       for(int i=1; i<numSteps; i++ ) {
-        PVector stepper = new PVector();
-        PVector.mult(velocity, 1/numSteps*i, stepper);
-        stepper.add(prevPos);
-        float interpolatedSize = map( i, 0, numSteps, previousKnot.getSize(), currentKnot.getSize());
-        Knot stepKnot = new Knot(stepper.x, stepper.y, interpolatedSize );
+        
+        float interpolatedX = lerp ( previousKnot.x,  currentKnot.x,  i/numSteps );
+        float interpolatedY = lerp ( previousKnot.y,  currentKnot.y,  i/numSteps );
+        
+        float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
+        color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
+        
+        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
         pointList.add(stepKnot);
+        
       }
     }
     else {

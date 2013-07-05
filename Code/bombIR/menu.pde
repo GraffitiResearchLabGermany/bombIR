@@ -118,9 +118,9 @@ void switchColorSlot(){
  */
 class ColorSlot{
   
-  protected float red = 0.0;
-  protected float green = 0.0;
-  protected float blue = 0.0;
+  protected float red = 255.0;
+  protected float green = 255.0;
+  protected float blue = 255.0;
   
   protected int positionX;
   protected int positionY;
