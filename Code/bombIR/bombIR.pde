@@ -85,7 +85,11 @@ public void init() {
         
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
-        paintscreen.background(255,255,255,0);
+        
+        paintscreen.beginDraw();
+        paintscreen.background(0,0,0,0);
+        paintscreen.strokeCap(SQUARE);
+        paintscreen.endDraw();
         
         //setup opencv & video capture
         setupCamera();

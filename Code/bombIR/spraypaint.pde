@@ -25,8 +25,6 @@ void setupSpraypaint() {
   pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
   pointShader.set( "sprayMap", sprayMap );
   
-  paintscreen.strokeCap(SQUARE);
-  
   sprayCan = new SprayManager(paintscreen);
   
 }
@@ -349,11 +347,12 @@ class Knot extends PVector {
       strokeWeight(size);
       stroke(col);
       
-      shader(pointShader, POINTS);
-      
       // Draw in the buffer (if one was defined) or directly on the viewport
-      if (null!=targetBuffer)  targetBuffer.point(x,y);
-      else                      point(x,y);
+      if (null!=targetBuffer) {
+        targetBuffer.shader(pointShader, POINTS);
+        targetBuffer.point(x,y);
+      }
+      //else point(x,y);
       
       resetShader();
       

@@ -9,10 +9,11 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight, color tint) {
+  Knot(float x, float y, float weight, color tint, PGraphics buffer) {
     super(x, y);
     size  = weight;
     col   = tint;
+    targetBuffer = buffer;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
@@ -42,6 +43,10 @@ class Knot extends PVector {
     targetBuffer = target;
   }
   
+  PGraphics getBuffer() {
+    return targetBuffer; 
+  }
+  
   void draw() {
     
     float x = this.x;
@@ -58,16 +63,18 @@ class Knot extends PVector {
       pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
       pointShader.set( "depthOffset", noiseDepth );
       
-      strokeWeight(size);
-      stroke(col);
-      
-      shader(pointShader, POINTS);
       
       // Draw in the buffer (if one was defined) or directly on the viewport
-      if (null!=targetBuffer)  targetBuffer.point(x,y);
-      else                      point(x,y);
+      if (null!=targetBuffer)  {
+        println("drawing");
+        targetBuffer.strokeWeight(size);
+        targetBuffer.stroke(col);
+        targetBuffer.shader(pointShader, POINTS);
+        targetBuffer.point(x,y); 
+      }
+      //else                      point(x,y);
       
-      resetShader();
+      //targetBuffer.resetShader();
       
       isDrawn = true;
     }

@@ -12,7 +12,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   EdgeVertex eA,eB;
   for (int n = 0 ; n < bd.getBlobNb() ; n++) {
     b = bd.getBlob(n);
-    println("There Are " + bd.getBlobNb() + " Blobs Detected...");
+    //println("There Are " + bd.getBlobNb() + " Blobs Detected...");
     if (b!= null) {
         
       // Edges

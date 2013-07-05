@@ -39,21 +39,21 @@ class SprayManager {
  
  void newStroke(float x, float y, float weight) {
    
-   Knot startingKnot = new Knot(x, y, weight, col);
-   
-   Path p = new Path(startingKnot);
-
-   if (null!=targetBuffer)  
-     p.setBuffer(targetBuffer);
- 
-   strokeList.add(p);
+   if (null!=targetBuffer) {
+     Knot startingKnot = new Knot(x, y, weight, col, targetBuffer);
+     Path p = new Path(startingKnot);
+     strokeList.add(p);
+   }
+   else {
+     println("ERROR in SprayManager.newStroke(): no target buffer specified in SprayManager");
+   }
    
  }
  
  // Add a point the the current path
  void newKnot(float x, float y, float weight) {
    
-   Knot newKnot = new Knot(x, y, weight, col);
+   Knot newKnot = new Knot(x, y, weight, col, targetBuffer);
    
    Path activePath = getActivePath();
    activePath.add(newKnot);

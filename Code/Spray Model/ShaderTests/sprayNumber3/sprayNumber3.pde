@@ -18,6 +18,8 @@ float offsetVel;
 
 PImage wall;
 
+PGraphics paintscreen;
+
 Path s;
 
 void setup() {
@@ -25,9 +27,11 @@ void setup() {
   size(displayWidth, displayHeight, P3D);
   frameRate(60);
   
+  paintscreen = createGraphics(width, height, P3D);
+  
   wall = loadImage("wallTexture.jpg");
   
-  sprayCan = new SprayManager();
+  sprayCan = new SprayManager(paintscreen);
 
   sprayMap = loadImage("sprayMap.png");
 
@@ -38,9 +42,12 @@ void setup() {
   //pointShader.set("sharpness", 0.9);
   pointShader.set( "sprayMap", sprayMap );
 
-  strokeCap(SQUARE);
   //background(0);
-  image(wall,0,0);
+  
+  paintscreen.beginDraw();
+  paintscreen.image(wall,0,0);
+  paintscreen.endDraw();
+
 }
 
 void draw() {
@@ -65,7 +72,12 @@ void draw() {
       sprayCan.newKnot( mouseX, mouseY, weight );
   }
   
+  paintscreen.beginDraw();
+  paintscreen.strokeCap(SQUARE);
   if ( null != sprayCan ) sprayCan.draw();
+  paintscreen.endDraw();
+  
+  image(paintscreen,0,0);
 }
 
 void mousePressed() {
@@ -74,8 +86,11 @@ void mousePressed() {
 
 void keyPressed() {
   if (key == 'r' || key == 'R') {
-    //background(0);
-    image(wall,0,0);
+
+    paintscreen.beginDraw();
+    paintscreen.image(wall,0,0);
+    paintscreen.endDraw();
+    
     sprayCan.clearAll();
   }
   if (key == 's' || key == 'S') {
