@@ -3,6 +3,7 @@
 // SHADER / PAINT
 
 PShader pointShader;
+Path s;
 
 float weight = 100;
 
@@ -12,7 +13,10 @@ float offsetVel;
 // Spray density distribution expressed in grayscale gradient
 PImage sprayMap;
 
+SprayManager sprayCan;
+
 void setupSpraypaint() {
+  
   depthOffset = 0.0;
   offsetVel = 0.0005;
   
@@ -23,6 +27,9 @@ void setupSpraypaint() {
   //pointShader.set("sharpness", 0.9);
   
   paintscreen.strokeCap(SQUARE);
+  
+  sprayCan = new SprayManager(paintscreen);
+  
 }
 
 void spray() {
@@ -47,21 +54,97 @@ void spray() {
 
   // spray when controller trigger is pressed
   if (moveConnected == true && clicked == true) {
-    paintscreen.point(blobX, blobY);  
+    if(clickedEvent) { 
+      sprayCan.newStroke(blobX, blobY, weight);
+      clickedEvent = false;
+    } else { 
+      sprayCan.newKnot(blobX, blobY, weight);
+    }
   }
+  
   // if no controller present, spray on mouse click
   else if(moveConnected == false && mousePressed == true) {
-    paintscreen.point(mouseX, mouseY);    
+    if(clickedEvent) {
+      sprayCan.newStroke(mouseX, mouseY, weight);
+      clickedEvent = false;
+    } else {
+      sprayCan.newKnot(mouseX, mouseY, weight);
+    }
   }
+  
+  sprayCan.draw();
   
 }
 
+//-----------------------------------------------------------------------------------------
+// The Spray Manager creates, updates, draws and deletes strokes
+
+class SprayManager {
+ 
+ ArrayList<Path> strokeList;
+ PGraphics targetBuffer;
+ 
+ SprayManager() {
+   strokeList = new ArrayList<Path>();
+ }
+  
+ SprayManager(PGraphics buffer) {
+   targetBuffer = buffer;
+   strokeList = new ArrayList<Path>();
+ }
+ 
+ // Draw newly added points
+ void draw() {
+   for(Path p: strokeList) {
+     p.draw();
+   }
+ }
+ 
+ // Clear the strokes
+ void clearAll() {
+   
+   for(Path p: strokeList) {
+     p.clear();
+   }
+   
+   strokeList.clear();
+ }
+ 
+ void newStroke(float x, float y, float weight) {
+   
+   Knot startingKnot = new Knot(x, y, weight);
+   
+   Path p = new Path(startingKnot);
+
+   if (null!=targetBuffer)  
+     p.setBuffer(targetBuffer);
+ 
+   strokeList.add(p);
+   
+ }
+ 
+ void newKnot(float x, float y, float weight) {
+   
+   Knot newKnot = new Knot(x, y, weight);
+   
+   Path activePath = getActivePath();
+   activePath.add(newKnot);
+   
+ }
+ 
+ Path getActivePath() {
+   return strokeList.get( strokeList.size() - 1 );
+ }
+
+}
 
 
 //-----------------------------------------------------------------------------------------
 // The Path object contains a list of points
 
 class Path {
+  
+  PGraphics targetBuffer;
   
   ArrayList<Knot> pointList;       // raw point list
   
@@ -70,22 +153,45 @@ class Path {
   
   float mag;
   float numSteps;
-  float distMin = 1;
-  float stepSize = 3;
+  float distMin = 0;
+  float stepSize = 1;
   
   Path() {
   }
 
   Path(Knot startingPoint) {
-    initialize(startingPoint);
+    add(startingPoint);
   }
+  
   
   Path(Knot startingPoint, float d) {
     stepSize = d;
-    initialize(startingPoint);
+    add(startingPoint);
   }
   
-  void initialize(Knot k) {
+  
+  void setBuffer(PGraphics target) {
+    targetBuffer = target;
+  }
+  
+  
+  void add(Knot k) {
+    
+    if( null != targetBuffer) 
+      k.setBuffer(targetBuffer);
+      
+    if( null == pointList ) {
+      createList(k);
+    }
+    else {
+      newKnot(k);
+    }
+    
+  }
+  
+  
+  // When the first knot is added, we want to create the list
+  void createList(Knot k) {
     
     previousKnot = k;
     currentKnot  = k;
@@ -96,12 +202,15 @@ class Path {
     pointList.add(currentKnot);
   }
   
-  void add(Knot p) {
   
+  // Add a new knot and all knots between it and 
+  // the previous knot, based on the defined step size
+  void newKnot(Knot k) {
+    
     int size = pointList.size();
 
     previousKnot = pointList.get(size-1);
-    currentKnot = p;
+    currentKnot = k;
     
     // Compute the vector from previous to current knot
     PVector prevPos = previousKnot.getPos();
@@ -117,22 +226,26 @@ class Path {
         PVector stepper = new PVector();
         PVector.mult(velocity, 1/numSteps*i, stepper);
         stepper.add(prevPos);
-        Knot k = new Knot(stepper.x, stepper.y, previousKnot.getSize());
-        p.setColor(color(0,255,0));
-        pointList.add(k);
+        Knot stepKnot = new Knot(stepper.x, stepper.y, previousKnot.getSize());
+        pointList.add(stepKnot);
       }
     }
     else {
-      p.setColor(color(255,0,0));
-      pointList.add(p);
+      pointList.add(k);
     }
     
   }
+  
   
   void draw() {
     for(Knot p: pointList) {
       p.draw();
     }
+  }
+  
+  
+  void clear() {
+    pointList.clear();
   }
   
 }
@@ -145,32 +258,26 @@ class Knot extends PVector {
   
   float size;
   float angle;    
-  color tint;
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
+  PGraphics targetBuffer;
 
   boolean isDrawn = false;
   
-  Knot(float posX, float posY, float weight) {
-    super(posX, posY);
+  Knot(float x, float y, float weight) {
+    super(x, y);
     size  = weight;
     angle = 0.0;
-    tint = color(255,0,0);
     noiseDepth = random(1.0);
     timestamp  = millis();
   }
   
-  Knot(float posX, float posY, float size, float angle, color tint, float noiseDepth, float timeStamp) {
-    super(posX, posY);
+  Knot(float x, float y, float size, float angle, float noiseDepth, float timeStamp) {
+    super(x, y);
     size = size;
     angle = angle;
-    tint = tint;
     noiseDepth = noiseDepth;
     timestamp = timeStamp;
-  }
-  
-  void setColor(color c) {
-    tint = c;
   }
   
   PVector getPos() {
@@ -179,6 +286,10 @@ class Knot extends PVector {
   
   float getSize() {
     return size;
+  }
+  
+  void setBuffer(PGraphics target) {
+    targetBuffer = target;
   }
   
   void draw() {
@@ -190,16 +301,20 @@ class Knot extends PVector {
     dir.normalize();
 
     if(!isDrawn) {
-      sprayBrush.set( "weight", size );
-      sprayBrush.set( "direction", dir.x, dir.y );
-      sprayBrush.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
-      sprayBrush.set( "scale", 0.5 ); 
-      sprayBrush.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
-      sprayBrush.set( "depthOffset", noiseDepth );
+      pointShader.set( "weight", size );
+      pointShader.set( "direction", dir.x, dir.y );
+      pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
+      pointShader.set( "scale", 0.5 ); 
+      pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
+      pointShader.set( "depthOffset", noiseDepth );
       strokeWeight(size);
       
-      shader(sprayBrush, POINTS);
-      point(x,y);
+      shader(pointShader, POINTS);
+      
+      // Draw in the buffer (if one was defined) or directly on the viewport
+      if (null!=targetBuffer)  targetBuffer.point(x,y);
+      else                      point(x,y);
+      
       resetShader();
       
       isDrawn = true;
@@ -208,7 +323,7 @@ class Knot extends PVector {
     if(debug) {
       pushMatrix();
         pushStyle();
-          fill(tint);
+          fill(255,0,0);
           noStroke();
           translate(x,y);
           ellipse(0,0,5,5);

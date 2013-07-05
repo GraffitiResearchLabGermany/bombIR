@@ -1,5 +1,7 @@
 // http://glsl.heroku.com/e#4633.5
 
+// Wall texture from: http://texturez.com/textures/concrete/4092
+
 boolean debug = false;
 
 SprayManager sprayCan;
@@ -46,7 +48,7 @@ void draw() {
   weight = 100;//((sin(radians(frameCount)) + 1.0) / 2.0) * 50.0 + 50.0;
   pointShader.set( "weight", weight );
   strokeWeight(weight);
-  stroke(0,0,0);  
+  stroke(10,12,9);  
   //println(weight);
 
   if (mousePressed) {
@@ -66,6 +68,9 @@ void keyPressed() {
     //background(0);
     image(wall,0,0);
     sprayCan.clearAll();
+  }
+  if (key == 's' || key == 'S') {
+    saveFrame(); 
   }
 }
 
