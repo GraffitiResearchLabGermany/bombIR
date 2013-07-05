@@ -41,14 +41,8 @@ void psmoveInit() {
 
   // Fill the array with controllers and light them up
   for (int i = 0; i<controllers.length; i++) {
-    if(printDebug) println("Before calling MoveController("+i+") constructor");
-    controllers[i] = new MoveController(i);
-    if(printDebug) println("After calling MoveController("+i+") constructor");
-    
-    
+    controllers[i] = new MoveController(i);       
     controllers[i].update(color(255, 0, 0), 0);
-    
-    
   }
 } 
 // END OF INIT
@@ -56,10 +50,7 @@ void psmoveInit() {
 
 // Update of the move controller(s) ---------------------------------------------------------
 
-void psmoveUpdate() {
-  
-  if(printDebug) println("psmoveUpdate() Top");
-  
+void psmoveUpdate() {  
   
   for (int i = 0; i<controllers.length; i++) {
     
@@ -98,8 +89,7 @@ void psmoveUpdate() {
     //controllers[i].set_leds(255,255,255);
     //controllers[i].update_leds();
   }
-  
-  if(printDebug) println("psmoveUpdate() Bottom");
+
 }
 
 
@@ -123,15 +113,11 @@ class MoveController extends PSMove {
   MoveController(int i) {
     super(i);
     init();
-
-    if (printDebug) println("After calling super("+i+") constructor");
   }
   
   void init() {
     createButtons();
-    if (printDebug) println("Before calling updatePoll()");
     movePoll();
-    if (printDebug) println("After calling updatePoll()");
   }
   
   //Populate the moveButton[] array of the controller with MoveButton objects.

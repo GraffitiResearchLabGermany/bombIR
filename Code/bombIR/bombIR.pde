@@ -102,12 +102,8 @@ public void init() {
         // setup the menu for the calibration screen
         setupCalibrationMenu();
         
-        if(printDebug) println("Before psmoveInit()");
-        
         //Init the PSMove controller(s)
         psmoveInit();
-        
-        if(printDebug) println("After psmoveInit()... WIN!");
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
@@ -118,8 +114,6 @@ public void init() {
   //-----------------------------------------------------------------------------------------
   
   void draw() {
-    
-    if(printDebug) println("Begining of draw()");
     
     // Calibration Stage
     if(calibrateCamera) {
