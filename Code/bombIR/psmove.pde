@@ -45,9 +45,9 @@ void psmoveInit() {
     controllers[i] = new MoveController(i);
     if(printDebug) println("After calling MoveController("+i+") constructor");
     
-    /*
+    
     controllers[i].update(color(255, 0, 0), 0);
-    */
+    
     
   }
 } 
@@ -68,16 +68,19 @@ void psmoveUpdate() {
     
     rumbleLevel = 0;
     
-    /*
+    
     sphereColor = color(
       (int)cs.getColorSlot(activeColorSlot).getRed(), 
       (int)cs.getColorSlot(activeColorSlot).getGreen(), 
       (int)cs.getColorSlot(activeColorSlot).getBlue()
     );
-
+    
+    
+    
     // Detect presses on the cap
     clicked = controllers[i].isTriggerPressed();
     clickedEvent = controllers[i].isTriggerPressedEvent();
+    
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
@@ -89,7 +92,7 @@ void psmoveUpdate() {
        toggleMenu();
        paintbg.render(paintbackground);
     }
-    */
+    
     
 
     //controllers[i].set_leds(255,255,255);
@@ -106,7 +109,7 @@ void psmoveUpdate() {
 
 class MoveController extends PSMove {
   
-  /*
+
   int triggerValue, previousTriggerValue;
   
   long [] pressed = {0};                         // Button press events
@@ -115,19 +118,31 @@ class MoveController extends PSMove {
   MoveButton[] buttonList = new MoveButton[9];  // The move controller has 9 buttons
   
   boolean isTriggerPressed, isMovePressed, isSquarePressed, isTrianglePressed, isCrossPressed, isCirclePressed, isStartPressed, isSelectPressed, isPsPressed; 
-  */
+
   
   MoveController(int i) {
     super(i);
+    init();
 
     if (printDebug) println("After calling super("+i+") constructor");
-    
+  }
+  
+  void init() {
+    createButtons();
     if (printDebug) println("Before calling updatePoll()");
     movePoll();
     if (printDebug) println("After calling updatePoll()");
   }
   
-  /*
+  //Populate the moveButton[] array of the controller with MoveButton objects.
+  void createButtons() {
+    for (int i=0; i<buttonList.length; i++) {
+      buttonList[i] = new MoveButton();
+    }
+  }
+
+  
+  
   // Trigger value --------------------------------------------------------
   
   int getTriggerValue() {
@@ -272,7 +287,7 @@ class MoveController extends PSMove {
     boolean event = buttonList[PS_BTN].isReleasedEvent();
     return event;
   }
-  */
+  
 
   
   // Update --------------------------------------------------------
@@ -301,36 +316,27 @@ class MoveController extends PSMove {
   // Read inputs from the Move controller (buttons and sensors)
 
 
-  void movePoll() { 
+  private void movePoll() { 
       
     // Update all readings in the PSMove object
-      
-    if (printDebug) println("Before calling super.poll()");  
-    
-    while ( super.poll() != 0 ) { 
-       if (printDebug) println("Inside of while( super.poll() != 0 ) {...}");
-    }
-    
-    if (printDebug) println("After calling super.poll()");  
+          
+    while ( super.poll() != 0 ) {} 
     
     // Start by reading all the buttons from the controller
     
-    if (printDebug) println("Before calling super.get_buttons()"); 
-    
-    int buttons = super.get_buttons();  
-    
-    if (printDebug) println("Before calling  super.get_buttons() [buttons = "+ buttons +"]"); 
-    
-    
-    /*      
+    int buttons = super.get_buttons();      
+        
     // Then update individual MoveButton objects in the buttonList array
+    
     
     if ((buttons & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
       buttonList[MOVE_BTN].press();
     }
+    // ERROR: this causes nullPointerException
     else if (buttonList[MOVE_BTN].isPressed()) {
       buttonList[MOVE_BTN].release();
     }
+    
     if ((buttons & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
       buttonList[SQUARE_BTN].press();
     } 
@@ -468,6 +474,7 @@ class MoveController extends PSMove {
       buttonList[TRIGGER_BTN].release();
     }
     else buttonList[TRIGGER_BTN].release();
+    
   }
   // END OF UPDATE POLL
   
@@ -477,13 +484,13 @@ class MoveController extends PSMove {
       super.update_leds();
   }
   
-  */
+
 }
 
 // END OF MOVE CONTROLLER
 
 
-/*
+
 // Button class -------------------------------------------------------------
 
 class MoveButton {
@@ -584,6 +591,6 @@ class MoveButton {
   int getValue() {    
     return value;
   }
-*/    
+   
 }
 
