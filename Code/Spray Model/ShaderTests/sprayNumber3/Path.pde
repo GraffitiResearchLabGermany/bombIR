@@ -85,11 +85,6 @@ class Path {
       numSteps = mag/stepSize;
       for(int i=1; i<numSteps; i++ ) {
         
-        PVector stepper = new PVector();
-        
-        PVector.mult(velocity, 1/numSteps*i, stepper);
-        stepper.add(prevPos);
-        
         float interpolatedX = lerp ( previousKnot.x,  currentKnot.x,  i/numSteps );
         float interpolatedY = lerp ( previousKnot.y,  currentKnot.y,  i/numSteps );
         
