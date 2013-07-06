@@ -108,9 +108,9 @@ void setupCalibrationMenu() {
 
 //pick color with the mouse
 void pickColor(){   
-    if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < cpsize + 80) {
-          if(mousePressed) {
-            picker = get(mouseX, mouseY);
+    if(blobX > 50 && blobY < cpsize + 50 && blobY > 80 && blobX < cpsize + 80) {
+          if(clicked == true) {
+            picker = get((int)blobX, (int)blobY);
             brushR = red(picker);
             brushG = green(picker);
             brushB = blue(picker);
