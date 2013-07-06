@@ -51,10 +51,13 @@ import blobDetection.*;
 Keystone ks;
 CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
+<<<<<<< HEAD
 
 // Spray renderers
 SprayManager sprayManagerLeft; // paint screen (left)
 SprayManager sprayManagerRight;  // wall screen (right)
+=======
+>>>>>>> upstream/develop
 
 
 // GLOBAL VARIABLES
