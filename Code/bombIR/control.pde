@@ -89,9 +89,9 @@ int saveCount = 0;
    switch(key) {
      case 'r': 
        // clear the paint screen (left)
-       sprayPaintScreen.reset(bg); 
+       sprayManagerLeft.reset(paintscreen, bg); 
        // clear the wall screen (right)
-       sprayWallScreen.reset(color(0));
+       sprayManagerRight.reset(wallscreen, color(0));
      break;
      case 'c':
        if(!calibrateCamera) { 

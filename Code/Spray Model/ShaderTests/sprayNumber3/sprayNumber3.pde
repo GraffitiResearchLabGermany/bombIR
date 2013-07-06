@@ -31,7 +31,7 @@ void setup() {
   
   wall = loadImage("wallTexture.jpg");
   
-  sprayCan = new SprayManager(paintscreen);
+  sprayCan = new SprayManager();
 
   sprayMap = loadImage("sprayMap.png");
 
@@ -74,7 +74,7 @@ void draw() {
   
   paintscreen.beginDraw();
   paintscreen.strokeCap(SQUARE);
-  if ( null != sprayCan ) sprayCan.draw();
+  if ( null != sprayCan ) sprayCan.draw(paintscreen);
   paintscreen.endDraw();
   
   image(paintscreen,0,0);

@@ -91,7 +91,7 @@ class Path {
         float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
         color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
         
-        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor, previousKnot.getBuffer());
+        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
         
         pointList.add(stepKnot);
         
@@ -104,9 +104,9 @@ class Path {
   }
   
   
-  void draw() {
+  void draw(PGraphics buffer) {
     for(Knot p: pointList) {
-      p.draw();
+      p.draw(buffer);
     }
   }
   

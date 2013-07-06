@@ -14,8 +14,8 @@ float offsetVel;
 PImage sprayMap;
 
 // Spray renderers
-SprayManager sprayPaintScreen; // paint screen (left)
-SprayManager sprayWallScreen;  // wall screen (right)
+SprayManager sprayManagerLeft; // paint screen (left)
+SprayManager sprayManagerRight;  // wall screen (right)
 
 
 void setupSpraypaint() {
@@ -28,8 +28,8 @@ void setupSpraypaint() {
   pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
   pointShader.set( "sprayMap", sprayMap );
   
-  sprayPaintScreen = new SprayManager(paintscreen);
-  sprayWallScreen  = new SprayManager(wallscreen);
+  sprayManagerLeft = new SprayManager();
+  sprayManagerRight  = new SprayManager();
   
 }
 
@@ -56,38 +56,38 @@ void spray() {
   
   color selectedColor = color(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue());
   
-  sprayPaintScreen.setWeight(weight + random(0,20));
-  sprayPaintScreen.setColor(selectedColor);
+  sprayManagerLeft.setWeight(weight + random(0,20));
+  sprayManagerLeft.setColor(selectedColor);
  
-  sprayWallScreen.setWeight(weight + random(0,20));
-  sprayWallScreen.setColor(selectedColor); 
+  sprayManagerRight.setWeight(weight + random(0,20));
+  sprayManagerRight.setColor(selectedColor); 
 
   // spray when controller trigger is pressed
   if (moveConnected == true && clicked == true) {
     if(clickedEvent) { 
-      sprayPaintScreen.newStroke(blobX, blobY, weight);
-      sprayWallScreen.newStroke(blobX, blobY, weight);
+      sprayManagerLeft.newStroke(blobX, blobY, weight);
+      sprayManagerRight.newStroke(blobX, blobY, weight);
       clickedEvent = false;
     } else { 
-      sprayPaintScreen.newKnot(blobX, blobY, weight);
-      sprayWallScreen.newKnot(blobX, blobY, weight);
+      sprayManagerLeft.newKnot(blobX, blobY, weight);
+      sprayManagerRight.newKnot(blobX, blobY, weight);
     }
   }
   
   // if no controller present, spray on mouse click
   else if(moveConnected == false && mousePressed == true) {
     if(clickedEvent) {
-      sprayPaintScreen.newStroke(mouseX, mouseY, weight);
-      sprayWallScreen.newStroke(mouseX, mouseY, weight);
+      sprayManagerLeft.newStroke(mouseX, mouseY, weight);
+      sprayManagerRight.newStroke(mouseX, mouseY, weight);
       clickedEvent = false;
     } else {
-      sprayPaintScreen.newKnot(mouseX, mouseY, weight);
-      sprayWallScreen.newKnot(mouseX, mouseY, weight);
+      sprayManagerLeft.newKnot(mouseX, mouseY, weight);
+      sprayManagerRight.newKnot(mouseX, mouseY, weight);
     }
   }
   
-  sprayPaintScreen.draw();
-  sprayWallScreen.draw();
+  sprayManagerLeft.draw(paintscreen);
+  sprayManagerRight.draw(wallscreen);
   
 }
 
@@ -99,7 +99,6 @@ void spray() {
 class SprayManager {
  
  ArrayList<Path> strokeList;
- PGraphics targetBuffer;
  
  color col;
  float size;
@@ -108,25 +107,20 @@ class SprayManager {
    strokeList = new ArrayList<Path>();
    col = color(0);
  }
-  
- SprayManager(PGraphics buffer) {
-   targetBuffer = buffer;
-   strokeList = new ArrayList<Path>();
-   col = color(0);
- }
+ 
  
  // Draw newly added points 
  // NOTE: points are only drawn once so you should not redraw the background
- void draw() {
+ void draw(PGraphics buffer) {
    for(Path p: strokeList) {
-     p.draw();
+     p.draw(buffer);
    }
  }
  
  
  // Clear the screen with a solid color
  
- void reset(color background) {
+ void reset( PGraphics targetBuffer, color background ) {
    targetBuffer.beginDraw();
    targetBuffer.background(background);
    targetBuffer.endDraw();
@@ -136,7 +130,7 @@ class SprayManager {
  
  // Clear the screen with an image buffer
  
- void reset(PGraphics background) {
+ void reset( PGraphics targetBuffer, PGraphics background ) {
    targetBuffer.beginDraw();
    targetBuffer.image(background,0,0);
    targetBuffer.endDraw();
@@ -146,7 +140,7 @@ class SprayManager {
  
  // Clear the screen with an image
  
- void reset(PImage background) {
+ void reset( PGraphics targetBuffer, PImage background ) {
    targetBuffer.beginDraw();
    targetBuffer.image(background,0,0);
    targetBuffer.endDraw();
@@ -165,21 +159,16 @@ class SprayManager {
  
  void newStroke(float x, float y, float weight) {
    
-   if (null!=targetBuffer) {
-     Knot startingKnot = new Knot(x, y, weight, col, targetBuffer);
+     Knot startingKnot = new Knot(x, y, weight, col);
      Path p = new Path(startingKnot);
      strokeList.add(p);
-   }
-   else {
-     println("ERROR in SprayManager.newStroke(): no target buffer specified in SprayManager");
-   }
    
  }
  
  // Add a point the the current path
  void newKnot(float x, float y, float weight) {
    
-   Knot newKnot = new Knot(x, y, weight, col, targetBuffer);
+   Knot newKnot = new Knot(x, y, weight, col);
    
    Path activePath = getActivePath();
    activePath.add(newKnot);
@@ -217,8 +206,6 @@ class SprayManager {
 
 class Path {
   
-  PGraphics targetBuffer;
-  
   ArrayList<Knot> pointList;       // raw point list
   
   Knot previousKnot;
@@ -243,15 +230,7 @@ class Path {
   }
   
   
-  void setBuffer(PGraphics target) {
-    targetBuffer = target;
-  }
-  
-  
   void add(Knot k) {
-    
-    if( null != targetBuffer) 
-      k.setBuffer(targetBuffer);
       
     if( null == pointList ) {
       createList(k);
@@ -305,10 +284,10 @@ class Path {
         float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
         color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
         
-        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor, previousKnot.getBuffer());
+        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
         
-        if(previousKnot.getBuffer() == paintscreen) println("paintScreen");
-        if(previousKnot.getBuffer() == wallscreen) println("wallScreen");
+        //if(previousKnot.getBuffer() == paintscreen) println("paintScreen");
+        //if(previousKnot.getBuffer() == wallscreen) println("wallScreen");
         
         pointList.add(stepKnot);
         
@@ -321,9 +300,9 @@ class Path {
   }
   
   
-  void draw() {
+  void draw(PGraphics targetBuffer) {
     for(Knot p: pointList) {
-      p.draw();
+      p.draw(targetBuffer);
     }
   }
   
@@ -342,23 +321,22 @@ class Knot extends PVector {
   
   float size;
   color col;
-  float angle;  
+  float angle;
   float noiseDepth; // for spray pattern generation
   float timestamp;  // for replay
-  PGraphics targetBuffer;
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight, color tint, PGraphics buffer) {
+  Knot(float x, float y, float weight, color tint) {
     super(x, y);
     size  = weight;
     col   = tint;
-    targetBuffer = buffer;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
   }
   
+  /*
   Knot(float x, float y, float size, float angle, float noiseDepth, float timeStamp) {
     super(x, y);
     size = size;
@@ -366,6 +344,7 @@ class Knot extends PVector {
     noiseDepth = noiseDepth;
     timestamp = timeStamp;
   }
+  */
   
   PVector getPos() {
     return new PVector(x,y);
@@ -379,15 +358,7 @@ class Knot extends PVector {
     return col; 
   }
   
-  void setBuffer(PGraphics target) {
-    targetBuffer = target;
-  }
-  
-  PGraphics getBuffer() {
-    return targetBuffer; 
-  }
-  
-  void draw() {
+  void draw(PGraphics targetBuffer) {
     
     float x = this.x;
     float y = this.y;
@@ -406,10 +377,22 @@ class Knot extends PVector {
       
       // Draw in the buffer (if one was defined) or directly on the viewport
       if (null!=targetBuffer)  {
+        targetBuffer.pushStyle();
         targetBuffer.shader(pointShader, POINTS);
         targetBuffer.strokeWeight(size);
         targetBuffer.stroke(col);
         targetBuffer.point(x,y);
+        targetBuffer.popStyle();
+        
+        targetBuffer.resetShader();
+        
+        if(printDebug) {
+          targetBuffer.pushStyle();
+          targetBuffer.noStroke();
+          targetBuffer.fill(255,0,0);
+          targetBuffer.ellipse(x,y,3,3);
+          targetBuffer.popStyle();
+        }
       }
       //else                      point(x,y);
       

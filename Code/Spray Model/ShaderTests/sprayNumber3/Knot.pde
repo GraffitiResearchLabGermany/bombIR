@@ -9,22 +9,13 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight, color tint, PGraphics buffer) {
+  Knot(float x, float y, float weight, color tint) {
     super(x, y);
     size  = weight;
     col   = tint;
-    targetBuffer = buffer;
     angle = 0.0;
     noiseDepth = random(1.0);
     timestamp  = millis();
-  }
-  
-  Knot(float x, float y, float size, float angle, float noiseDepth, float timeStamp) {
-    super(x, y);
-    size = size;
-    angle = angle;
-    noiseDepth = noiseDepth;
-    timestamp = timeStamp;
   }
   
   PVector getPos() {
@@ -47,7 +38,7 @@ class Knot extends PVector {
     return targetBuffer; 
   }
   
-  void draw() {
+  void draw(PGraphics targetBuffer) {
     
     float x = this.x;
     float y = this.y;
