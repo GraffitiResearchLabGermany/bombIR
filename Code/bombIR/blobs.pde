@@ -10,9 +10,9 @@ float blobX, blobY;
 void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {  
   Blob b;
   EdgeVertex eA,eB;
-  for (int n = 0 ; n < bd.getBlobNb() ; n++) {
-    b = bd.getBlob(n);
-    println("There Are " + bd.getBlobNb() + " Blobs Detected...");
+  for (int n = 0 ; n < ct.getBlobDetection().getBlobNb() ; n++) {
+    b = ct.getBlobDetection().getBlob(n);
+    println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
     if (b!= null) {
         
       // Edges
@@ -68,10 +68,10 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
 
 void getCurrentBlob() {
   //we have at least one blob  
-  if(bd.getBlobNb() >= 1){
+  if(ct.getBlobDetection().getBlobNb() >= 1){
 
-      blobX = map(bd.getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
-      blobY = map(bd.getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+      blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
+      blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
       
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);

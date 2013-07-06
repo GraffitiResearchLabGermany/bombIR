@@ -51,8 +51,6 @@ import blobDetection.*;
 Keystone ks;
 CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
-GSCapture cam;
-BlobDetection bd;
 
 
 // GLOBAL VARIABLES
@@ -131,17 +129,16 @@ public void init() {
       }
       
       // Read Cam
-      if (cam.available() == true) {
-        cam.read();
+      if (ct.getCam().available() == true) {
+        ct.getCam().read();
       }
       
       // Compute Blobs
-      bd.setThreshold(blobThresh);
-      bd.computeBlobs(cam.pixels);
+      ct.setThreshold(blobThresh);
       
       // Show Cam ?
       if(showCam == true) {
-        image(cam, 0, 0, firstWindowWidth, windowHeight);
+        image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
       } 
       
       // Show Blob ?
