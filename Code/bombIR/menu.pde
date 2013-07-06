@@ -3,7 +3,7 @@
 // GUI
 
 ControlP5 menu;
-int cpsize = 200;
+int cpsize;
 int picker;
 float brushR, brushG, brushB;
 int activeColorSlot = 0;
@@ -16,7 +16,7 @@ ColorPicker cp;
 void setupMenu(){
     menu = new ControlP5(this);
     
-    cp = new ColorPicker(50, 80, 200, 200, 45);
+    cp = new ColorPicker(50, 80, cpsize, cpsize, 45);
     
     cs = (ColorSlotCanvas)menu.addGroup("cs")
                 .setPosition(cpsize + 50, 80)
@@ -28,7 +28,7 @@ void setupMenu(){
                 ;       
     
     menu.addGroup("misc")
-                .setPosition(50, 280)
+                .setPosition(50, cpsize + 80)
                 .setBackgroundHeight(50)
                 .setWidth(cpsize + 90)
                 .setBackgroundColor(color(0))
@@ -41,13 +41,19 @@ void setupMenu(){
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
+    menu.addGroup("logo")
+                  .setPosition(cpsize+120+20,51)
+                  .setBackgroundHeight(cpsize+79)
+                  .setWidth(80)
+                  .setBackgroundColor(color(0))
+                  .hideBar();
      
     menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 20).setGroup("width");
     menu.addBang("CLEAR", 10, 10, 20, 20).setGroup("misc");
     menu.addBang("SAVE",  40, 10, 20, 20).setGroup("misc");
     
     rb = menu.addRadioButton("radioButton")
-         .setPosition(280,80)
+         .setPosition(cpsize + 80,80)
          .setSize(20,20)
          .setColorForeground(color(120))
          .setColorActive(color(255))
@@ -92,7 +98,7 @@ void setupCalibrationMenu() {
 
 //pck color with the mouse
 void pickColor(){   
-    if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < 280) {
+    if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < cpsize + 80) {
           if(mousePressed) {
             picker = get(mouseX, mouseY);
             brushR = red(picker);
