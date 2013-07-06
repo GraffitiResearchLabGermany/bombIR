@@ -54,6 +54,10 @@ PGraphics wallscreen, paintscreen, paintbackground;
 GSCapture cam;
 BlobDetection bd;
 
+// Spray renderers
+SprayManager sprayManagerLeft; // paint screen (left)
+SprayManager sprayManagerRight;  // wall screen (right)
+
 
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
@@ -75,6 +79,10 @@ public void init() {
 //-----------------------------------------------------------------------------------------
   
   void setup() {
+    
+        // Create the spray objects for both screens
+        sprayManagerLeft   = new SprayManager();
+        sprayManagerRight  = new SprayManager();
         
         //read the values from the configuration file
         readConfiguration();
@@ -85,6 +93,7 @@ public void init() {
         
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
+        wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         
         //setup wall screen
         setupKeystone(); 
@@ -101,9 +110,10 @@ public void init() {
         
         //setup opencv & video capture
         setupCamera();
-                
+        
         //setup the spraypaint shader
-        setupSpraypaint();
+        sprayManagerLeft.setup();
+        sprayManagerRight.setup();
         
         //setup the control menu (colorpicker, clear screen, save, etc.)
         setupMenu();
@@ -132,7 +142,7 @@ public void init() {
     // Main Draw Loop
     else {
       
-      PVector surfaceMouse = paintbg.getTransformedMouse();
+      //PVector surfaceMouse = paintbg.getTransformedMouse();
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
@@ -162,11 +172,13 @@ public void init() {
         drawBlobsAndEdges(true, false);
       }
      	
+      getCurrentBlob();
+      
       //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-          getCurrentBlob();
-          spray();
+          if(clickedEvent) sprayManagerLeft.initSpray();
+          sprayManagerLeft.spray(paintscreen);
         }
       paintscreen.endDraw();
       
@@ -174,11 +186,13 @@ public void init() {
       wallscreen.beginDraw();
           //redraw the background of the wallscreen during calibration  
           //for the calibration view to work
-          if(ks.isCalibrating()){
-            wallscreen.background(0);
+          //if(ks.isCalibrating()){
+            //wallscreen.background(0);
+          //}
+          if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
+            if(clickedEvent) sprayManagerRight.initSpray();
+            sprayManagerRight.spray(wallscreen);
           }
-          getCurrentBlob();
-          spray();
       wallscreen.endDraw();
       
       //redraw the main backgound for calibration and make sure
@@ -216,4 +230,3 @@ public void init() {
   
   
 //-----------------------------------------------------------------------------------------
-

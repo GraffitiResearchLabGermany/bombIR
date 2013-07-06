@@ -2,95 +2,6 @@
 //-----------------------------------------------------------------------------------------
 // SHADER / PAINT
 
-PShader pointShader;
-Path s;
-
-float weight = 100;
-
-float depthOffset;
-float offsetVel;
-
-// Spray density distribution expressed in grayscale gradient
-PImage sprayMap;
-
-// Spray renderers
-SprayManager sprayManagerLeft; // paint screen (left)
-SprayManager sprayManagerRight;  // wall screen (right)
-
-
-void setupSpraypaint() {
-  
-  depthOffset = 0.0;
-  offsetVel = 0.0005;
-  
-  sprayMap = loadImage("sprayMap.png");
-  
-  pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
-  pointShader.set( "sprayMap", sprayMap );
-  
-  sprayManagerLeft = new SprayManager();
-  sprayManagerRight  = new SprayManager();
-  
-}
-
-
-void spray() {
-  // Setup the Shader
-  ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
-  
-  //paintscreen.shader(pointShader, POINTS);
-  //wallscreen.shader(pointShader, POINTS);
-  
-  depthOffset += offsetVel;
-
-  //use the psmove trigger to change the weight of the spraypaint
-  //pointShader.set( "weight", weight+trigger/5);
-  //pointShader.set( "direction", -1.0, 0.0 );
-  //pointShader.set( "weight", weight + random(0,20));
-  //pointShader.set( "dispersion", 0.2 );
-  //pointShader.set( "depthOffset", depthOffset );
-  //pointShader.set( "red", activeCS.getRed()/255);
-  //pointShader.set( "green", activeCS.getGreen()/255);
-  //pointShader.set( "blue", activeCS.getBlue()/255);
-  //paintscreen.strokeWeight(weight+trigger/5);
-  
-  color selectedColor = color(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue());
-  
-  sprayManagerLeft.setWeight(weight + random(0,20));
-  sprayManagerLeft.setColor(selectedColor);
- 
-  sprayManagerRight.setWeight(weight + random(0,20));
-  sprayManagerRight.setColor(selectedColor); 
-
-  // spray when controller trigger is pressed
-  if (moveConnected == true && clicked == true) {
-    if(clickedEvent) { 
-      sprayManagerLeft.newStroke(blobX, blobY, weight);
-      sprayManagerRight.newStroke(blobX, blobY, weight);
-      clickedEvent = false;
-    } else { 
-      sprayManagerLeft.newKnot(blobX, blobY, weight);
-      sprayManagerRight.newKnot(blobX, blobY, weight);
-    }
-  }
-  
-  // if no controller present, spray on mouse click
-  else if(moveConnected == false && mousePressed == true) {
-    if(clickedEvent) {
-      sprayManagerLeft.newStroke(mouseX, mouseY, weight);
-      sprayManagerRight.newStroke(mouseX, mouseY, weight);
-      clickedEvent = false;
-    } else {
-      sprayManagerLeft.newKnot(mouseX, mouseY, weight);
-      sprayManagerRight.newKnot(mouseX, mouseY, weight);
-    }
-  }
-  
-  sprayManagerLeft.draw(paintscreen);
-  sprayManagerRight.draw(wallscreen);
-  
-}
-
 
 //-----------------------------------------------------------------------------------------
 // The Spray Manager creates, updates, draws and deletes strokes
@@ -98,22 +9,105 @@ void spray() {
 
 class SprayManager {
  
- ArrayList<Path> strokeList;
+  ArrayList<Path> strokeList;
+   
+  PShader pointShader;
+  Path s;
+  
+  float weight = 100;
+  
+  float depthOffset;
+  float offsetVel;
+  
+  // Spray density distribution expressed in grayscale gradient
+  PImage sprayMap;
  
  color col;
  float size;
+ 
+ boolean clickEv;
  
  SprayManager() {
    strokeList = new ArrayList<Path>();
    col = color(0);
  }
  
+ void setup() {
+    
+    depthOffset = 0.0;
+    offsetVel = 0.0005;
+    
+    sprayMap = loadImage("sprayMap.png");
+    
+    pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
+    pointShader.set( "sprayMap", sprayMap );
+    
+  }
+
+  void initSpray() {
+  if(printDebug) println("void initSpray() {");
+  
+      Path newStroke = new Path();
+      if(printDebug) println("Path newStroke = new Path();");
+      
+      if(printDebug) println("strokeList.size()"+strokeList.size());
+      
+      strokeList.add(newStroke);
+      if(printDebug) println("strokeList.add(newStroke);");
+      
+      if(printDebug) println("strokeList.size()"+strokeList.size());
+  }
+  
+  void spray(PGraphics targetBuffer) {
+
+    
+    
+    depthOffset += offsetVel;
+    
+    
+    // OPTIMIZE: move outside of the class. This should be passed to the object.
+    ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
+    color selectedColor = color(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue());
+    
+    this.setWeight(weight + random(0,20));
+    this.setColor(selectedColor);
+  
+    // spray when controller trigger is pressed
+    if (moveConnected == true && clicked == true) {
+      if(printDebug) println("if (moveConnected == true && clicked == true) {");
+        
+        Knot k = new Knot(blobX, blobY, weight, col);
+        if(printDebug) println("Knot k = new Knot(blobX, blobY, weight, col);");
+        
+        getActiveStroke().add(k);
+        
+        if(printDebug) println("getActiveStroke().add(k);");
+    }
+    
+    // if no controller present, spray on mouse click
+    else if(moveConnected == false && mousePressed == true) {
+      if(clickEv) {
+        Path newStroke = new Path();
+        strokeList.add(newStroke);
+        Knot k = new Knot(mouseX, mouseY, weight, col);
+        getActiveStroke().add(k);
+        clickEv = false;
+      } else {
+        Knot k = new Knot(mouseX, mouseY, weight, col);
+        getActiveStroke().add(k);
+      }
+    }
+    
+    this.draw(targetBuffer);
+    
+  }
+ 
  
  // Draw newly added points 
  // NOTE: points are only drawn once so you should not redraw the background
  void draw(PGraphics buffer) {
    for(Path p: strokeList) {
-     p.draw(buffer);
+     p.draw(buffer, pointShader);
    }
  }
  
@@ -128,7 +122,7 @@ class SprayManager {
  }
  
  
- // Clear the screen with an image buffer
+ // Clear the screen with a frame buffer (PGraphics)
  
  void reset( PGraphics targetBuffer, PGraphics background ) {
    targetBuffer.beginDraw();
@@ -157,27 +151,49 @@ class SprayManager {
    strokeList.clear();
  }
  
+ /*
  void newStroke(float x, float y, float weight) {
+ if(printDebug) println("void newStroke(float x, float y, float weight) {");
    
      Knot startingKnot = new Knot(x, y, weight, col);
-     Path p = new Path(startingKnot);
-     strokeList.add(p);
+     if(printDebug) println("Knot startingKnot = new Knot(x, y, weight, col);");
+     
+     Path stroke = new Path();
+     if(printDebug) println("Path stroke = new Path();");
+     
+     stroke.add(startingKnot);
+     if(printDebug) println("stroke.add(startingKnot);");
+     
+     strokeList.add(stroke);
+     if(printDebug) println("strokeList.add(stroke);");
    
  }
+ */
  
+ /*
  // Add a point the the current path
- void newKnot(float x, float y, float weight) {
-   
+ void newKnot(float x, float y, float weight) { 
+ if(printDebug) println("void newKnot(float x, float y, float weight) {");
+ 
    Knot newKnot = new Knot(x, y, weight, col);
+   if(printDebug) println("Knot newKnot = new Knot(x, y, weight, col);");
    
-   Path activePath = getActivePath();
-   activePath.add(newKnot);
+   //activeStroke.add(newKnot);
+   //if(printDebug) println("activeStroke.add(newKnot);");
    
  }
+ */
  
  // Return the path beeing drawn at the moment
- Path getActivePath() {
-   return strokeList.get( strokeList.size() - 1 );
+ Path getActiveStroke() {
+   if(printDebug) println("Path getActiveStroke() {");
+   
+   if(printDebug) println("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
+   
+   Path activeStroke = strokeList.get( strokeList.size() - 1 );
+   if(printDebug) println("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
+   
+   return activeStroke;
  }
  
  // Set the size of the spray
@@ -217,31 +233,10 @@ class Path {
   float stepSize = 1;
   
   Path() {
-  }
-
-  Path(Knot startingPoint) {
-    add(startingPoint);
+    pointList = new ArrayList<Knot>();
   }
   
-  
-  Path(Knot startingPoint, float d) {
-    stepSize = d;
-    add(startingPoint);
-  }
-  
-  
-  void add(Knot k) {
-      
-    if( null == pointList ) {
-      createList(k);
-    }
-    else {
-      newKnot(k);
-    }
-    
-  }
-  
-  
+  /*
   // When the first knot is added, we want to create the list
   void createList(Knot k) {
     
@@ -253,56 +248,75 @@ class Path {
     pointList.add(previousKnot);
     pointList.add(currentKnot);
   }
-  
+  */
   
   // Add a new knot and all knots between it and 
   // the previous knot, based on the defined step size
-  void newKnot(Knot k) {
+  void add(Knot k) {
+    
+    currentKnot = k;
+    if(printDebug) println("currentKnot = k;");
     
     int size = pointList.size();
-
-    previousKnot = pointList.get(size-1);
-    currentKnot = k;
+    if(printDebug) println("int size = pointList.size();");
     
-    // Compute the vector from previous to current knot
-    PVector prevPos  = previousKnot.getPos();
-    PVector newPos   = currentKnot.getPos();
-    PVector velocity = PVector.sub(newPos, prevPos);
- 
-    // How many points can we fit between the two last knots?
-    float mag = velocity.mag();
+    if(size == 0) { 
+    if(printDebug) println("if(size == 0) { ");
     
-    // Create intermediate knots and pass them interpolated parameters
-    if( mag > stepSize ) {
+      pointList.add(currentKnot); 
+      if(printDebug) println("pointList.add(currentKnot);");
       
-      numSteps = mag/stepSize;
-      for(int i=1; i<numSteps; i++ ) {
+    } else if( size > 0 ) {
+      
+      /*
+      int prev = ( size-1 < 0 ) ? 0 : size-1; // filter negative values
+      if(printDebug) println("int prev = ( size-1 < 0 ) ? 0 : size-1; ["+prev+"]");
+      */
+      
+      previousKnot = pointList.get( size-1 );
+      if(printDebug) println("previousKnot = pointList.get( prev );");
+      
+      // Compute the vector from previous to current knot
+      PVector prevPos  = previousKnot.getPos();
+      PVector newPos   = currentKnot.getPos();
+      PVector velocity = PVector.sub(newPos, prevPos);
+   
+      // How many points can we fit between the two last knots?
+      float mag = velocity.mag();
+      
+      // Create intermediate knots and pass them interpolated parameters
+      if( mag > stepSize ) {
         
-        float interpolatedX = lerp ( previousKnot.x,  currentKnot.x,  i/numSteps );
-        float interpolatedY = lerp ( previousKnot.y,  currentKnot.y,  i/numSteps );
-        
-        float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
-        color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
-        
-        Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
-        
-        //if(previousKnot.getBuffer() == paintscreen) println("paintScreen");
-        //if(previousKnot.getBuffer() == wallscreen) println("wallScreen");
-        
-        pointList.add(stepKnot);
-        
+        numSteps = mag/stepSize;
+        for(int i=1; i<numSteps; i++ ) {
+          
+          float interpolatedX = lerp ( previousKnot.x,  currentKnot.x,  i/numSteps );
+          float interpolatedY = lerp ( previousKnot.y,  currentKnot.y,  i/numSteps );
+          
+          float interpolatedSize  = lerp      ( previousKnot.getSize(),  currentKnot.getSize(),  i/numSteps );
+          color interpolatedColor = lerpColor ( previousKnot.getColor(), currentKnot.getColor(), i/numSteps );
+          
+          Knot stepKnot = new Knot(interpolatedX, interpolatedY, interpolatedSize, interpolatedColor);
+          
+          //if(previousKnot.getBuffer() == paintscreen) println("paintScreen");
+          //if(previousKnot.getBuffer() == wallscreen) println("wallScreen");
+          
+          pointList.add(stepKnot);
+          
+        }
       }
-    }
-    else {
-      pointList.add(currentKnot);
+      else {
+        pointList.add(currentKnot);
+      }
+      
     }
     
   }
   
   
-  void draw(PGraphics targetBuffer) {
+  void draw(PGraphics targetBuffer, PShader pointShader) {
     for(Knot p: pointList) {
-      p.draw(targetBuffer);
+      p.draw(targetBuffer, pointShader);
     }
   }
   
@@ -358,7 +372,7 @@ class Knot extends PVector {
     return col; 
   }
   
-  void draw(PGraphics targetBuffer) {
+  void draw(PGraphics targetBuffer, PShader pointShader) {
     
     float x = this.x;
     float y = this.y;
@@ -386,6 +400,7 @@ class Knot extends PVector {
         
         targetBuffer.resetShader();
         
+        /*
         if(printDebug) {
           targetBuffer.pushStyle();
           targetBuffer.noStroke();
@@ -393,6 +408,7 @@ class Knot extends PVector {
           targetBuffer.ellipse(x,y,3,3);
           targetBuffer.popStyle();
         }
+        */
       }
       //else                      point(x,y);
       

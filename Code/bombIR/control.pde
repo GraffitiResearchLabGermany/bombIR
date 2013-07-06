@@ -32,7 +32,8 @@ int saveCount = 0;
 
  //adjust brush size
  void WIDTH(int BrushSize) {
-    weight = (BrushSize);
+    sprayManagerLeft.setWeight(BrushSize);
+    sprayManagerRight.setWeight(BrushSize);
  } 
  
  // Crop Scale

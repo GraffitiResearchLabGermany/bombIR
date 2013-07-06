@@ -62,12 +62,13 @@ void psmoveUpdate() {
       (int)cs.getColorSlot(activeColorSlot).getGreen(), 
       (int)cs.getColorSlot(activeColorSlot).getBlue()
     );
-    
+ 
     
     // Detect presses on the cap
     clicked = controllers[i].isTriggerPressed();
     clickedEvent = controllers[i].isTriggerPressedEvent();
     
+    if(printDebug) println("clicked = "+clicked);
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
@@ -575,4 +576,3 @@ class MoveButton {
   }
    
 }
-
