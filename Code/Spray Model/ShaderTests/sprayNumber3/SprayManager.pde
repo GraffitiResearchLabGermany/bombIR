@@ -3,7 +3,6 @@
 class SprayManager {
  
  ArrayList<Path> strokeList;
- PGraphics targetBuffer;
  
  color col;
  float size;
@@ -12,18 +11,12 @@ class SprayManager {
    strokeList = new ArrayList<Path>();
    col = color(0);
  }
-  
- SprayManager(PGraphics buffer) {
-   targetBuffer = buffer;
-   strokeList = new ArrayList<Path>();
-   col = color(0);
- }
  
  // Draw newly added points 
  // NOTE: points are only drawn once so you should not redraw the background
- void draw() {
+ void draw(PGraphics buffer) {
    for(Path p: strokeList) {
-     p.draw();
+     p.draw(buffer);
    }
  }
  
@@ -40,12 +33,7 @@ class SprayManager {
  void newStroke(float x, float y, float weight) {
    
    Knot startingKnot = new Knot(x, y, weight, col);
-   
    Path p = new Path(startingKnot);
-
-   if (null!=targetBuffer)  
-     p.setBuffer(targetBuffer);
- 
    strokeList.add(p);
    
  }

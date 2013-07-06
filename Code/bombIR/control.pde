@@ -32,7 +32,8 @@ int saveCount = 0;
 
  //adjust brush size
  void WIDTH(int BrushSize) {
-    weight = (BrushSize);
+    sprayManagerLeft.setWeight(BrushSize);
+    sprayManagerRight.setWeight(BrushSize);
  } 
  
  // Crop Scale
@@ -87,6 +88,12 @@ int saveCount = 0;
  
  void keyPressed() {
    switch(key) {
+     case 'r': 
+       // clear the paint screen (left)
+       sprayManagerLeft.reset(paintscreen, bg); 
+       // clear the wall screen (right)
+       sprayManagerRight.reset(wallscreen, color(0));
+     break;
      case 'c':
        if(!calibrateCamera) { 
          // enter/leave calibration mode, where surfaces can be warped and moved
