@@ -11,12 +11,14 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   Blob b;
   EdgeVertex eA,eB;
 <<<<<<< HEAD
-
+  for (int n = 0 ; n < bd.getBlobNb() ; n++) {
+    b = bd.getBlob(n);
+    //println("There Are " + bd.getBlobNb() + " Blobs Detected...");
 =======
->>>>>>> upstream/develop
   for (int n = 0 ; n < ct.getBlobDetection().getBlobNb() ; n++) {
     b = ct.getBlobDetection().getBlob(n);
     println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
+>>>>>>> upstream/develop
     if (b!= null) {
         
       // Edges
@@ -87,3 +89,4 @@ void getCurrentBlob() {
 }
 
 // -------------------------------- //
+
