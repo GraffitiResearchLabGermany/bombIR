@@ -7,19 +7,13 @@ boolean showCam = true;
 boolean showBlob  = true;
 float LeftBorder, RightBorder, TopBorder, BottomBorder;
 float cropScale;
+CameraThread ct;
 
 void setupCamera() {
   
-  // Capture 
-  cam = new GSCapture(this, 320, 240);
-  //cam = new GSCapture(this, 640, 480, "/dev/video1");
-  cam.start();
-  
-  // Blob Detection
-  bd = new BlobDetection(cam.width, cam.height);
-  bd.setPosDiscrimination(true);
-  bd.setThreshold(blobThresh);
-  
+  ct = new CameraThread("Camera",blobThresh, this);
+  ct.start();
+   
   // Calbration Points
   /* set top to 40 because the frame kills 30px */
   corner = new Corner(10, 40, firstWindowWidth - 10, 40, firstWindowWidth - 10, windowHeight - 10, 10, windowHeight - 10);
@@ -34,26 +28,22 @@ void runCameraCalibration() {
   corner.display();
   
   // Read Cam
-  if (cam.available() == true) {
-    cam.read();
+  if (ct.getCam().available() == true) {
+    ct.getCam().read();
   }
   
   // Show Cam ?
   if(showCam == true) {
-    image(cam, 0, 0, firstWindowWidth, windowHeight);
+    image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
   } 
   
   // Show Blob ?
   if(showBlob == true) {
-    bd.setThreshold(blobThresh);
-    bd.computeBlobs(cam.pixels);
+    ct.setThreshold(blobThresh);
     drawBlobsAndEdges(true, false);
   }
   
 }
-
-
-
 
 class Corner {
   
@@ -94,4 +84,58 @@ class Corner {
  }
   
   
+}
+
+//runs the camera and blob detection in a different thread
+class CameraThread extends Thread {
+  boolean running;
+  String id;
+  GSCapture cam;
+  BlobDetection bd;
+  PApplet applet;
+  
+  public CameraThread(String s, float blobThresh, PApplet applet){
+    this.running = false;
+    this.id = s;
+    this.applet = applet;
+  }
+  
+  public void start(){
+    running = true;
+    println("Starting Camera Thread...");
+    this.cam = new GSCapture(applet, 320, 240);
+    //this.cam = new GSCapture(applet, 640, 480, "/dev/video1");
+    this.cam.start();
+    
+    this.bd = new BlobDetection(this.cam.width, this.cam.height);
+    this.bd.setPosDiscrimination(true);
+    this.bd.setThreshold(blobThresh);
+    super.start();
+  }
+  
+  public void run(){
+    //nothing to be done here
+  }
+  
+  public GSCapture getCam(){
+    return cam;
+  }
+  
+  public BlobDetection getBlobDetection(){
+    return bd;
+  }
+  
+  
+  public void setThreshold(float threshold){
+    this.bd.setThreshold(threshold);
+    this.bd.computeBlobs(cam.pixels);
+  }
+  
+  public void quit(){
+    println("Quitting Camera Thread...");
+    running = false;
+    this.cam.stop();
+    interrupt();
+  }
+
 }
