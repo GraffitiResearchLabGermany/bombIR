@@ -14,10 +14,12 @@ void readConfiguration() {
     props = new P5Properties();
     // load a configuration from a file inside the data folder
     props.load(createInput("settings.properties"));
-    windowWidth = props.getIntProperty("env.viewport.width", 1024); firstWindowWidth = windowWidth/2;
+    windowWidth = props.getIntProperty("env.viewport.width", 1024); 
+    firstWindowWidth = windowWidth/2;
     windowHeight = props.getIntProperty("env.viewport.height", 384);
     debug = props.getBooleanProperty("env.mode.debug", false);
     calibrateCamera = props.getBooleanProperty("env.mode.calib", false);
+    cpsize = props.getIntProperty("env.colorpicker.size",400);
   }
   catch(IOException e) {
     println("couldn't read config file...");
