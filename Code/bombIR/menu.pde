@@ -2,13 +2,23 @@
 //-----------------------------------------------------------------------------------------
 // GUI
 
+// colorpicker menu
 ControlP5 menu;
+// separate menu for calibration
+ControlP5 calibMenu;
+//size of the colorpicker
 int cpsize;
+//color of the picker
 int picker;
+//red, green and blue color values for the brush
 float brushR, brushG, brushB;
+//number of the active colorslot
 int activeColorSlot = 0;
+//Canvas to display the colorslots
 ColorSlotCanvas cs;
+//radio button to select a colorslot
 RadioButton rb;
+//the colorpicker
 ColorPicker cp;
 
 
@@ -42,11 +52,12 @@ void setupMenu(){
                   .hideBar()
                   ;
     menu.addGroup("logo")
-                  .setPosition(cpsize+120+20,51)
+                  .setPosition(cpsize + 90,51)
                   .setBackgroundHeight(cpsize+79)
-                  .setWidth(80)
+                  .setWidth(200)
                   .setBackgroundColor(color(0))
-                  .hideBar();
+                  .hideBar()
+                  .addCanvas(new LogoCanvas());
      
     menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 20).setGroup("width");
     menu.addBang("CLEAR", 10, 10, 20, 20).setGroup("misc");
@@ -71,8 +82,7 @@ void setupMenu(){
     menu.hide();
 }
 
-// separate menu for calibration
-ControlP5 calibMenu;
+
 
 void setupCalibrationMenu() {
   // Init
@@ -96,7 +106,7 @@ void setupCalibrationMenu() {
 }
 
 
-//pck color with the mouse
+//pick color with the mouse
 void pickColor(){   
     if(mouseX > 50 && mouseX < cpsize + 50 && mouseY > 80 && mouseY < cpsize + 80) {
           if(mousePressed) {
@@ -114,9 +124,28 @@ void radioButton(int a) {
   activeColorSlot = a;  
 }
 
+//change colorslot, picks always the next colorslot
 void switchColorSlot(){
   activeColorSlot = cs.getNextColorSlot(activeColorSlot);
   rb.activate(activeColorSlot);
+}
+
+/**
+ * Displays the CA and DE logo on the menu
+ */
+class LogoCanvas extends Canvas {
+  protected PImage deLogo;
+  protected PImage caLogo;
+
+  public void setup(PApplet p) {
+    deLogo = p.loadImage("Logo_de.gif");
+    caLogo = p.loadImage("Logo_ca.gif");
+  }
+  
+  public void draw(PApplet p) {
+      p.image(deLogo, 0, 150, 200, 166);
+      p.image(caLogo, 0, 350, 200, 123);
+  }
 }
 
 /**
@@ -166,6 +195,10 @@ class ColorSlot{
   }
 }
 
+/**
+ * Class for displaying Colorslots to preselect colors for 
+ * later use.
+ */
 class ColorSlotCanvas extends Canvas {
   ColorSlot[] colorSlots = new ColorSlot[5];
   
@@ -272,7 +305,4 @@ public class ColorPicker {
   public void render () {
     image( cpImage, x, y );
   }
-}
-
-
-  
+} 
