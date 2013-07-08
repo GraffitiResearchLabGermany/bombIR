@@ -78,7 +78,7 @@ void psmoveUpdate() {
     // Show/hide menub
     if ( controllers[i].isTrianglePressedEvent() ) {
        toggleMenu();
-       paintbg.render(paintbackground);
+       drawPaintBg();
     }
      
     //sphereColor = color(controllers[i].getTriggerValue());
