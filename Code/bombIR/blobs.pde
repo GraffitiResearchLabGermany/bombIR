@@ -6,6 +6,7 @@ float blobMin = 0.025;
 float blobMax = 0.15;
 float blobThresh = 0.5;
 float blobX, blobY;
+float blobSize;
 
 void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {  
   Blob b;
@@ -74,6 +75,11 @@ void getCurrentBlob() {
 
       blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+      
+      // Let's just average the two dimensions of the blob (we just need an order of magnitude).
+      blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
+      System.out.println( "blobSize = "+ blobSize );
+
       
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);
