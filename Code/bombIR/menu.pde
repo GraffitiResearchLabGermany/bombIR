@@ -26,46 +26,46 @@ ColorPicker cp;
 void setupMenu(){
     menu = new ControlP5(this);
     
-    cp = new ColorPicker(50, 80, cpsize, cpsize, 45);
+    cp = new ColorPicker(50, 100, cpsize, cpsize, 45);
     
     cs = (ColorSlotCanvas)menu.addGroup("cs")
-                .setPosition(cpsize + 50, 80)
+                .setPosition(cpsize + 50, 110)
                 .setBackgroundHeight(cpsize + 1)
-                .setWidth(90)
+                .setWidth(100)
                 .setBackgroundColor(color(0))
                 .hideBar()
                 .addCanvas(new ColorSlotCanvas())
                 ;       
     
     menu.addGroup("misc")
-                .setPosition(50, cpsize + 80)
-                .setBackgroundHeight(50)
+                .setPosition(50, cpsize + 100)
+                .setBackgroundHeight(80)
                 .setWidth(cpsize + 90)
                 .setBackgroundColor(color(0))
                 .hideBar()
                 ;
     menu.addGroup("width")
                   .setPosition(50, 51)
-                  .setBackgroundHeight(30)
+                  .setBackgroundHeight(60)
                   .setWidth(cpsize + 90)
                   .setBackgroundColor(color(0))
                   .hideBar()
                   ;
     menu.addGroup("logo")
                   .setPosition(cpsize + 90,51)
-                  .setBackgroundHeight(cpsize+79)
+                  .setBackgroundHeight(cpsize+129)
                   .setWidth(200)
                   .setBackgroundColor(color(0))
                   .hideBar()
                   .addCanvas(new LogoCanvas());
      
-    menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 20).setGroup("width");
-    menu.addBang("CLEAR", 10, 10, 20, 20).setGroup("misc");
-    menu.addBang("SAVE",  40, 10, 20, 20).setGroup("misc");
+    menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 50).setGroup("width");
+    menu.addBang("CLEAR", 10, 10, 50, 50).setGroup("misc");
+    menu.addBang("SAVE",  80, 10, 50, 50).setGroup("misc");
     
     rb = menu.addRadioButton("radioButton")
-         .setPosition(cpsize + 80,80)
-         .setSize(20,20)
+         .setPosition(cpsize + 90,110)
+         .setSize(30,30)
          .setColorForeground(color(120))
          .setColorActive(color(255))
          .setColorLabel(color(255))
@@ -143,8 +143,8 @@ class LogoCanvas extends Canvas {
   }
   
   public void draw(PApplet p) {
-      p.image(deLogo, 0, 150, 200, 166);
-      p.image(caLogo, 0, 350, 200, 123);
+      p.image(deLogo, 0, 200, 200, 166);
+      p.image(caLogo, 0, 400, 200, 123);
   }
 }
 
@@ -167,7 +167,7 @@ class ColorSlot{
   
   public void draw(PApplet applet){
     applet.fill(red, green, blue);
-    applet.rect(this.positionX, this.positionY, 20, 20);
+    applet.rect(this.positionX, this.positionY, 30, 30);
   }
   
   public float getRed() {
@@ -204,10 +204,10 @@ class ColorSlotCanvas extends Canvas {
   
   public void setup(PApplet p) {
     colorSlots[0] = new ColorSlot(5,0);
-    colorSlots[1] = new ColorSlot(5,21);
-    colorSlots[2] = new ColorSlot(5,42);
-    colorSlots[3] = new ColorSlot(5,63);
-    colorSlots[4] = new ColorSlot(5,84);
+    colorSlots[1] = new ColorSlot(5,31);
+    colorSlots[2] = new ColorSlot(5,62);
+    colorSlots[3] = new ColorSlot(5,93);
+    colorSlots[4] = new ColorSlot(5,124);
   }
   
    public void draw(PApplet p) {
