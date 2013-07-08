@@ -72,7 +72,7 @@ void getCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
 
-      blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, LeftBorder, RightBorder - LeftBorder);
+      blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
       
       mouseX = (int) blobX;
