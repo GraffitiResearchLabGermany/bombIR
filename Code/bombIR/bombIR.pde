@@ -147,6 +147,7 @@ public void init() {
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
+        //noCursor();
         drawPaintBg();
       }
       
