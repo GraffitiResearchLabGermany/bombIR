@@ -76,11 +76,16 @@ void getCurrentBlob() {
       blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
       
+<<<<<<< HEAD
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
       System.out.println( "blobSize = "+ blobSize );
 
       
+=======
+      mouseX = (int) blobX;
+      mouseY = (int) blobY;
+>>>>>>> upstream/develop
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);
       

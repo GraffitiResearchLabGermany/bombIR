@@ -7,14 +7,15 @@
 // The Spray Manager creates, updates, draws and deletes strokes
 
 
-class SprayManager {
+class SprayManager { 
  
   ArrayList<Path> strokeList;
    
   PShader pointShader;
   Path s;
   
-  float weight = 100;
+  // OPTIMIZE: Use the blob size instead
+  float weight = 100;// * blobSize;
   
   float depthOffset;
   float offsetVel;
@@ -45,17 +46,17 @@ class SprayManager {
   }
 
   void initSpray() {
-  if(printDebug) println("void initSpray() {");
+  //if(printDebug) println("void initSpray() {");
   
       Path newStroke = new Path();
-      if(printDebug) println("Path newStroke = new Path();");
+      //if(printDebug) println("Path newStroke = new Path();");
       
-      if(printDebug) println("strokeList.size()"+strokeList.size());
+      //if(printDebug) println("strokeList.size()"+strokeList.size());
       
       strokeList.add(newStroke);
-      if(printDebug) println("strokeList.add(newStroke);");
+      //if(printDebug) println("strokeList.add(newStroke);");
       
-      if(printDebug) println("strokeList.size()"+strokeList.size());
+      //if(printDebug) println("strokeList.size()"+strokeList.size());
   }
   
   void spray(PGraphics targetBuffer) {
@@ -74,14 +75,14 @@ class SprayManager {
   
     // spray when controller trigger is pressed
     if (moveConnected == true && clicked == true) {
-      if(printDebug) println("if (moveConnected == true && clicked == true) {");
+      //if(printDebug) println("if (moveConnected == true && clicked == true) {");
         
         Knot k = new Knot(blobX, blobY, weight, col);
-        if(printDebug) println("Knot k = new Knot(blobX, blobY, weight, col);");
+        //if(printDebug) println("Knot k = new Knot(blobX, blobY, weight, col);");
         
         getActiveStroke().add(k);
         
-        if(printDebug) println("getActiveStroke().add(k);");
+        //if(printDebug) println("getActiveStroke().add(k);");
     }
     
     // if no controller present, spray on mouse click
@@ -186,12 +187,12 @@ class SprayManager {
  
  // Return the path beeing drawn at the moment
  Path getActiveStroke() {
-   if(printDebug) println("Path getActiveStroke() {");
+   //if(printDebug) println("Path getActiveStroke() {");
    
-   if(printDebug) println("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
+   //if(printDebug) println("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
    
    Path activeStroke = strokeList.get( strokeList.size() - 1 );
-   if(printDebug) println("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
+   //if(printDebug) println("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
    
    return activeStroke;
  }
@@ -255,16 +256,16 @@ class Path {
   void add(Knot k) {
     
     currentKnot = k;
-    if(printDebug) println("currentKnot = k;");
+    //if(printDebug) println("currentKnot = k;");
     
     int size = pointList.size();
-    if(printDebug) println("int size = pointList.size();");
+    //if(printDebug) println("int size = pointList.size();");
     
     if(size == 0) { 
-    if(printDebug) println("if(size == 0) { ");
+    //if(printDebug) println("if(size == 0) { ");
     
       pointList.add(currentKnot); 
-      if(printDebug) println("pointList.add(currentKnot);");
+      //if(printDebug) println("pointList.add(currentKnot);");
       
     } else if( size > 0 ) {
       
@@ -274,7 +275,7 @@ class Path {
       */
       
       previousKnot = pointList.get( size-1 );
-      if(printDebug) println("previousKnot = pointList.get( prev );");
+      //if(printDebug) println("previousKnot = pointList.get( prev );");
       
       // Compute the vector from previous to current knot
       PVector prevPos  = previousKnot.getPos();
