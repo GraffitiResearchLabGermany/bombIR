@@ -79,7 +79,8 @@ public void init() {
         readConfiguration();
         
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
-        //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
+        //so we make it big enough to span over two output devices (rp screen projector, wall projector) and position it to start at 
+        //the first projector screen
   	    size(windowWidth, windowHeight, P3D);
         
         //create painting screen
@@ -108,7 +109,9 @@ public void init() {
         setupCamera();
         
         //setup the spraypaint shader
+        //spraymanager for the paintscreen
         sprayManagerLeft.setup();
+        //spraymanager for the wallscreen
         sprayManagerRight.setup();
         
         //setup the control menu (colorpicker, clear screen, save, etc.)
