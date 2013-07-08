@@ -6,8 +6,10 @@ int saveCount = 0;
 
  void CLEAR(boolean theFlag) {
   if(theFlag == true) {
+    
     paintscreen.beginDraw();
     paintscreen.clear();
+    paintscreen.image(paintbackground,0,0);
     paintscreen.endDraw();
     
     wallscreen.beginDraw();
@@ -24,11 +26,6 @@ int saveCount = 0;
      wallscreen.save("exports/Save_" + saveCount + ".jpg");
   }
  } 
- 
- // CLEAR
- void CLEAR() {
-   // ?? 
- }
 
  //adjust brush size
  void WIDTH(int BrushSize) {
@@ -58,7 +55,7 @@ int saveCount = 0;
    if(!calibrateCamera) {
      showBlob =! showBlob;
      background(0);
-     paintbg.render(paintbackground);
+     drawPaintBg();
    }   
  }
  
@@ -70,7 +67,7 @@ int saveCount = 0;
    if(!calibrateCamera) {
      showCam =! showCam;
      background(0);
-     paintbg.render(paintbackground);
+     drawPaintBg();
    }   
  }
  
@@ -81,7 +78,7 @@ int saveCount = 0;
      calibrateCamera = false; 
      showCam = false;
      showBlob = false;
-     paintbg.render(paintbackground);
+     drawPaintBg();
      calibMenu.hide();
    }
  }
@@ -94,20 +91,10 @@ int saveCount = 0;
        // clear the wall screen (right)
        sprayManagerRight.reset(wallscreen, color(0));
      break;
-     case 'c':
-       if(!calibrateCamera) { 
-         // enter/leave calibration mode, where surfaces can be warped and moved
-         ks.toggleCalibration();
-         calibrateKeystone = !calibrateKeystone;       
-         //redraw background once after calibration
-         background(0);
-         paintbg.render(paintbackground);
-       }
-     break;
      case 'm': 
        if(!calibrateCamera) {   
          toggleMenu();
-         paintbg.render(paintbackground);
+         drawPaintBg();
        }
      break;
      case 'b':
@@ -116,7 +103,7 @@ int saveCount = 0;
          background(0);
        }
        else {
-         paintbg.render(paintbackground);
+         drawPaintBg();
        }
      break;     
    }
