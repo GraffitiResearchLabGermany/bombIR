@@ -10,6 +10,7 @@ int windowWidth;
 int firstWindowWidth;
 int frameXLocation;
 String bgFile;
+String camDevice;
  
 void readConfiguration() {
   try {
@@ -24,6 +25,7 @@ void readConfiguration() {
     cpsize = props.getIntProperty("env.colorpicker.size",400);
     bgFile = props.getProperty("env.bg.file","background.jpg");
     frameXLocation = props.getIntProperty("env.viewport.frame.xlocation",0);
+    camDevice = props.getProperty("env.camera.device","default");
   }
   catch(IOException e) {
     println("couldn't read config file...");

@@ -103,8 +103,14 @@ class CameraThread extends Thread {
   public void start(){
     running = true;
     println("Starting Camera Thread...");
-    //this.cam = new GSCapture(applet, 320, 240);
-    this.cam = new GSCapture(applet, 640, 480, "/dev/video1");
+    
+    //needed if there is more than on camera connected (at least for linux)
+    if (!camDevice.equals("default")){
+      this.cam = new GSCapture(applet, 640, 480, camDevice);
+    } else {
+      this.cam = new GSCapture(applet, 320, 240);
+    }
+    
     this.cam.start();
     
     this.bd = new BlobDetection(this.cam.width, this.cam.height);
