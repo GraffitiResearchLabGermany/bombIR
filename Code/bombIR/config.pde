@@ -20,7 +20,7 @@ void readConfiguration() {
     windowWidth = props.getIntProperty("env.viewport.width", 1024); 
     firstWindowWidth = windowWidth/2;
     windowHeight = props.getIntProperty("env.viewport.height", 384);
-    debug = props.getBooleanProperty("env.mode.debug", false);
+    printDebug = props.getBooleanProperty("env.mode.debug", false);
     calibrateCamera = props.getBooleanProperty("env.mode.calib", false);
     cpsize = props.getIntProperty("env.colorpicker.size",400);
     bgFile = props.getProperty("env.bg.file","background.jpg");
