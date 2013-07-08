@@ -8,6 +8,8 @@ boolean calibrateCamera = false;
 int windowHeight;
 int windowWidth;
 int firstWindowWidth;
+int frameXLocation;
+String bgFile;
  
 void readConfiguration() {
   try {
@@ -20,6 +22,8 @@ void readConfiguration() {
     debug = props.getBooleanProperty("env.mode.debug", false);
     calibrateCamera = props.getBooleanProperty("env.mode.calib", false);
     cpsize = props.getIntProperty("env.colorpicker.size",400);
+    bgFile = props.getProperty("env.bg.file","background.jpg");
+    frameXLocation = props.getIntProperty("env.viewport.frame.xlocation",0);
   }
   catch(IOException e) {
     println("couldn't read config file...");
