@@ -36,21 +36,18 @@ TO DO
 
 // IMPORTS
 //-----------------------------------------------------------------------------------------
-import deadpixel.keystone.*;
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
-import codeanticode.gsvideo.*;
-//import monclubelec.javacvPro.*; 
+import codeanticode.gsvideo.*; 
 import blobDetection.*;
 
 
   
 // DECLARATIONS
 //-----------------------------------------------------------------------------------------  
-Keystone ks;
-CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
+PImage bg;
 
 
 // Spray renderers
@@ -88,17 +85,20 @@ public void init() {
         
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  	size(windowWidth, windowHeight, P3D);
+  	    size(windowWidth, windowHeight, P3D);
         
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
+        paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         
-        //setup wall screen
-        setupKeystone(); 
-        
+        //paint the background
+        bg = loadImage(bgFile);
+        bg.resize(windowWidth/2, windowHeight);
+        drawPaintBg();
+
         paintscreen.beginDraw();
-        paintscreen.image(paintbackground,0,0); // loaded in setupKeystone
+        paintscreen.image(paintbackground,0,0);
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
         
@@ -106,6 +106,8 @@ public void init() {
         wallscreen.background(0);
         wallscreen.strokeCap(SQUARE);
         wallscreen.endDraw();
+
+        
         
         //setup opencv & video capture
         setupCamera();
@@ -125,7 +127,7 @@ public void init() {
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-	frame.setLocation(0,0);
+	      frame.setLocation(frameXLocation,0);
 
   } // end SETUP
   
@@ -145,7 +147,7 @@ public void init() {
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
-        paintbg.render(paintbackground);
+        drawPaintBg();
       }
       
       // Read Cam
@@ -165,7 +167,7 @@ public void init() {
       if(showBlob == true) {
         if(!showCam) {
           background(0);
-          paintbg.render(paintbackground);
+          drawPaintBg();
         }
         drawBlobsAndEdges(true, false);
       }
@@ -182,32 +184,20 @@ public void init() {
       
       //draw wall screen
       wallscreen.beginDraw();
-          //redraw the background of the wallscreen during calibration  
-          //for the calibration view to work
-          //if(ks.isCalibrating()){
-            //wallscreen.background(0);
-          //}
           if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
             if(clickedEvent) sprayManagerRight.initSpray();
             sprayManagerRight.spray(wallscreen);
           }
       wallscreen.endDraw();
       
-      //redraw the main backgound for calibration and make sure
-      //that the imagebackground is drawn as well
-      if(ks.isCalibrating()){
-        //background(0);
-        //paintbg.render(paintbackground);
-      }
-    
+   
       //draw painting area (left)
       image(paintscreen,0,0);
       
       //draw the projection area (right)
       image(wallscreen,width/2,0);
           
-      //render the wall screen with keystone
-      //surface.render(wallscreen);
+      
   
       // GUI
       if(menu.isVisible()){
@@ -225,6 +215,11 @@ public void init() {
     
   } // end DRAW
 
+void drawPaintBg(){
+        paintbackground.beginDraw();
+        paintbackground.image(bg,0,0);
+        paintbackground.endDraw();
+}
   
   
 //-----------------------------------------------------------------------------------------
