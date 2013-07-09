@@ -17,7 +17,11 @@ float brushSize;
 float brushSoften;
 String brushMap;
 
+boolean mirrorX;
+
 int ratio;
+
+float captureWidth, captureHeight, captureOffsetY;
 
 void readConfiguration() {
   try {
@@ -33,6 +37,8 @@ void readConfiguration() {
     brushSize = props.getIntProperty("env.shader.brushSize",100);
     brushSoften = props.getFloatProperty("env.shader.brushSoften",0.5);
     brushMap = props.getProperty("env.shader.brushMap","sprayMap_01.png");
+    
+    mirrorX = props.getBooleanProperty("env.mode.mirrorX", false);
     
     ratio = props.getIntProperty( "env.viewport.ratio", 0 ); // 0 = 4:3 and 1 = 16:9
     
@@ -55,6 +61,12 @@ void readConfiguration() {
     }
     
     firstWindowWidth = windowWidth/2;
+    
+    // Used to keep the aspect ratio of the camera capture image
+    // and center it vertically. Also to display the blobs properly.
+    captureWidth = firstWindowWidth;
+    captureHeight = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
+    captureOffsetY = - (windowHeight - captureHeight) / 2; // Should equal 0 when in 4:3
 
   }
   catch(IOException e) {
