@@ -9,19 +9,15 @@ float LeftBorder, RightBorder, TopBorder, BottomBorder;
 float cropScale;
 CameraThread ct;
 
-PShader mirror;
-
 void setupCamera() {
   
   ct = new CameraThread("Camera",blobThresh, this);
   ct.start();
-  
-  mirror = loadShader("mirror.glsl");
    
   // Calbration Points
   /* set top to 40 because the frame kills 30px */
   corner = new Corner(10, 40, firstWindowWidth - 10, 40, firstWindowWidth - 10, windowHeight - 10, 10, windowHeight - 10);
-
+  
 }
 
 void runCameraCalibration() {
@@ -38,24 +34,7 @@ void runCameraCalibration() {
   
   // Show Cam ?
   if(showCam == true) {
-    //image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
-    float mult = firstWindowWidth / ct.getWidth();
-    float w = ct.getWidth() * mult;
-    float h = ct.getHeight() * mult;
-    
-    /*
-    PGraphics capture = createGraphics(int(w), int(h));
-    
-    capture.beginDraw();
-    capture.image(ct.getCam(), 0, 0, w, h);
-    capture.filter(mirror);
-    capture.endDraw();
-    
-    image(capture, 0, -(h-windowHeight)/2, w, h);
-    */
-    
-    image(ct.getCam(), 0, -(h-windowHeight)/2, w, h);
-    
+    image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
   } 
   
   // Show Blob ?
@@ -163,20 +142,9 @@ class CameraThread extends Thread {
     return cam;
   }
   
-<<<<<<< HEAD
-  public float getWidth() {
-    return this.cam.width;
-  }
-  
-  public float getHeight() {
-    return this.cam.height;
-  }
-  
-=======
   /**
    * Return the blob detection object
    */
->>>>>>> upstream/develop
   public BlobDetection getBlobDetection(){
     return bd;
   }
