@@ -39,6 +39,9 @@ import blobDetection.*;
 import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.event.InputEvent;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
 
 
 
