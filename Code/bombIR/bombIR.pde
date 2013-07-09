@@ -98,7 +98,8 @@ public void init() {
         drawPaintBg();
 
         paintscreen.beginDraw();
-        paintscreen.image(paintbackground,0,0);
+        //paintscreen.image(paintbackground,0,0);
+        paintscreen.background(0);
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
         
@@ -127,7 +128,7 @@ public void init() {
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-	      frame.setLocation(frameXLocation,0);
+	 frame.setLocation(frameXLocation,0);
 
   } // end SETUP
   
@@ -159,10 +160,20 @@ public void init() {
       // Compute Blobs
       ct.setThreshold(blobThresh);
       
+      /*
       // Show Cam ?
       if(showCam == true) {
-        image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
+        
+        println("test");
+        
+        //image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
+        float mult = width /  ct.getWidth();
+        float w = ct.getWidth() * mult;
+        float h = ct.getHeight() * mult;
+        image(ct.getCam(), 0, -(h-height)/2, w, h);
+        
       } 
+      */
       
       // Show Blob ?
       if(showBlob == true) {
