@@ -36,6 +36,9 @@ import io.thp.psmove.*;
 import java.util.Properties;
 import codeanticode.gsvideo.*; 
 import blobDetection.*;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.awt.event.InputEvent;
 
 
   
@@ -55,7 +58,6 @@ SprayManager sprayManagerRight;  // wall screen (right)
 boolean clicked = false;
 boolean clickedEvent = false;
 boolean calibrateKeystone = false;
-boolean printDebug = false;
 
 //-----------------------------------------------------------------------------------------
 
@@ -122,6 +124,8 @@ public void init() {
         
         //Init the PSMove controller(s)
         psmoveInit();
+
+        setupMouseRobot();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
@@ -140,7 +144,8 @@ public void init() {
     // Main Draw Loop
     else {
       
-      //PVector surfaceMouse = paintbg.getTransformedMouse();
+      //let the blob control your mouse if move connected
+      controlMouse();
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {

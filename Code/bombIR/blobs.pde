@@ -75,9 +75,6 @@ void updateCurrentBlob() {
 
       blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
-      
-      mouseX = (int) blobX;
-      mouseY = (int) blobY;
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);
       

@@ -1,16 +1,28 @@
 
 //-----------------------------------------------------------------------------------------
-// CONFIGURATION
+// CONFIGURATION - configuration values are stored in data/settings.properties
+//add all variables that are set with the settings.properties here
  
+//Access to the properties file
 P5Properties props;
-boolean debug = false;
+//debugging mode, logmessage are shown on the console
+boolean printDebug = false;
+//???
 boolean calibrateCamera = false;
+//height of the application window
 int windowHeight;
+//width of the application window
 int windowWidth;
+//width of the paintscreen
 int firstWindowWidth;
+//x location of the window
 int frameXLocation;
+//file for the backgroudn image
 String bgFile;
+//device of the camera (only set when needed)
 String camDevice;
+//size of the colorpicker
+int cpsize;
  
 void readConfiguration() {
   try {
