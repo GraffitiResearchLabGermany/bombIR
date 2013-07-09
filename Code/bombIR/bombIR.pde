@@ -135,12 +135,8 @@ public void init() {
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-<<<<<<< HEAD
 	frame.setLocation(frameXLocation,0);
 
-=======
-	      frame.setLocation(frameXLocation,0);
->>>>>>> upstream/develop
   } // end SETUP
   
   //-----------------------------------------------------------------------------------------
