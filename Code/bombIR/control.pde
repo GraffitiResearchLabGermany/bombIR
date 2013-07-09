@@ -33,20 +33,19 @@ int saveCount = 0;
     sprayManagerRight.setWeight(brushSize);
  } 
  
- // Crop Scale
+ // Crop Scale while keeping 4:3 aspect ratio
  void cropScale(float cs) {
-     float w = paintscreen.width;
-     float h = paintscreen.width/4*3; // Keep cropping in 4:3 even in 16:9 mode
-     float offsetY = - (windowHeight - h) / 2; // Should equal 0 when in 4:3
-     println("offsetY = "+offsetY);
+     float w = captureWidth;
+     float h = captureHeight;
+     float o = captureOffsetY;
      corner.tlX = int( w / 2.0 * cs );
-     corner.tlY = int( h / 2.0 * cs - offsetY );
+     corner.tlY = int( h / 2.0 * cs - o );
      corner.trX = int( w - ( w  / 2.0 * cs ) );
-     corner.trY = int( h / 2.0 * cs - offsetY );
+     corner.trY = int( h / 2.0 * cs - o );
      corner.brX = int( w - ( w  / 2.0 * cs ) );
-     corner.brY = int( h - ( h  / 2.0 * cs ) - offsetY );
+     corner.brY = int( h - ( h  / 2.0 * cs ) - o );
      corner.blX = int( w / 2.0 * cs );
-     corner.blY = int( h - ( h  / 2.0 * cs ) - offsetY );
+     corner.blY = int( h - ( h  / 2.0 * cs ) - o );
  }
 
  // Show Blob
