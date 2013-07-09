@@ -37,15 +37,15 @@ int saveCount = 0;
  void cropScale(float cs) {
      float w = captureWidth;
      float h = captureHeight;
-     float o = captureOffsetY;
+     float offset = captureOffsetY;
      corner.tlX = int( w / 2.0 * cs );
-     corner.tlY = int( h / 2.0 * cs - o );
+     corner.tlY = int( h / 2.0 * cs - offset );
      corner.trX = int( w - ( w  / 2.0 * cs ) );
-     corner.trY = int( h / 2.0 * cs - o );
+     corner.trY = int( h / 2.0 * cs - offset );
      corner.brX = int( w - ( w  / 2.0 * cs ) );
-     corner.brY = int( h - ( h  / 2.0 * cs ) - o );
+     corner.brY = int( h - ( h  / 2.0 * cs ) - offset );
      corner.blX = int( w / 2.0 * cs );
-     corner.blY = int( h - ( h  / 2.0 * cs ) - o );
+     corner.blY = int( h - ( h  / 2.0 * cs ) - offset );
  }
 
  // Show Blob
