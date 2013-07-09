@@ -2,9 +2,9 @@
 //-----------------------------------------------------------------------------------------
 // BLOB DETECTION
 
-float blobMin = 0.025;      
-float blobMax = 0.15;
-float blobThresh = 0.5;
+float blobMin = 0.08;      
+float blobMax = 0.45;
+float blobThresh = 0.90;
 float blobX, blobY;
 float blobSize;
 
@@ -33,17 +33,20 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
                 eA = b.getEdgeVertexA(m);
                 eB = b.getEdgeVertexB(m);
                   if (eA != null && eB != null) {
-                    vertex(eA.x * firstWindowWidth, eA.y * windowHeight);
+                    vertex(eA.x * captureWidth, eA.y * captureHeight - captureOffsetY); // keep the 4:3 ratio
                   }
               }
             endShape(CLOSE); 
             
             // Return Valid Blobs
-            blobX = (b.xMin * firstWindowWidth);
+            //blobX = (b.xMin * firstWindowWidth);
+            
             //blobX = map(blobX, 0, firstWindowWidth, LeftBorder, RightBorder - LeftBorder);
-            //float mult = 1080 / ct.getHeight(); // vertical stretch
-            //blobY = (b.yMin * windowHeight * mult - 180 );
-            blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
+            
+            //float mult = firstWindowWidth / ct.getWidth(); // vertical stretch
+            //blobY = (b.yMin * windowHeight * mult );
+            
+            //blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
 
             //println("BX: " + blobX + "  BY: " + blobY); 
             
@@ -75,8 +78,13 @@ void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
 
+      // Map the blob coordinates to the unit square 
       blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+      
+      // Flip the X axis (when not using the rear projection screen)
+      // DO NOT USE (NEEDS FIXING)
+      if( mirrorX == true ) blobX = 1.0 - blobX;
       
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;

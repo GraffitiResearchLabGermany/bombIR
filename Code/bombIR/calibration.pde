@@ -16,7 +16,7 @@ void setupCamera() {
   ct = new CameraThread("Camera",blobThresh, this);
   ct.start();
   
-  mirror = loadShader("mirror.glsl");
+  //mirror = loadShader("mirror.glsl");
    
   // Calbration Points
   /* set top to 40 because the frame kills 30px */
@@ -39,9 +39,17 @@ void runCameraCalibration() {
   // Show Cam ?
   if(showCam == true) {
     //image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
+    
+    // Compute factors for 16:9
     float mult = firstWindowWidth / ct.getWidth();
     float w = ct.getWidth() * mult;
     float h = ct.getHeight() * mult;
+    
+    // Display the 4:3 capture so that it is centered 
+    // vertically and cropped top and bottom in 16:9
+    float xCapture = 0;
+    float yCapture = -(h-windowHeight)/2; // centering [OPTIMIZE: use imageMode(CENTER)]
+    image(ct.getCam(), xCapture, yCapture, w, h);
     
     /*
     PGraphics capture = createGraphics(int(w), int(h));
@@ -53,8 +61,6 @@ void runCameraCalibration() {
     
     image(capture, 0, -(h-windowHeight)/2, w, h);
     */
-    
-    image(ct.getCam(), 0, -(h-windowHeight)/2, w, h);
     
   } 
   
