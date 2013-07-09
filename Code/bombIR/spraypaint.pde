@@ -23,7 +23,7 @@ class SprayManager {
  color col;
  float weight = brushSize;
  
- boolean clickEv;
+ //boolean clickEv;
  
  SprayManager() {
    strokeList = new ArrayList<Path>();
@@ -332,9 +332,9 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float weight, color tint) {
+  Knot(float x, float y, float s, color tint) {
     super(x, y);
-    size  = weight;
+    size  = s;
     col   = tint;
     angle = 0.0;
     noiseDepth = random(1.0);

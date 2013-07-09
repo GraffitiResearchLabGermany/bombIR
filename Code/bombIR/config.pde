@@ -17,8 +17,8 @@ float brushSize;
 float brushSoften;
 String brushMap;
 
-String ratio;
- 
+int ratio;
+
 void readConfiguration() {
   try {
     props = new P5Properties();
@@ -34,23 +34,23 @@ void readConfiguration() {
     brushSoften = props.getFloatProperty("env.shader.brushSoften",0.5);
     brushMap = props.getProperty("env.shader.brushMap","sprayMap_01.png");
     
-    ratio = props.getProperty("env.viewport.ratio","fourToThree");
+    ratio = props.getIntProperty( "env.viewport.ratio", 0 ); // 0 = 4:3 and 1 = 16:9
     
     if(debug) { // if we're using the main screen (debug mode)
       frameXLocation = props.getIntProperty("env.viewport.frame.xlocation_debug",0);
-      if(ratio == "fourToThree") {
+      if(ratio == 0) { // 4:3
         windowWidth = props.getIntProperty("env.viewport.width_4_3", 1600); 
         windowHeight = props.getIntProperty("env.viewport.height_4_3", 600);
       }
-      else if(ratio == "sixteenToNine") {
+      else if(ratio == 1) { // 16:9
         windowWidth = props.getIntProperty("env.viewport.width_16_9", 1600); 
         windowHeight = props.getIntProperty("env.viewport.height_16_9", 450);
       }
       frameXLocation = props.getIntProperty("env.viewport.frame.xlocation_debug",0);
     }
     else { // if we're using the secondary screens (performance mode)
-      windowWidth = props.getIntProperty("env.viewport.width", 1024); 
-      windowHeight = props.getIntProperty("env.viewport.height", 384);
+      windowWidth    = props.getIntProperty("env.viewport.width", 1024); 
+      windowHeight   = props.getIntProperty("env.viewport.height", 384);
       frameXLocation = props.getIntProperty("env.viewport.frame.xlocation",0);
     }
     

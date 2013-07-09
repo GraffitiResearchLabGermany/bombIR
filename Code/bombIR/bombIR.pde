@@ -42,6 +42,9 @@ import java.util.Properties;
 import codeanticode.gsvideo.*; 
 import blobDetection.*;
 
+import java.awt.AWTException;
+import java.awt.Robot;
+
 
   
 // DECLARATIONS
@@ -53,6 +56,9 @@ PImage bg;
 // Spray renderers
 SprayManager sprayManagerLeft; // paint screen (left)
 SprayManager sprayManagerRight;  // wall screen (right)
+
+// Robot mouse
+Robot robot;
 
 
 // GLOBAL VARIABLES
@@ -75,6 +81,10 @@ public void init() {
 //-----------------------------------------------------------------------------------------
   
   void setup() {
+    
+        // Create the robot mouse
+        try                    { robot = new Robot(); } 
+        catch (AWTException e) { e.printStackTrace(); }
     
         // Create the spray objects for both screens
         sprayManagerLeft   = new SprayManager();
