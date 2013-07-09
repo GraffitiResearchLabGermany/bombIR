@@ -163,6 +163,7 @@ class CameraThread extends Thread {
     return cam;
   }
   
+<<<<<<< HEAD
   public float getWidth() {
     return this.cam.width;
   }
@@ -171,9 +172,11 @@ class CameraThread extends Thread {
     return this.cam.height;
   }
   
+=======
   /**
    * Return the blob detection object
    */
+>>>>>>> upstream/develop
   public BlobDetection getBlobDetection(){
     return bd;
   }

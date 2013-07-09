@@ -15,7 +15,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
 
   for (int n = 0 ; n < ct.getBlobDetection().getBlobNb() ; n++) {
     b = ct.getBlobDetection().getBlob(n);
-    println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
+    //println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
     if (b!= null) {
         
       // Edges
@@ -41,8 +41,9 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
             // Return Valid Blobs
             blobX = (b.xMin * firstWindowWidth);
             //blobX = map(blobX, 0, firstWindowWidth, LeftBorder, RightBorder - LeftBorder);
-            blobY = (b.yMin * windowHeight);
-            //blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
+            //float mult = 1080 / ct.getHeight(); // vertical stretch
+            //blobY = (b.yMin * windowHeight * mult - 180 );
+            blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
 
             //println("BX: " + blobX + "  BY: " + blobY); 
             
@@ -81,6 +82,10 @@ void updateCurrentBlob() {
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
       System.out.println( "blobSize = "+ blobSize );
 
+      // Move the cursor to the position of the blob
+      if( alwaysUseMouse == false ) {
+        robot.mouseMove( (int)blobX, (int)blobY );
+      }
       
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);
