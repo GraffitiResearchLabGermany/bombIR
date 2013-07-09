@@ -65,8 +65,10 @@ void psmoveUpdate() {
  
     
     // Detect presses on the cap
-    clicked = controllers[i].isTriggerPressed();
-    clickedEvent = controllers[i].isTriggerPressedEvent();
+    if( alwaysUseMouse == false ) {
+      clicked = controllers[i].isTriggerPressed();
+      clickedEvent = controllers[i].isTriggerPressedEvent();
+    }
     
     if(printDebug) println("clicked = "+clicked);
       

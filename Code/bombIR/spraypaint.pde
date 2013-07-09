@@ -14,9 +14,6 @@ class SprayManager {
   PShader pointShader;
   Path s;
   
-  // OPTIMIZE: Use the blob size instead
-  float weight = 100;// * blobSize;
-  
   float depthOffset;
   float offsetVel;
   
@@ -24,7 +21,7 @@ class SprayManager {
   PImage sprayMap;
  
  color col;
- float size;
+ float weight = brushSize;
  
  boolean clickEv;
  
@@ -38,7 +35,8 @@ class SprayManager {
     depthOffset = 0.0;
     offsetVel = 0.0005;
     
-    sprayMap = loadImage("sprayMap.png");
+    // brushMap is set in settings.properties
+    sprayMap = loadImage(brushMap);
     
     pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
     pointShader.set( "sprayMap", sprayMap );
@@ -70,33 +68,23 @@ class SprayManager {
     ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
     color selectedColor = color(activeCS.getRed(), activeCS.getGreen(), activeCS.getBlue());
     
-    this.setWeight(weight + random(0,20));
+    //this.setWeight(weight);
     this.setColor(selectedColor);
   
     // spray when controller trigger is pressed
-    if (moveConnected == true && clicked == true) {
-      //if(printDebug) println("if (moveConnected == true && clicked == true) {");
+    if ( moveConnected == true && clicked == true && alwaysUseMouse == false ) {
         
-        Knot k = new Knot(blobX, blobY, weight, col);
-        //if(printDebug) println("Knot k = new Knot(blobX, blobY, weight, col);");
-        
+        Knot k = new Knot(blobX, blobY, weight, col);        
         getActiveStroke().add(k);
         
-        //if(printDebug) println("getActiveStroke().add(k);");
     }
     
-    // if no controller present, spray on mouse click
-    else if(moveConnected == false && mousePressed == true) {
-      if(clickEv) {
-        Path newStroke = new Path();
-        strokeList.add(newStroke);
+    // if no controller present or we chose to use mouse by default, spray on mouse click
+    else if ( clicked == true ) {
+      
         Knot k = new Knot(mouseX, mouseY, weight, col);
         getActiveStroke().add(k);
-        clickEv = false;
-      } else {
-        Knot k = new Knot(mouseX, mouseY, weight, col);
-        getActiveStroke().add(k);
-      }
+        
     }
     
     this.draw(targetBuffer);
@@ -116,10 +104,12 @@ class SprayManager {
  // Clear the screen with a solid color
  
  void reset( PGraphics targetBuffer, color background ) {
+   
    targetBuffer.beginDraw();
    targetBuffer.background(background);
    targetBuffer.endDraw();
    clearAll();
+   
  }
  
  
@@ -197,9 +187,9 @@ class SprayManager {
    return activeStroke;
  }
  
- // Set the size of the spray
- void setWeight(float weight) {
-   size = weight;
+ // Set the size of the spray (overwrite the value from setting.properties)
+ void setWeight(float size) {
+   weight = size;
  }
  
  // Set the color of the spray
@@ -383,18 +373,18 @@ class Knot extends PVector {
 
     if(!isDrawn) {
       
-      pointShader.set( "weight", size );
+      pointShader.set( "weight", brushSize ); // set in settings.properties
       pointShader.set( "direction", dir.x, dir.y );
       pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
-      pointShader.set( "scale", 0.3 ); 
-      pointShader.set( "soften", 1.0 ); // towards 0.0 for harder brush, towards 2.0 for lighter brush
+      pointShader.set( "scale", 0.3 );
+      pointShader.set( "soften", brushSoften ); // set in settings.properties
       pointShader.set( "depthOffset", noiseDepth );
       
       // Draw in the buffer (if one was defined) or directly on the viewport
       if (null!=targetBuffer)  {
         targetBuffer.pushStyle();
         targetBuffer.shader(pointShader, POINTS);
-        targetBuffer.strokeWeight(size);
+        targetBuffer.strokeWeight(brushSize); // set in settings.properties
         targetBuffer.stroke(col);
         targetBuffer.point(x,y);
         targetBuffer.popStyle();

@@ -21,7 +21,7 @@ void setupCamera() {
   // Calbration Points
   /* set top to 40 because the frame kills 30px */
   corner = new Corner(10, 40, firstWindowWidth - 10, 40, firstWindowWidth - 10, windowHeight - 10, 10, windowHeight - 10);
-  
+
 }
 
 void runCameraCalibration() {

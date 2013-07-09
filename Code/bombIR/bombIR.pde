@@ -98,8 +98,7 @@ public void init() {
         drawPaintBg();
 
         paintscreen.beginDraw();
-        //paintscreen.image(paintbackground,0,0);
-        paintscreen.background(0);
+        paintscreen.image(paintbackground,0,0);
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
         
@@ -128,7 +127,7 @@ public void init() {
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-	 frame.setLocation(frameXLocation,0);
+	frame.setLocation(frameXLocation,0);
 
   } // end SETUP
   
