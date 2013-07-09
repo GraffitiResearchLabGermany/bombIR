@@ -2,9 +2,9 @@
 //-----------------------------------------------------------------------------------------
 // BLOB DETECTION
 
-float blobMin = 0.025;      
-float blobMax = 0.15;
-float blobThresh = 0.5;
+float blobMin = 0.08;      
+float blobMax = 0.45;
+float blobThresh = 0.90;
 float blobX, blobY;
 float blobSize;
 

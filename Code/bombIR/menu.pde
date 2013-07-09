@@ -115,9 +115,9 @@ void pickColor(){
             brushG = green(picker);
             brushB = blue(picker);
             cs.setColorSlot(activeColorSlot,brushR,brushG,brushB);
-          } 
-     }  
-} 
+          }
+     }
+}
 
 //is called when a radio button is pressed
 void radioButton(int a) {
