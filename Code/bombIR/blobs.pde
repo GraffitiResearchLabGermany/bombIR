@@ -33,7 +33,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
                 eA = b.getEdgeVertexA(m);
                 eB = b.getEdgeVertexB(m);
                   if (eA != null && eB != null) {
-                    vertex(eA.x * captureWidth, eA.y * captureHeight - captureOffsetY); // keep the 4:3 ratio
+                    vertex(eA.x * captureWidth, eA.y * captureHeight - captureOffsetY); // keep the 4:3 ratio and positionning of the capture image
                   }
               }
             endShape(CLOSE); 
@@ -77,14 +77,17 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
 void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
-
-      // Map the blob coordinates to the unit square 
-      blobX = map(ct.getBlobDetection().getBlob(0).xMin, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
-      blobY = map(ct.getBlobDetection().getBlob(0).yMin, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+    
+      float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
+      float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
       
       // Flip the X axis (when not using the rear projection screen)
-      // DO NOT USE (NEEDS FIXING)
-      if( mirrorX == true ) blobX = 1.0 - blobX;
+      if( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
+
+      // Map the blob coordinates from unit square to the cropping area
+      blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
+      blobY = map( yBlobUnit, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+
       
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
