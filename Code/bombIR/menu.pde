@@ -136,13 +136,13 @@ class LogoCanvas extends Canvas {
   protected PImage caLogo;
 
   public void setup(PApplet p) {
-    deLogo = p.loadImage("Logo_de.gif");
-    caLogo = p.loadImage("Logo_ca.gif");
+    deLogo = p.loadImage("Logo_de.png");
+    caLogo = p.loadImage("Logo_ca.png");
   }
   
   public void draw(PApplet p) {
-      p.image(deLogo, 0, 200, 200, 166);
-      p.image(caLogo, 0, 400, 200, 123);
+      p.image(deLogo, 0, 200, 200, 180);
+      p.image(caLogo, 0, 400, 200, 120);
   }
 }
 
