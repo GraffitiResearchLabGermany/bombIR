@@ -91,7 +91,7 @@ void updateCurrentBlob() {
       
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
-      System.out.println( "blobSize = "+ blobSize );
+      //System.out.println( "blobSize = "+ blobSize );
 
       // Move the cursor to the position of the blob
       if( alwaysUseMouse == false ) {
