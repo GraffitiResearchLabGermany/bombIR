@@ -119,7 +119,14 @@ void pickColor(){
 
 //is called when a radio button is pressed
 void radioButton(int a) {
-  activeColorSlot = a;  
+  //a is -1 if an activated button is pressed again
+  if(a == -1){
+    //keep the button activated
+    rb.activate(activeColorSlot);
+  } else {
+    activeColorSlot = a;  
+  } 
+  
 }
 
 //change colorslot, picks always the next colorslot
@@ -230,6 +237,10 @@ class ColorSlotCanvas extends Canvas {
   
   public ColorSlot getColorSlot(int id){
     return this.colorSlots[id];
+  }
+
+  public int getNumberOfSlots(){
+    return this.colorSlots.length;
   }
 
 }
