@@ -24,8 +24,15 @@ void readConfiguration() {
     props = new P5Properties();
     // load a configuration from a file inside the data folder
     props.load(createInput("settings.properties"));
+<<<<<<< HEAD
     debug = props.getBooleanProperty("env.mode.debug", false);
     alwaysUseMouse = props.getBooleanProperty("env.mode.alwaysUseMouse", false);
+=======
+    windowWidth = props.getIntProperty("env.viewport.width", 1024); 
+    firstWindowWidth = windowWidth/2;
+    windowHeight = props.getIntProperty("env.viewport.height", 384);
+    printDebug = props.getBooleanProperty("env.mode.debug", false);
+>>>>>>> upstream/develop
     calibrateCamera = props.getBooleanProperty("env.mode.calib", false);
     cpsize = props.getIntProperty("env.colorpicker.size",400);
     bgFile = props.getProperty("env.bg.file","background.jpg");

@@ -28,9 +28,9 @@ int saveCount = 0;
  } 
 
  //adjust brush size
- void WIDTH(int BrushSize) {
-    sprayManagerLeft.setWeight(BrushSize);
-    sprayManagerRight.setWeight(BrushSize);
+ void WIDTH(int brushSize) {
+    sprayManagerLeft.setWeight(brushSize);
+    sprayManagerRight.setWeight(brushSize);
  } 
  
  // Crop Scale

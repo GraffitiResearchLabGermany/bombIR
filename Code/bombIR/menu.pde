@@ -59,7 +59,7 @@ void setupMenu(){
                   .hideBar()
                   .addCanvas(new LogoCanvas());
      
-    menu.addSlider("WIDTH", 1, 200, 100, 5, 5, cpsize, 50).setGroup("width");
+    menu.addSlider("WIDTH", 1, 200, brushSize, 5, 5, cpsize, 50).setGroup("width");
     menu.addBang("CLEAR", 10, 10, 50, 50).setGroup("misc");
     menu.addBang("SAVE",  80, 10, 50, 50).setGroup("misc");
     
