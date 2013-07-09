@@ -93,10 +93,6 @@ void updateCurrentBlob() {
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
       System.out.println( "blobSize = "+ blobSize );
 
-      // Move the cursor to the position of the blob
-      if( alwaysUseMouse == false ) {
-        robot.mouseMove( (int)blobX, (int)blobY );
-      }
       
       //println("blobX:" + blobX);
       //println("blobY:" + blobY);

@@ -6,8 +6,6 @@
 ControlP5 menu;
 // separate menu for calibration
 ControlP5 calibMenu;
-//size of the colorpicker
-int cpsize;
 //color of the picker
 int picker;
 //red, green and blue color values for the brush
@@ -107,10 +105,10 @@ void setupCalibrationMenu() {
 
 
 //pick color with the mouse
-void pickColor(){   
-    if(blobX > 50 && blobY < cpsize + 50 && blobY > 80 && blobX < cpsize + 80) {
-          if(clicked == true) {
-            picker = get((int)blobX, (int)blobY);
+void pickColor(){ 
+    if(mouseX > 50 && mouseY < cpsize + 100 && mouseY > 100 && mouseX < cpsize + 50) {
+          if(mousePressed) {
+            picker = get(mouseX, mouseY);
             brushR = red(picker);
             brushG = green(picker);
             brushB = blue(picker);
@@ -138,13 +136,13 @@ class LogoCanvas extends Canvas {
   protected PImage caLogo;
 
   public void setup(PApplet p) {
-    deLogo = p.loadImage("Logo_de.gif");
-    caLogo = p.loadImage("Logo_ca.gif");
+    deLogo = p.loadImage("Logo_de.png");
+    caLogo = p.loadImage("Logo_ca.png");
   }
   
   public void draw(PApplet p) {
-      p.image(deLogo, 0, 200, 200, 166);
-      p.image(caLogo, 0, 400, 200, 123);
+      p.image(deLogo, 0, 200, 200, 180);
+      p.image(caLogo, 0, 400, 200, 120);
   }
 }
 
