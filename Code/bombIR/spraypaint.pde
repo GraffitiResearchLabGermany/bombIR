@@ -190,6 +190,7 @@ class SprayManager {
  // Set the size of the spray (overwrite the value from setting.properties)
  void setWeight(float size) {
    weight = size;
+   brushSize = size; // 
  }
  
  // Set the color of the spray

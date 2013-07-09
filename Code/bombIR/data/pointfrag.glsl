@@ -157,7 +157,7 @@ void main() {
  	float noise = simplexNoise3( vec3( 2.0 * vec3(coord.xy, depth + depthOffset ) ) * density );
 
   // Map the alpha to the gradient texture
-  float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - ( soften * 2.0) ;
+  float gradient = texture2D( sprayMap, vec2( distance / scale / flare, 0.5 ) ).r - 1.0 ;
 
   // The farther from the center of the window, the more transparent
   float alpha = gradient - noise;
