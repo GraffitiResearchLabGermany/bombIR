@@ -37,6 +37,9 @@ float captureWidth, captureHeight, captureOffsetY;
 
 //size of the colorpicker
 int cpsize;
+
+//index of the paintscreen
+int paintscreenIndex;
  
 
 void readConfiguration() {
@@ -83,6 +86,8 @@ void readConfiguration() {
     captureWidth = firstWindowWidth;
     captureHeight = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
     captureOffsetY = - (windowHeight - captureHeight) / 2; // Should equal 0 when in 4:3
+
+    paintscreenIndex = props.getIntProperty("env.viewport.painscreen.index",1);
 
   }
   catch(IOException e) {

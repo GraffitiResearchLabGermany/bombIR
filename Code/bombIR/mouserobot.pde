@@ -1,13 +1,22 @@
 //moves the mouse when according to the blob
 Robot mouseRobot;
 
+
 //setup the mouse robot
 void setupMouseRobot(){
 	try {
-    	mouseRobot = new Robot();
+
+		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+        GraphicsDevice[] gs = ge.getScreenDevices();
+        if (paintscreenIndex >= gs.length){
+        	println("No screen with index " + paintscreenIndex + " available. Falling back to primary screen");
+        	paintscreenIndex = 0;
+        } 
+    	mouseRobot = new Robot(gs[paintscreenIndex]);
+           	
   	} catch (AWTException e) {
     	println("Robot class not supported by your system!");
-    	exit();
+ 		exit();
   	}
 }
 
@@ -16,7 +25,7 @@ void controlMouse(){
 	//let the blob control the mouse when the menu is visible and 
 	//the move is connected
 	if(moveConnected && menu.isVisible()) {
-		mouseRobot.mouseMove((int)blobX, (int)blobY);
+		mouseRobot.mouseMove((int)blobX+frameXLocation, (int)blobY);
 	}
 
 	if(clicked){
