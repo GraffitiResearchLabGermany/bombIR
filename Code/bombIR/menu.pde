@@ -32,7 +32,7 @@ void setupMenu(){
                 .setPosition(cpsize + 50, 110)
                 .setBackgroundHeight(cpsize + 1)
                 .setWidth(100)
-                .setBackgroundColor(color(0))
+                .setBackgroundColor(color(50))
                 .hideBar()
                 .addCanvas(new ColorSlotCanvas())
                 ;       
@@ -41,21 +41,21 @@ void setupMenu(){
                 .setPosition(50, cpsize + 100)
                 .setBackgroundHeight(80)
                 .setWidth(cpsize + 90)
-                .setBackgroundColor(color(0))
+                .setBackgroundColor(color(50))
                 .hideBar()
                 ;
     menu.addGroup("width")
                   .setPosition(50, 51)
                   .setBackgroundHeight(60)
                   .setWidth(cpsize + 90)
-                  .setBackgroundColor(color(0))
+                  .setBackgroundColor(color(50))
                   .hideBar()
                   ;
     menu.addGroup("logo")
                   .setPosition(cpsize + 90,51)
                   .setBackgroundHeight(cpsize+129)
                   .setWidth(200)
-                  .setBackgroundColor(color(0))
+                  .setBackgroundColor(color(50))
                   .hideBar()
                   .addCanvas(new LogoCanvas());
      

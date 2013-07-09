@@ -69,7 +69,8 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   } // for
 } 
 
-void getCurrentBlob() {
+//set the mapped x/y coordinates to blobX and blobY
+void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
 

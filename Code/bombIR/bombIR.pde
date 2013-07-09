@@ -21,18 +21,13 @@
  *   Raphael de Courville
  * 
  * Libraries:
- *  keystone
+ *  controlP5
+ *  psmove
+ *  gsvideo
+ *  blobdetection
  * ----------------------------------------------------------------------------
  */
 //-----------------------------------------------------------------------------------------
-
-/*
-TO DO 
-- saving of keystone configurations not working (yet)
-- IRCam calibration
-- Menu positioning and sizing
-  
-*/
 
 // IMPORTS
 //-----------------------------------------------------------------------------------------
@@ -60,7 +55,7 @@ SprayManager sprayManagerRight;  // wall screen (right)
 boolean clicked = false;
 boolean clickedEvent = false;
 boolean calibrateKeystone = false;
-boolean printDebug = true;
+boolean printDebug = false;
 
 //-----------------------------------------------------------------------------------------
 
@@ -84,7 +79,8 @@ public void init() {
         readConfiguration();
         
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
-        //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
+        //so we make it big enough to span over two output devices (rp screen projector, wall projector) and position it to start at 
+        //the first projector screen
   	    size(windowWidth, windowHeight, P3D);
         
         //create painting screen
@@ -92,28 +88,30 @@ public void init() {
         wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         
-        //paint the background
+        //paint the background of the paintscreen
         bg = loadImage(bgFile);
         bg.resize(windowWidth/2, windowHeight);
         drawPaintBg();
 
+        //paint the screen to piant on
         paintscreen.beginDraw();
         paintscreen.image(paintbackground,0,0);
         paintscreen.strokeCap(SQUARE);
         paintscreen.endDraw();
         
+        //paint the screen that is projected on the wall
         wallscreen.beginDraw();
         wallscreen.background(0);
         wallscreen.strokeCap(SQUARE);
         wallscreen.endDraw();
-
-        
         
         //setup opencv & video capture
         setupCamera();
         
         //setup the spraypaint shader
+        //spraymanager for the paintscreen
         sprayManagerLeft.setup();
+        //spraymanager for the wallscreen
         sprayManagerRight.setup();
         
         //setup the control menu (colorpicker, clear screen, save, etc.)
@@ -128,7 +126,6 @@ public void init() {
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
 	      frame.setLocation(frameXLocation,0);
-
   } // end SETUP
   
   //-----------------------------------------------------------------------------------------
@@ -173,7 +170,8 @@ public void init() {
         drawBlobsAndEdges(true, false);
       }
      	
-      getCurrentBlob();
+      //update the x/y coordinates of the current blob
+      updateCurrentBlob();
       
       //draw painting screen
       paintscreen.beginDraw();
@@ -196,9 +194,7 @@ public void init() {
       image(paintscreen,0,0);
       
       //draw the projection area (right)
-      image(wallscreen,width/2,0);
-          
-      
+      image(wallscreen,width/2,0);      
   
       // GUI
       if(menu.isVisible()){
@@ -211,11 +207,12 @@ public void init() {
     // Playstation Move update
     psmoveUpdate();
     
-    if(debug) println("Framerate: " + int(frameRate));
+    if(printDebug) println("Framerate: " + int(frameRate));
 
     
   } // end DRAW
 
+//draw the background of the paintscreen
 void drawPaintBg(){
         paintbackground.beginDraw();
         paintbackground.image(bg,0,0);
