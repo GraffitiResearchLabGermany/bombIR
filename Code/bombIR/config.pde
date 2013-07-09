@@ -87,7 +87,7 @@ void readConfiguration() {
     captureHeight = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
     captureOffsetY = - (windowHeight - captureHeight) / 2; // Should equal 0 when in 4:3
 
-    paintscreenIndex = props.getIntProperty("env.viewport.painscreen.index",1);
+    paintscreenIndex = props.getIntProperty("env.viewport.paintscreen.index",1);
 
   }
   catch(IOException e) {
