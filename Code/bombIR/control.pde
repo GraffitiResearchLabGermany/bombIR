@@ -36,15 +36,17 @@ int saveCount = 0;
  // Crop Scale
  void cropScale(float cs) {
      float w = paintscreen.width;
-     float h = paintscreen.height;
+     float h = paintscreen.width/4*3; // Keep cropping in 4:3 even in 16:9 mode
+     float offsetY = - (windowHeight - h) / 2; // Should equal 0 when in 4:3
+     println("offsetY = "+offsetY);
      corner.tlX = int( w / 2.0 * cs );
-     corner.tlY = int( h / 2.0 * cs );
+     corner.tlY = int( h / 2.0 * cs - offsetY );
      corner.trX = int( w - ( w  / 2.0 * cs ) );
-     corner.trY = int( h / 2.0 * cs );
+     corner.trY = int( h / 2.0 * cs - offsetY );
      corner.brX = int( w - ( w  / 2.0 * cs ) );
-     corner.brY = int( h - ( h  / 2.0 * cs ) );
+     corner.brY = int( h - ( h  / 2.0 * cs ) - offsetY );
      corner.blX = int( w / 2.0 * cs );
-     corner.blY = int( h - ( h  / 2.0 * cs ) );
+     corner.blY = int( h - ( h  / 2.0 * cs ) - offsetY );
  }
 
  // Show Blob

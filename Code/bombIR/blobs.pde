@@ -39,11 +39,14 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
             endShape(CLOSE); 
             
             // Return Valid Blobs
-            blobX = (b.xMin * firstWindowWidth);
+            //blobX = (b.xMin * firstWindowWidth);
+            
             //blobX = map(blobX, 0, firstWindowWidth, LeftBorder, RightBorder - LeftBorder);
-            //float mult = 1080 / ct.getHeight(); // vertical stretch
-            //blobY = (b.yMin * windowHeight * mult - 180 );
-            blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
+            
+            //float mult = firstWindowWidth / ct.getWidth(); // vertical stretch
+            //blobY = (b.yMin * windowHeight * mult );
+            
+            //blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
 
             //println("BX: " + blobX + "  BY: " + blobY); 
             
