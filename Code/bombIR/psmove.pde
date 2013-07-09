@@ -70,7 +70,7 @@ void psmoveUpdate() {
       clickedEvent = controllers[i].isTriggerPressedEvent();
     }
     
-    if(printDebug) println("clicked = "+clicked);
+    //if(printDebug) println("clicked = "+clicked);
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
