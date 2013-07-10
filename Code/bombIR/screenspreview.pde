@@ -45,7 +45,7 @@ class ScreenPreview {
 			image(screenImage, 0,0, this.width, this.height);
                         pushStyle();
                         noFill();
-                        stroke(0,200,150);
+                        stroke(10,200,50);
                         rect(0,0, this.width, this.height);
                         popStyle();
 		}

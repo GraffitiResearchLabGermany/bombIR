@@ -49,7 +49,7 @@ void runCameraCalibration() {
     // Draw smaller camera preview when necessary
     if ( capturePreview.isVisible() ) {
       pushMatrix();
-      translate(400, 190); // Place the preview somewhere below the  (hardcoded for testing)
+      translate(350, 220); // Place the preview somewhere below the  (hardcoded for testing)
       capturePreview.setScreen(ct.getCam());
       capturePreview.draw();
       popMatrix();
