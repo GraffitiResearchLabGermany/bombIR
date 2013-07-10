@@ -128,13 +128,13 @@ int saveCount = 0;
  //show or hide blob control
  void toggleBlobControl(){
    if(calibMenu.isVisible()){
-     capturePrev.hide();
+     capturePreview.hide();
      calibMenu.hide();
      background(0);
      noCursor();
    }
    else {
-     capturePrev.show();
+     capturePreview.show();
      calibMenu.show();
 
      cursor(CROSS);

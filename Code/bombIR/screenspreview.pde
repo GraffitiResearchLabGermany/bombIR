@@ -20,11 +20,21 @@ class ScreenPreview {
 	}
 
 	void show() {
-		isVisible = true;
+		if(!this.isVisible){
+			isVisible = true;
+		}
+		else {
+			println("ScreenPreview.show() error: screen is already visible");
+		}
 	}
 
 	void hide() {
-		isVisible = false;
+		if(this.isVisible){
+			isVisible = false;
+		}
+		else {
+			println("ScreenPreview.show() error: screen is already hidden");
+		}
 	}
 
 	void draw() {

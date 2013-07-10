@@ -8,14 +8,10 @@ boolean showBlob  = true;
 float LeftBorder, RightBorder, TopBorder, BottomBorder;
 CameraThread ct;
 
-PShader mirror;
-
 void setupCamera() {
   
   ct = new CameraThread("Camera", blobThresh, this);
   ct.start();
-  
-  //mirror = loadShader("mirror.glsl");
    
   // Calbration Points
   /* set top to 40 because the frame kills 30px */
@@ -49,17 +45,6 @@ void runCameraCalibration() {
     float xCapture = 0;
     float yCapture = -(h-windowHeight)/2; // centering [OPTIMIZE: use imageMode(CENTER)]
     image(ct.getCam(), xCapture, yCapture, w, h);
-    
-    /*
-    PGraphics capture = createGraphics(int(w), int(h));
-    
-    capture.beginDraw();
-    capture.image(ct.getCam(), 0, 0, w, h);
-    capture.filter(mirror);
-    capture.endDraw();
-    
-    image(capture, 0, -(h-windowHeight)/2, w, h);
-    */
     
   } 
   

@@ -48,6 +48,7 @@ import java.awt.GraphicsEnvironment;
 //-----------------------------------------------------------------------------------------  
 PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
+
 ScreenPreview capturePreview;
 
 
@@ -101,9 +102,6 @@ public void init() {
         wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         
-        // create the camera preview
-        capturePreview = new ScreenPreview();
-
         //paint the background of the paintscreen
         bg = loadImage(bgFile);
         bg.resize(windowWidth/2, windowHeight);
@@ -123,6 +121,10 @@ public void init() {
         
         //setup opencv & video capture
         setupCamera();
+
+        // create the camera preview
+        capturePreview = new ScreenPreview((int)ct.getWidth(), (int)ct.getHeight());
+
         
         //setup the spraypaint shader
         //spraymanager for the paintscreen
@@ -172,11 +174,21 @@ public void init() {
       if (ct.getCam().available() == true) {
         ct.getCam().read();
       }
+
+      /*
+      // Draw camera preview
+      if ( capturePreview.isVisible ) {
+        pushMatrix();
+        translate(350, 190); // Place the preview somewhere between the  (hardcoded for testing)
+        capturePreview.draw();
+        popMatrix();
+      }
+      */
       
       // Compute Blobs
       ct.setThreshold(blobThresh);
       
-      /*
+      
       // Show Cam ?
       if(showCam == true) {
         
@@ -189,7 +201,7 @@ public void init() {
         image(ct.getCam(), 0, -(h-height)/2, w, h);
         
       } 
-      */
+      
       
       // Show Blob ?
       if(showBlob == true) {
