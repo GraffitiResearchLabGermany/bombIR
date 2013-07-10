@@ -1,3 +1,5 @@
+// Displays a thumbnail preview of the camera
+
 class ScreenPreview {
 	
 	boolean isVisible = false;
@@ -20,7 +22,7 @@ class ScreenPreview {
 	}
 
 	void show() {
-		println("SHOW the preview!");
+
 		if(this.isVisible == false){
 			this.isVisible = true;
 		}
@@ -30,7 +32,7 @@ class ScreenPreview {
 	}
 
 	void hide() {
-		println("HIDE the preview!");
+
 		if(this.isVisible == true){
 	             this.isVisible = false;
 		}
