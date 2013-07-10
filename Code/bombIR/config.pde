@@ -79,14 +79,6 @@ void readConfiguration() {
     brushSoften     = props.getFloatProperty   ( "env.shader.brushSoften",  0.5               );
     brushMap        = props.getProperty        ( "env.shader.brushMap",     "sprayMap_01.png" );
     
-    // BLOB vars
-    cropScale       = props.getFloatProperty   ( "env.mode.cropScale",      0.0               );
-    blobMin         = props.getFloatProperty   ( "env.mode.blobMin",        0.03              );
-    blobMax         = props.getFloatProperty   ( "env.mode.blobMax",        0.70              );
-    blobThresh      = props.getFloatProperty   ( "env.mode.blobThresh",     0.98              );
-    
-    // Flip the x axis of the tracking?
-    mirrorX         = props.getBooleanProperty ("env.mode.mirrorX",         false             );
     
     // Proportions of the screen ( 0 = 4:3 and 1 = 16:9 )
     ratio           = props.getIntProperty     ( "env.viewport.ratio",      0                 ); 
@@ -119,11 +111,20 @@ void readConfiguration() {
     // Used to keep the aspect ratio of the camera capture image
     // and center it vertically. Also to display the blobs properly.
     
-    captureWidth = firstWindowWidth;
-    captureHeight = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
+    captureWidth   = firstWindowWidth;
+    captureHeight  = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
     captureOffsetY = - (windowHeight - captureHeight) / 2; // Should equal 0 when in 4:3
 
-    paintscreenIndex = props.getIntProperty("env.viewport.paintscreen.index",1);
+    paintscreenIndex = props.getIntProperty    ( "env.viewport.paintscreen.index", 1 );
+
+    // BLOB vars
+    blobMin         = props.getFloatProperty   ( "env.mode.blobMin",    0.03  );
+    blobMax         = props.getFloatProperty   ( "env.mode.blobMax",    0.70  );
+    blobThresh      = props.getFloatProperty   ( "env.mode.blobThresh", 0.98  );
+    
+    // Flip the x axis of the tracking?
+    mirrorX         = props.getBooleanProperty ("env.mode.mirrorX",     false );
+    
 
   }
   catch(IOException e) {

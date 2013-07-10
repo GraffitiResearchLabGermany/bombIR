@@ -34,7 +34,7 @@ int saveCount = 0;
  } 
  
  
- // Set the position of the crop zone corners
+ // Set the position of the cropping area corners
  
  void cropScale(float cs) {      // defined in settings.properties
      float w = firstWindowWidth; // defined in settings.properties
