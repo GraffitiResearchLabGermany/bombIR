@@ -74,7 +74,7 @@ class SprayManager {
     // spray when controller trigger is pressed
     if ( moveConnected == true && clicked == true && alwaysUseMouse == false ) {
         
-        Knot k = new Knot(blobX, blobY, weight, col);        
+        Knot k = new Knot(firstWindowWidth - blobX, blobY, weight, col);   // CRAZYYYYYYY !!!!!!!! Fix this     
         getActiveStroke().add(k);
         
     }

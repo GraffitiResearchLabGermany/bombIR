@@ -25,11 +25,15 @@ void controlMouse(){
 	//let the blob control the mouse when the menu is visible and 
 	//the move is connected
 	if(moveConnected && menu.isVisible() && alwaysUseMouse == false) {
-                int xRobot = (int)blobX;
-                int yRobot = (int)blobY;
+                
+                int offset = frameXLocation;
+  
+                int xRobot = int ( firstWindowWidth - ( blobX - offset ) - firstWindowWidth - offset + 235 ); // CRazy !!!!!!! but it works for now
+                int yRobot = int ( blobY          );
+                
 		mouseRobot.mouseMove( xRobot, yRobot );
 
-                println("xRobot = " +xRobot+" | yRobot = "+ yRobot);
+                println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
                 
 	}
 
