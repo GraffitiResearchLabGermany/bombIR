@@ -7,10 +7,16 @@ class ScreenPreview {
 
 	int width;
 	int height;
+        
+        // Values to show cropping
+        float height_16_9;
+        float offsetY_16_9;
 
 	ScreenPreview( int w, int h ) {
-		this.width  = w;
-		this.height = h;
+		this.width   = w;
+		this.height  = h;
+                height_16_9  = this.height * 0.75;
+                offsetY_16_9 = ( this.height - height_16_9 ) / 2;
 	}
 
 	void setScreen(GSCapture scrImg) {
@@ -48,7 +54,8 @@ class ScreenPreview {
                         pushStyle();
                         noFill();
                         stroke(10,200,50);
-                        rect(0,0, this.width, this.height);
+                        rect( 0, 0,            this.width, this.height ); // frame 4:3
+                        rect( 0, offsetY_16_9, this.width, height_16_9 ); // frame 16:9
                         popStyle();
 		}
 		else {

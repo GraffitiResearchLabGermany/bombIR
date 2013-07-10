@@ -24,7 +24,7 @@ void setupMouseRobot(){
 void controlMouse(){
 	//let the blob control the mouse when the menu is visible and 
 	//the move is connected
-	if(moveConnected && menu.isVisible()) {
+	if(moveConnected && menu.isVisible() && alwaysUseMouse == false) {
 		mouseRobot.mouseMove((int)blobX+frameXLocation, (int)blobY);
 	}
 

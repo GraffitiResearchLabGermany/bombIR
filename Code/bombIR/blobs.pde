@@ -78,12 +78,17 @@ void updateCurrentBlob() {
       float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
       float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
       
-      //println("");
-      //println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
-      //println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
+      println("");
+      println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
+      println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
       
       // Flip the X axis (when not using the rear projection screen)
       if( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
+      
+      // 16:9 Y axis correction
+      if( ratio == 1) {
+        yBlobUnit = ( yBlobUnit * 1.33333 ) - 0.166666;
+      }
 
       // Map the blob coordinates from unit square to the cropping area
       blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
