@@ -58,21 +58,31 @@ void readConfiguration() {
     // load a configuration from a file inside the data folder
     props.load(createInput("settings.properties"));
     
+    // In debug mode, we print debug messages and the two "windows" 
+    // appear smaller in the main screen
     debug           = props.getBooleanProperty ( "env.mode.debug",          false             );
     alwaysUseMouse  = props.getBooleanProperty ( "env.mode.alwaysUseMouse", false             );
     calibrateCamera = props.getBooleanProperty ( "env.mode.calib",          false             );
     cpsize          = props.getIntProperty     ( "env.colorpicker.size",    400               );
+    
+    // What image file should be used as a background for the paintscreen?
     bgFile          = props.getProperty        ( "env.bg.file",             "background.jpg"  );
+    
+    // Which camera device are we using?
     camDevice       = props.getProperty        ( "env.camera.device",       "default"         );
+    
+    // SHADER vars
     brushSize       = props.getIntProperty     ( "env.shader.brushSize",    100               );
     brushSoften     = props.getFloatProperty   ( "env.shader.brushSoften",  0.5               );
     brushMap        = props.getProperty        ( "env.shader.brushMap",     "sprayMap_01.png" );
     
+    // BLOB vars
     cropScale       = props.getFloatProperty   ( "env.mode.cropScale",      0.0               );
     blobMin         = props.getFloatProperty   ( "env.mode.blobMin",        0.03              );
     blobMax         = props.getFloatProperty   ( "env.mode.blobMax",        0.70              );
     blobThresh      = props.getFloatProperty   ( "env.mode.blobThresh",     0.98              );
     
+    // Flip the x axis of the tracking?
     mirrorX         = props.getBooleanProperty ("env.mode.mirrorX",         false             );
     
     // Proportions of the screen ( 0 = 4:3 and 1 = 16:9 )
