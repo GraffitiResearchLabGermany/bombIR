@@ -46,6 +46,15 @@ void runCameraCalibration() {
     float yCapture = -(h-windowHeight)/2; // centering [OPTIMIZE: use imageMode(CENTER)]
     image(ct.getCam(), xCapture, yCapture, w, h);
     
+    // Draw smaller camera preview when necessary
+    if ( capturePreview.isVisible() ) {
+      pushMatrix();
+      translate(400, 190); // Place the preview somewhere below the  (hardcoded for testing)
+      capturePreview.setScreen(ct.getCam());
+      capturePreview.draw();
+      popMatrix();
+    }
+    
   } 
   
   // Show Blob ?

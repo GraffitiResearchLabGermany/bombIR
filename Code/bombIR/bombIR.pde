@@ -174,21 +174,12 @@ public void init() {
       if (ct.getCam().available() == true) {
         ct.getCam().read();
       }
-
-      /*
-      // Draw camera preview
-      if ( capturePreview.isVisible ) {
-        pushMatrix();
-        translate(350, 190); // Place the preview somewhere between the  (hardcoded for testing)
-        capturePreview.draw();
-        popMatrix();
-      }
-      */
+      
       
       // Compute Blobs
       ct.setThreshold(blobThresh);
       
-      
+      /*
       // Show Cam ?
       if(showCam == true) {
         
@@ -201,6 +192,7 @@ public void init() {
         image(ct.getCam(), 0, -(h-height)/2, w, h);
         
       } 
+      */
       
       
       // Show Blob ?

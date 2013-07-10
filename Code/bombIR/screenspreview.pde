@@ -1,7 +1,7 @@
 class ScreenPreview {
 	
 	boolean isVisible = false;
-	PGraphics screenImage;
+	GSCapture screenImage;
 
 	int width;
 	int height;
@@ -11,17 +11,18 @@ class ScreenPreview {
 		this.height = h;
 	}
 
-	void setScreen(PGraphics scrImg) {
+	void setScreen(GSCapture scrImg) {
 		screenImage = scrImg;
 	}
 
 	boolean isVisible() {
-		return isVisible;
+           return this.isVisible;
 	}
 
 	void show() {
-		if(!this.isVisible){
-			isVisible = true;
+		println("SHOW the preview!");
+		if(this.isVisible == false){
+			this.isVisible = true;
 		}
 		else {
 			println("ScreenPreview.show() error: screen is already visible");
@@ -29,17 +30,24 @@ class ScreenPreview {
 	}
 
 	void hide() {
-		if(this.isVisible){
-			isVisible = false;
+		println("HIDE the preview!");
+		if(this.isVisible == true){
+	             this.isVisible = false;
 		}
 		else {
 			println("ScreenPreview.show() error: screen is already hidden");
 		}
 	}
-
+        
+        // Show the image in a small frame
 	void draw() {
 		if(null != screenImage) {
 			image(screenImage, 0,0, this.width, this.height);
+                        pushStyle();
+                        noFill();
+                        stroke(0,200,150);
+                        rect(0,0, this.width, this.height);
+                        popStyle();
 		}
 		else {
 			println("ERROR: ScreenPreview.draw() doesn't have an image to display");
