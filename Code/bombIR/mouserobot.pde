@@ -25,7 +25,12 @@ void controlMouse(){
 	//let the blob control the mouse when the menu is visible and 
 	//the move is connected
 	if(moveConnected && menu.isVisible() && alwaysUseMouse == false) {
-		mouseRobot.mouseMove((int)blobX+frameXLocation, (int)blobY);
+                int xRobot = (int)blobX;
+                int yRobot = (int)blobY;
+		mouseRobot.mouseMove( xRobot, yRobot );
+
+                println("xRobot = " +xRobot+" | yRobot = "+ yRobot);
+                
 	}
 
 	if(clicked){

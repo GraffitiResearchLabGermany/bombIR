@@ -78,9 +78,11 @@ void updateCurrentBlob() {
       float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
       float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
       
+      /*
       println("");
       println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
       println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
+      */
       
       // Flip the X axis (when not using the rear projection screen)
       if( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
