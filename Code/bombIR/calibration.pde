@@ -6,14 +6,13 @@ Corner corner;
 boolean showCam = true;
 boolean showBlob  = true;
 float LeftBorder, RightBorder, TopBorder, BottomBorder;
-float cropScale;
 CameraThread ct;
 
 PShader mirror;
 
 void setupCamera() {
   
-  ct = new CameraThread("Camera",blobThresh, this);
+  ct = new CameraThread("Camera", blobThresh, this);
   ct.start();
   
   //mirror = loadShader("mirror.glsl");

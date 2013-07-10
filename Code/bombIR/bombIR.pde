@@ -34,16 +34,13 @@
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
-import codeanticode.gsvideo.*; 
+import codeanticode.gsvideo.*;
 import blobDetection.*;
 import java.awt.Robot;
 import java.awt.AWTException;
 import java.awt.event.InputEvent;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
-
-
-
 
 
   
@@ -58,7 +55,7 @@ SprayManager sprayManagerLeft; // paint screen (left)
 SprayManager sprayManagerRight;  // wall screen (right)
 
 // Robot mouse
-Robot robot;
+//Robot robot;
 
 
 // GLOBAL VARIABLES
@@ -83,8 +80,8 @@ public void init() {
   void setup() {
     
         // Create the robot mouse
-        try                    { robot = new Robot(); } 
-        catch (AWTException e) { e.printStackTrace(); }
+        //try                    { robot = new Robot(); } 
+        //catch (AWTException e) { e.printStackTrace(); }
     
         // Create the spray objects for both screens
         sprayManagerLeft   = new SprayManager();
@@ -223,7 +220,7 @@ public void init() {
       image(paintscreen,0,0);
       
       //draw the projection area (right)
-      image(wallscreen,width/2,0);      
+      image(wallscreen,width/2,0);
   
       // GUI
       if(menu.isVisible()){
@@ -236,7 +233,7 @@ public void init() {
     // Playstation Move update
     psmoveUpdate();
     
-    if(debug) println("Framerate: " + int(frameRate));
+    //if(debug) println("Framerate: " + int(frameRate));
 
     
   } // end DRAW

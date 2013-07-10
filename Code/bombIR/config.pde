@@ -23,10 +23,18 @@ String bgFile;
 //device of the camera (only set when needed)
 String camDevice;
 
+// BLOB & CALIBRATION variables
+float cropScale;
+float blobMin = 0.03;      
+float blobMax = 0.70;
+float blobThresh = 0.98;
+
+// SHADER variables
 float brushSize;
 float brushSoften;
 String brushMap;
 
+// 
 boolean mirrorX;
 
 boolean alwaysUseMouse;
@@ -56,6 +64,11 @@ void readConfiguration() {
     brushSize = props.getIntProperty("env.shader.brushSize",100);
     brushSoften = props.getFloatProperty("env.shader.brushSoften",0.5);
     brushMap = props.getProperty("env.shader.brushMap","sprayMap_01.png");
+    
+    cropScale = props.getFloatProperty("env.mode.cropScale", 0.0);
+    blobMin = props.getFloatProperty("env.mode.blobMin", 0.03);
+    blobMax = props.getFloatProperty("env.mode.blobMax", 0.70);
+    blobThresh = props.getFloatProperty("env.mode.blobThresh", 0.98);
     
     mirrorX = props.getBooleanProperty("env.mode.mirrorX", false);
     
@@ -106,7 +119,7 @@ class P5Properties extends Properties {
   }
  
   int getIntProperty(String id, int defVal) {
-    return int(getProperty(id,""+defVal)); 
+    return int(getProperty(id,""+defVal));
   }
  
   float getFloatProperty(String id, float defVal) {
