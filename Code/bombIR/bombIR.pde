@@ -48,6 +48,7 @@ import java.awt.GraphicsEnvironment;
 //-----------------------------------------------------------------------------------------  
 PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
+ScreenPreview capturePreview;
 
 
 // Spray renderers
@@ -100,6 +101,9 @@ public void init() {
         wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
         paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
         
+        // create the camera preview
+        capturePreview = new ScreenPreview();
+
         //paint the background of the paintscreen
         bg = loadImage(bgFile);
         bg.resize(windowWidth/2, windowHeight);
