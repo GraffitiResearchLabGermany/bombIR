@@ -88,6 +88,10 @@ void readConfiguration() {
     // Proportions of the screen ( 0 = 4:3 and 1 = 16:9 )
     ratio           = props.getIntProperty     ( "env.viewport.ratio",      0                 ); 
     
+    
+    // Moving the windows around and scaling 
+    // depending on debug status and ratio
+    
     if(debug) { // if we're using the main screen (debug mode)
       frameXLocation = props.getIntProperty("env.viewport.frame.xlocation_debug",0);
       if(ratio == 0) { // 4:3
@@ -108,8 +112,10 @@ void readConfiguration() {
     
     firstWindowWidth = windowWidth/2;
     
+    
     // Used to keep the aspect ratio of the camera capture image
     // and center it vertically. Also to display the blobs properly.
+    
     captureWidth = firstWindowWidth;
     captureHeight = firstWindowWidth/4*3; // Keep cropping in 4:3 even in 16:9 mode
     captureOffsetY = - (windowHeight - captureHeight) / 2; // Should equal 0 when in 4:3
