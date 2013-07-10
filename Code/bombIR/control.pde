@@ -34,8 +34,7 @@ int saveCount = 0;
  } 
  
  
- // Crop Scale while keeping 4:3 aspect ratio (NO!)
- // Don't keep the aspect ratio but stretch the blobY to compensate
+ // Set the position of the crop zone corners
  
  void cropScale(float cs) {      // defined in settings.properties
      float w = firstWindowWidth; // defined in settings.properties
