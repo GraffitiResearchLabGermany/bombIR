@@ -5,10 +5,13 @@
  
 //Access to the properties file
 P5Properties props;
-//debugging mode, logmessage are shown on the console
+
+// debugging mode, log messages are shown on the console
+// and the two "windows" appear smaller & on the main screen
 boolean debug = false;
-//???
-boolean calibrateCamera = false;
+
+// If false, skip camera calibration and use default values (set in settings.properties)
+boolean calibrateCamera = true;
 
 //height of the application window
 int windowHeight;
