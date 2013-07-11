@@ -108,16 +108,25 @@ int saveCount = 0;
        else {
          drawPaintBg();
        }
-     break;   
-     case 'UP':
-     break;
-     case 'DOWN':
-     break;
-     case 'LEFT':
-     break;
-     case 'RIGHT':
-     break; 
+     break;  
    }
+   
+   // Adjust the position of the cursor 
+   if (key == CODED) {
+     if (keyCode == LEFT) {
+       trackingOffsetX -= 2;
+     }
+     else if(keyCode == RIGHT) {
+       trackingOffsetX += 2;
+     }
+     else if(keyCode == UP) {
+       trackingOffsetY -= 2;
+     }
+     else if(keyCode == DOWN) {
+       trackingOffsetY += 2;
+     }
+   }
+   
  }
    
  //show or hide the menu

@@ -254,6 +254,5 @@ void drawPaintBg(){
         paintbackground.image(bg,0,0);
         paintbackground.endDraw();
 }
-  
-  
+
 //-----------------------------------------------------------------------------------------

@@ -32,7 +32,11 @@ float blobMin    = 0.03;
 float blobMax    = 0.70;
 float blobThresh = 0.98;
 
-// SHADER variables
+// TRACKING adjustment variables
+float trackingOffsetX = 0.0;
+float trackingOffsetY = 0.0;
+
+// SHADER variables (brush)
 float brushSize;
 float brushSoften;
 String brushMap;
@@ -123,8 +127,11 @@ void readConfiguration() {
     blobThresh      = props.getFloatProperty   ( "env.mode.blobThresh", 0.98  );
     
     // Flip the x axis of the tracking?
-    mirrorX         = props.getBooleanProperty ("env.mode.mirrorX",     false );
+    mirrorX         = props.getBooleanProperty ( "env.mode.mirrorX",    false );
     
+    // Adjust tracking position
+    trackingOffsetX = props.getFloatProperty   ( "env.mode.trackingOffsetX", 0.0 );
+    trackingOffsetY = props.getFloatProperty   ( "env.mode.trackingOffsetY", 0.0 );    
 
   }
   catch(IOException e) {

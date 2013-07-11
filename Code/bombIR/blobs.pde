@@ -96,6 +96,8 @@ void updateCurrentBlob() {
       blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map( yBlobUnit, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
       
+      // Adjust tracking
+      
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
       //System.out.println( "blobSize = "+ blobSize );
