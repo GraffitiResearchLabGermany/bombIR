@@ -31,7 +31,7 @@ void controlMouse(){
                 
 		mouseRobot.mouseMove( xRobot, yRobot );
 
-                println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
+                //println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
                 
 	}
 

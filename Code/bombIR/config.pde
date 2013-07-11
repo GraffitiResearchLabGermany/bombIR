@@ -41,6 +41,9 @@ float brushSize;
 float brushSoften;
 String brushMap;
 
+// SPRAY variables
+int maxStrokes = 10; // How long can the spray ArrayList be?
+
 // 
 boolean mirrorX;
 

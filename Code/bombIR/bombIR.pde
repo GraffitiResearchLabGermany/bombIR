@@ -212,7 +212,10 @@ public void init() {
       //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-          if(clickedEvent) sprayManagerLeft.initSpray();
+          if(clickedEvent) { 
+            sprayManagerLeft.initSpray();
+            sprayManagerLeft.limitStrokes(maxStrokes);
+          }
           sprayManagerLeft.spray(paintscreen);
         }
       paintscreen.endDraw();
@@ -220,7 +223,10 @@ public void init() {
       //draw wall screen
       wallscreen.beginDraw();
           if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-            if(clickedEvent) sprayManagerRight.initSpray();
+            if(clickedEvent) {
+              sprayManagerRight.initSpray();
+              sprayManagerRight.limitStrokes(maxStrokes);
+            }
             sprayManagerRight.spray(wallscreen);
           }
       wallscreen.endDraw();
