@@ -75,8 +75,11 @@ void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
     
-      float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
-      float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
+      //float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
+      //float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
+      
+      float xBlobUnit = ct.getBlobDetection().getBlob(0).x;
+      float yBlobUnit = ct.getBlobDetection().getBlob(0).y;
       
       /*
       println("");
