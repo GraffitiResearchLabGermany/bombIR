@@ -34,7 +34,7 @@
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
-import codeanticode.gsvideo.*; 
+import codeanticode.gsvideo.*;
 import blobDetection.*;
 import java.awt.Robot;
 import java.awt.AWTException;
@@ -43,14 +43,13 @@ import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 
 
-
-
-
   
 // DECLARATIONS
 //-----------------------------------------------------------------------------------------  
 PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
+
+ScreenPreview capturePreview;
 
 
 // Spray renderers
@@ -58,7 +57,7 @@ SprayManager sprayManagerLeft; // paint screen (left)
 SprayManager sprayManagerRight;  // wall screen (right)
 
 // Robot mouse
-Robot robot;
+//Robot robot;
 
 
 // GLOBAL VARIABLES
@@ -82,9 +81,11 @@ public void init() {
   
   void setup() {
     
+    cursor(CROSS);
+    
         // Create the robot mouse
-        try                    { robot = new Robot(); } 
-        catch (AWTException e) { e.printStackTrace(); }
+        //try                    { robot = new Robot(); } 
+        //catch (AWTException e) { e.printStackTrace(); }
     
         // Create the spray objects for both screens
         sprayManagerLeft   = new SprayManager();
@@ -122,6 +123,10 @@ public void init() {
         
         //setup opencv & video capture
         setupCamera();
+
+        // create the camera preview
+        capturePreview = new ScreenPreview((int)ct.getWidth(), (int)ct.getHeight());
+
         
         //setup the spraypaint shader
         //spraymanager for the paintscreen
@@ -172,6 +177,7 @@ public void init() {
         ct.getCam().read();
       }
       
+      
       // Compute Blobs
       ct.setThreshold(blobThresh);
       
@@ -190,6 +196,7 @@ public void init() {
       } 
       */
       
+      
       // Show Blob ?
       if(showBlob == true) {
         if(!showCam) {
@@ -205,7 +212,10 @@ public void init() {
       //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-          if(clickedEvent) sprayManagerLeft.initSpray();
+          if(clickedEvent) { 
+            sprayManagerLeft.initSpray();
+            sprayManagerLeft.limitStrokes(maxStrokes);
+          }
           sprayManagerLeft.spray(paintscreen);
         }
       paintscreen.endDraw();
@@ -213,7 +223,10 @@ public void init() {
       //draw wall screen
       wallscreen.beginDraw();
           if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-            if(clickedEvent) sprayManagerRight.initSpray();
+            if(clickedEvent) {
+              sprayManagerRight.initSpray();
+              sprayManagerRight.limitStrokes(maxStrokes);
+            }
             sprayManagerRight.spray(wallscreen);
           }
       wallscreen.endDraw();
@@ -223,7 +236,7 @@ public void init() {
       image(paintscreen,0,0);
       
       //draw the projection area (right)
-      image(wallscreen,width/2,0);      
+      image(wallscreen,width/2,0);
   
       // GUI
       if(menu.isVisible()){
@@ -236,7 +249,7 @@ public void init() {
     // Playstation Move update
     psmoveUpdate();
     
-    if(debug) println("Framerate: " + int(frameRate));
+    //if(debug) println("Framerate: " + int(frameRate));
 
     
   } // end DRAW
@@ -247,6 +260,5 @@ void drawPaintBg(){
         paintbackground.image(bg,0,0);
         paintbackground.endDraw();
 }
-  
-  
+
 //-----------------------------------------------------------------------------------------
