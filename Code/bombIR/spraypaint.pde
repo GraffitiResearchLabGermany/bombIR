@@ -20,8 +20,8 @@ class SprayManager {
   // Spray density distribution expressed in grayscale gradient
   PImage sprayMap;
  
- color col;
- float weight = brushSize;
+   color col;
+   float weight = brushSize;
  
  //boolean clickEv;
  
@@ -55,6 +55,22 @@ class SprayManager {
       //if(printDebug) println("strokeList.add(newStroke);");
       
       //if(printDebug) println("strokeList.size()"+strokeList.size());
+      
+  }
+  
+  // Remove from the bottom of the stroke list if it becomes too long
+  void limitStrokes(int maxStrokes) {
+    
+    //println("strokeList.size() = " + strokeList.size());
+    
+    if( maxStrokes >= 2 ) {
+      if( strokeList.size() > maxStrokes ) {
+        strokeList.remove(0);
+        //print(", removing a stroke from index O.");
+      }
+    } else {
+        println("ERROR in SprayManager.limitStrokes(): maxStrokes can't be inferior to 2");
+    }
   }
   
   void spray(PGraphics targetBuffer) {
@@ -70,22 +86,28 @@ class SprayManager {
     
     //this.setWeight(weight);
     this.setColor(selectedColor);
+    
+    if( clicked == true ) {
+      
+      Path stroke = getActiveStroke();
   
-    // spray when controller trigger is pressed
-    if ( moveConnected == true && clicked == true && alwaysUseMouse == false ) {
-        
-        Knot k = new Knot(blobX, blobY, weight, col);        
-        getActiveStroke().add(k);
-        
+      // spray when controller trigger is pressed
+      if ( moveConnected == true && alwaysUseMouse == false ) {
+          Knot k = new Knot(firstWindowWidth - blobX, blobY, weight, col);
+          stroke.add(k);
+      }
+      
+      // if no controller present or we chose to use mouse by default, spray on mouse click
+      else  {
+          Knot k = new Knot(mouseX, mouseY, weight, col);
+          stroke.add(k);
+      }
+      
+      // IMPLEMENT: Remove from the bottom of the Knot list if it becomes to large
+    
     }
     
-    // if no controller present or we chose to use mouse by default, spray on mouse click
-    else if ( clicked == true ) {
-      
-        Knot k = new Knot(mouseX, mouseY, weight, col);
-        getActiveStroke().add(k);
-        
-    }
+    
     
     this.draw(targetBuffer);
     

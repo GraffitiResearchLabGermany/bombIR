@@ -33,19 +33,20 @@ int saveCount = 0;
     sprayManagerRight.setWeight(brushSize);
  } 
  
- // Crop Scale while keeping 4:3 aspect ratio
- void cropScale(float cs) {
-     float w = captureWidth;
-     float h = captureHeight;
-     float offset = captureOffsetY;
+ 
+ // Set the position of the cropping area corners
+ 
+ void cropScale(float cs) {      // defined in settings.properties
+     float w = firstWindowWidth; // defined in settings.properties
+     float h = windowHeight;
      corner.tlX = int( w / 2.0 * cs );
-     corner.tlY = int( h / 2.0 * cs - offset );
+     corner.tlY = int( h / 2.0 * cs );
      corner.trX = int( w - ( w  / 2.0 * cs ) );
-     corner.trY = int( h / 2.0 * cs - offset );
+     corner.trY = int( h / 2.0 * cs );
      corner.brX = int( w - ( w  / 2.0 * cs ) );
-     corner.brY = int( h - ( h  / 2.0 * cs ) - offset );
+     corner.brY = int( h - ( h  / 2.0 * cs ) );
      corner.blX = int( w / 2.0 * cs );
-     corner.blY = int( h - ( h  / 2.0 * cs ) - offset );
+     corner.blY = int( h - ( h  / 2.0 * cs ) );
  }
 
  // Show Blob
@@ -81,7 +82,7 @@ int saveCount = 0;
      showBlob = false;
      drawPaintBg();
      calibMenu.hide();
-     noCursor();
+     //noCursor();
    }
  }
  
@@ -107,14 +108,31 @@ int saveCount = 0;
        else {
          drawPaintBg();
        }
-     break;     
+     break;  
    }
+   
+   // Adjust the position of the cursor 
+   if (key == CODED) {
+     if (keyCode == LEFT) {
+       trackingOffsetX -= 2;
+     }
+     else if(keyCode == RIGHT) {
+       trackingOffsetX += 2;
+     }
+     else if(keyCode == UP) {
+       trackingOffsetY -= 2;
+     }
+     else if(keyCode == DOWN) {
+       trackingOffsetY += 2;
+     }
+   }
+   
  }
    
  //show or hide the menu
  void toggleMenu(){
    if(menu.isVisible()){
-     noCursor();
+     //noCursor();
      menu.hide();
      background(0);
    }
@@ -127,12 +145,15 @@ int saveCount = 0;
  //show or hide blob control
  void toggleBlobControl(){
    if(calibMenu.isVisible()){
+     capturePreview.hide();
      calibMenu.hide();
      background(0);
-     noCursor();
+     //noCursor();
    }
    else {
+     capturePreview.show();
      calibMenu.show();
+
      cursor(CROSS);
    }
  }

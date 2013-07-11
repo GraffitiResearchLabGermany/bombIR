@@ -2,9 +2,6 @@
 //-----------------------------------------------------------------------------------------
 // BLOB DETECTION
 
-float blobMin = 0.08;      
-float blobMax = 0.45;
-float blobThresh = 0.90;
 float blobX, blobY;
 float blobSize;
 
@@ -78,16 +75,33 @@ void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
     
-      float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
-      float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
+      //float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
+      //float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
+      
+      float xBlobUnit = ct.getBlobDetection().getBlob(0).x;
+      float yBlobUnit = ct.getBlobDetection().getBlob(0).y;
+      
+      /*
+      println("");
+      println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
+      println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
+      */
       
       // Flip the X axis (when not using the rear projection screen)
       if( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
+      
+      // 16:9 Y axis correction
+      if( ratio == 1) {
+        yBlobUnit = ( yBlobUnit * 1.33333 ) - 0.166666;
+      }
 
       // Map the blob coordinates from unit square to the cropping area
       blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
       blobY = map( yBlobUnit, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
-
+      
+      // Adjust tracking
+      blobX = blobX - trackingOffsetX;
+      blobY = blobY - trackingOffsetY;
       
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
