@@ -81,6 +81,8 @@ public void init() {
   
   void setup() {
     
+    cursor(CROSS);
+    
         // Create the robot mouse
         //try                    { robot = new Robot(); } 
         //catch (AWTException e) { e.printStackTrace(); }

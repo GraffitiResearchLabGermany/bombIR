@@ -82,7 +82,7 @@ int saveCount = 0;
      showBlob = false;
      drawPaintBg();
      calibMenu.hide();
-     noCursor();
+     //noCursor();
    }
  }
  
@@ -115,7 +115,7 @@ int saveCount = 0;
  //show or hide the menu
  void toggleMenu(){
    if(menu.isVisible()){
-     noCursor();
+     //noCursor();
      menu.hide();
      background(0);
    }
@@ -131,7 +131,7 @@ int saveCount = 0;
      capturePreview.hide();
      calibMenu.hide();
      background(0);
-     noCursor();
+     //noCursor();
    }
    else {
      capturePreview.show();
