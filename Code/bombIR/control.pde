@@ -108,7 +108,15 @@ int saveCount = 0;
        else {
          drawPaintBg();
        }
-     break;     
+     break;   
+     case 'UP':
+     break;
+     case 'DOWN':
+     break;
+     case 'LEFT':
+     break;
+     case 'RIGHT':
+     break; 
    }
  }
    
