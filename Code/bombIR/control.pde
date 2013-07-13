@@ -6,8 +6,10 @@ int saveCount = 0;
 
  void CLEAR(boolean theFlag) {
   if(theFlag == true) {
+    
     paintscreen.beginDraw();
     paintscreen.clear();
+    paintscreen.image(paintbackground,0,0);
     paintscreen.endDraw();
     
     wallscreen.beginDraw();
@@ -24,57 +26,78 @@ int saveCount = 0;
      wallscreen.save("exports/Save_" + saveCount + ".jpg");
   }
  } 
- 
- // CLEAR
- void CLEAR() {
-   // ?? 
- }
 
  //adjust brush size
- void WIDTH(int BrushSize) {
-    weight = (BrushSize);
+ void WIDTH(int brushSize) {
+    sprayManagerLeft.setWeight(brushSize);
+    sprayManagerRight.setWeight(brushSize);
  } 
  
- // Crop Scale
- int lastCS = 0;
- void cropScale(int cs) {
-   if(cs > lastCS) {
-     corner.tlX += cs;
-     corner.tlY += cs;
-     corner.trX -= cs;
-     corner.trY += cs;
-     corner.brX -= cs;
-     corner.brY -= cs;
-     corner.blX += cs;
-     corner.blY -= cs;
+ 
+ // Set the position of the cropping area corners
+ 
+ void cropScale(float cs) {      // defined in settings.properties
+     float w = firstWindowWidth; // defined in settings.properties
+     float h = windowHeight;
+     corner.tlX = int( w / 2.0 * cs );
+     corner.tlY = int( h / 2.0 * cs );
+     corner.trX = int( w - ( w  / 2.0 * cs ) );
+     corner.trY = int( h / 2.0 * cs );
+     corner.brX = int( w - ( w  / 2.0 * cs ) );
+     corner.brY = int( h - ( h  / 2.0 * cs ) );
+     corner.blX = int( w / 2.0 * cs );
+     corner.blY = int( h - ( h  / 2.0 * cs ) );
+ }
+
+ // Show Blob
+ void showBlob() {
+   if(calibrateCamera) {
+     showBlob =! showBlob;
    }
-   lastCS = cs;
+   if(!calibrateCamera) {
+     showBlob =! showBlob;
+     background(0);
+     drawPaintBg();
+   }   
+ }
+ 
+ // Show Cam
+ void showCam() {
+   if(calibrateCamera) {
+     showCam =! showCam;
+   }
+   if(!calibrateCamera) {
+     showCam =! showCam;
+     background(0);
+     drawPaintBg();
+   }   
  }
  
  // Save Calibration
  void saveCalib() {
-   background(0);
-   calibrateCamera = false; 
-   paintbg.render(paintbackground);
-   calibMenu.hide();
+   if(calibrateCamera) {
+     background(0);
+     calibrateCamera = false; 
+     showCam = false;
+     showBlob = false;
+     drawPaintBg();
+     calibMenu.hide();
+     //noCursor();
+   }
  }
  
  void keyPressed() {
    switch(key) {
-     case 'c':
-       if(!calibrateCamera) { 
-         // enter/leave calibration mode, where surfaces can be warped and moved
-         ks.toggleCalibration();
-         calibrateKeystone = !calibrateKeystone;       
-         //redraw background once after calibration
-         background(0);
-         paintbg.render(paintbackground);
-       }
+     case 'r': 
+       // clear the paint screen (left)
+       sprayManagerLeft.reset(paintscreen, bg); 
+       // clear the wall screen (right)
+       sprayManagerRight.reset(wallscreen, color(0));
      break;
      case 'm': 
        if(!calibrateCamera) {   
          toggleMenu();
-         paintbg.render(paintbackground);
+         drawPaintBg();
        }
      break;
      case 'b':
@@ -83,30 +106,54 @@ int saveCount = 0;
          background(0);
        }
        else {
-         paintbg.render(paintbackground);
+         drawPaintBg();
        }
-     break;     
+     break;  
    }
+   
+   // Adjust the position of the cursor 
+   if (key == CODED) {
+     if (keyCode == LEFT) {
+       trackingOffsetX -= 2;
+     }
+     else if(keyCode == RIGHT) {
+       trackingOffsetX += 2;
+     }
+     else if(keyCode == UP) {
+       trackingOffsetY -= 2;
+     }
+     else if(keyCode == DOWN) {
+       trackingOffsetY += 2;
+     }
+   }
+   
  }
    
  //show or hide the menu
  void toggleMenu(){
    if(menu.isVisible()){
+     //noCursor();
      menu.hide();
      background(0);
    }
    else {
      menu.show();
+     cursor(CROSS);
    }
  }
  
  //show or hide blob control
  void toggleBlobControl(){
    if(calibMenu.isVisible()){
+     capturePreview.hide();
      calibMenu.hide();
      background(0);
+     //noCursor();
    }
    else {
+     capturePreview.show();
      calibMenu.show();
+
+     cursor(CROSS);
    }
  }
