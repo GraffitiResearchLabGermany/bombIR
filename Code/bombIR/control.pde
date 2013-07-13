@@ -23,7 +23,14 @@ int saveCount = 0;
   if(theFlag == true) {
      saveCount ++;
      // save image w/o gui
-     wallscreen.save("exports/Save_" + saveCount + ".jpg");
+     wallscreen.save(
+        "exports/" 
+        + year() + "_ " 
+        + month() + "_" 
+        + day() + "_" 
+        + hour() + "_" 
+        + minute() + "_"
+        + "screenshot.jpg");
   }
  } 
 
