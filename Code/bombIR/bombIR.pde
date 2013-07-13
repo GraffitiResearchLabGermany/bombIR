@@ -21,44 +21,51 @@
  *   Raphael de Courville
  * 
  * Libraries:
- *  keystone
+ *  controlP5
+ *  psmove
+ *  gsvideo
+ *  blobdetection
  * ----------------------------------------------------------------------------
  */
 //-----------------------------------------------------------------------------------------
 
-/*
-TO DO 
-- saving of keystone configurations not working (yet)
-- IRCam calibration
-- Menu positioning and sizing
-  
-*/
-
 // IMPORTS
 //-----------------------------------------------------------------------------------------
-import deadpixel.keystone.*;
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
 import codeanticode.gsvideo.*;
-//import monclubelec.javacvPro.*; 
 import blobDetection.*;
+import java.awt.Robot;
+import java.awt.AWTException;
+import java.awt.event.InputEvent;
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
 
 
   
 // DECLARATIONS
 //-----------------------------------------------------------------------------------------  
-Keystone ks;
-CornerPinSurface surface, paintbg;
 PGraphics wallscreen, paintscreen, paintbackground;
-GSCapture cam;
-BlobDetection bd;
+PImage bg;
+
+ScreenPreview capturePreview;
+
+
+// Spray renderers
+SprayManager sprayManagerLeft; // paint screen (left)
+SprayManager sprayManagerRight;  // wall screen (right)
+
+// Robot mouse
+//Robot robot;
 
 
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
+boolean clickedEvent = false;
 boolean calibrateKeystone = false;
+
 
 //-----------------------------------------------------------------------------------------
 
@@ -73,26 +80,59 @@ public void init() {
 //-----------------------------------------------------------------------------------------
   
   void setup() {
+    
+    cursor(CROSS);
+    
+        // Create the robot mouse
+        //try                    { robot = new Robot(); } 
+        //catch (AWTException e) { e.printStackTrace(); }
+    
+        // Create the spray objects for both screens
+        sprayManagerLeft   = new SprayManager();
+        sprayManagerRight  = new SprayManager();
         
         //read the values from the configuration file
         readConfiguration();
         
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
-        //so we make it big enough to span over all three output devices (Laptop, rp screen projector, wall projector)
-  	size(windowWidth, windowHeight, P3D);
+        //so we make it big enough to span over two output devices (rp screen projector, wall projector) and position it to start at 
+        //the first projector screen
+  	    size(windowWidth, windowHeight, P3D);
         
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
-        paintscreen.background(255,255,255,0);
+        wallscreen = createGraphics(windowWidth/2, windowHeight, P3D);
+        paintbackground = createGraphics(windowWidth/2,windowHeight,P3D);
+        
+        //paint the background of the paintscreen
+        bg = loadImage(bgFile);
+        bg.resize(windowWidth/2, windowHeight);
+        drawPaintBg();
+
+        //paint the screen to piant on
+        paintscreen.beginDraw();
+        paintscreen.image(paintbackground,0,0);
+        paintscreen.strokeCap(SQUARE);
+        paintscreen.endDraw();
+        
+        //paint the screen that is projected on the wall
+        wallscreen.beginDraw();
+        wallscreen.background(0);
+        wallscreen.strokeCap(SQUARE);
+        wallscreen.endDraw();
         
         //setup opencv & video capture
         setupCamera();
+
+        // create the camera preview
+        capturePreview = new ScreenPreview((int)ct.getWidth(), (int)ct.getHeight());
+
         
-        //setup wall screen
-	setupKeystone(); 
-                
         //setup the spraypaint shader
-        setupSpraypaint();
+        //spraymanager for the paintscreen
+        sprayManagerLeft.setup();
+        //spraymanager for the wallscreen
+        sprayManagerRight.setup();
         
         //setup the control menu (colorpicker, clear screen, save, etc.)
         setupMenu();
@@ -100,12 +140,14 @@ public void init() {
         // setup the menu for the calibration screen
         setupCalibrationMenu();
         
-        //Init the PSMove controller
+        //Init the PSMove controller(s)
         psmoveInit();
+
+        setupMouseRobot();
 		
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-	frame.setLocation(0,0);
+	frame.setLocation(frameXLocation,0);
 
   } // end SETUP
   
@@ -121,42 +163,81 @@ public void init() {
     // Main Draw Loop
     else {
       
-      PVector surfaceMouse = paintbg.getTransformedMouse();
+      //let the blob control your mouse if move connected
+      controlMouse();
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
-        paintbg.render(paintbackground);
+        //noCursor();
+        drawPaintBg();
+      }
+      
+      // Read Cam
+      if (ct.getCam().available() == true) {
+        ct.getCam().read();
+      }
+      
+      
+      // Compute Blobs
+      ct.setThreshold(blobThresh);
+      
+      /*
+      // Show Cam ?
+      if(showCam == true) {
+        
+        println("test");
+        
+        //image(ct.getCam(), 0, 0, firstWindowWidth, windowHeight);
+        float mult = width /  ct.getWidth();
+        float w = ct.getWidth() * mult;
+        float h = ct.getHeight() * mult;
+        image(ct.getCam(), 0, -(h-height)/2, w, h);
+        
+      } 
+      */
+      
+      
+      // Show Blob ?
+      if(showBlob == true) {
+        if(!showCam) {
+          background(0);
+          drawPaintBg();
+        }
+        drawBlobsAndEdges(true, false);
       }
      	
+      //update the x/y coordinates of the current blob
+      updateCurrentBlob();
+      
       //draw painting screen
       paintscreen.beginDraw();
         if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
-          spray();
+          if(clickedEvent) { 
+            sprayManagerLeft.initSpray();
+            sprayManagerLeft.limitStrokes(maxStrokes);
+          }
+          sprayManagerLeft.spray(paintscreen);
+          //if(showSize) sprayManagerLeft.showSize(paintscreen);
         }
       paintscreen.endDraw();
       
       //draw wall screen
       wallscreen.beginDraw();
-        //redraw the background of the wallscreen during calibration  
-        //for the calibration view to work
-        if(ks.isCalibrating()){
-          wallscreen.background(0);
-        }
-        wallscreen.image(paintscreen,0,0); 
+          if(!menu.isVisible() && !calibMenu.isVisible() && calibrateKeystone == false) {
+            if(clickedEvent) {
+              sprayManagerRight.initSpray();
+              sprayManagerRight.limitStrokes(maxStrokes);
+            }
+            sprayManagerRight.spray(wallscreen);
+          }
       wallscreen.endDraw();
       
-      //redraw the main backgound for calibration and make sure
-      //that the imagebackground is drawn as well
-      if(ks.isCalibrating()){
-        background(0);
-        paintbg.render(paintbackground);
-      }
-    
-      //draw painting area
+   
+      //draw painting area (left)
       image(paintscreen,0,0);
-          
-      //render the wall screen
-  	surface.render(wallscreen);
+      
+      //draw the projection area (right)
+      image(wallscreen,width/2,0);
   
       // GUI
       if(menu.isVisible()){
@@ -166,19 +247,19 @@ public void init() {
     
     } 
     
-    // Playstation Move udptate
+    // Playstation Move update
     psmoveUpdate();
     
-    if(debug){
-       println("Framerate: " + int(frameRate));
-    }
+    //if(debug) println("Framerate: " + int(frameRate));
+
     
   } // end DRAW
 
-  
-  
+//draw the background of the paintscreen
+void drawPaintBg(){
+        paintbackground.beginDraw();
+        paintbackground.image(bg,0,0);
+        paintbackground.endDraw();
+}
 
-  
-  
 //-----------------------------------------------------------------------------------------
-

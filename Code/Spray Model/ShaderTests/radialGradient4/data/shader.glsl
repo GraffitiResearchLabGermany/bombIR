@@ -172,10 +172,10 @@ void main(void)
  	  gl_FragColor = vec4(red, green, blue, alpha);
 
     // Debug show noise depth map
-    //gl_FragColor = vec4(depth, depth, depth, 1.0);
+    // gl_FragColor = vec4(depth, depth, depth, 1.0);
 
     // Debug show noise density map
-    //gl_FragColor = vec4(density, density, density, 1.0);
+    // gl_FragColor = vec4(density, density, density, 1.0);
 
     // Debug show spray map
     // gl_FragColor = vec4(gradient, gradient, gradient, 1.0);
