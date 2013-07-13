@@ -217,6 +217,7 @@ public void init() {
             sprayManagerLeft.limitStrokes(maxStrokes);
           }
           sprayManagerLeft.spray(paintscreen);
+          //if(showSize) sprayManagerLeft.showSize(paintscreen);
         }
       paintscreen.endDraw();
       

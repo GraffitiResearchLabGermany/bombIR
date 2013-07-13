@@ -43,6 +43,7 @@ String brushMap;
 
 // SPRAY variables
 int maxStrokes = 10; // How long can the spray ArrayList be?
+boolean showSize = true; // Display an indicator of the brush size
 
 // 
 boolean mirrorX;
@@ -128,6 +129,10 @@ void readConfiguration() {
     blobMin         = props.getFloatProperty   ( "env.mode.blobMin",    0.03  );
     blobMax         = props.getFloatProperty   ( "env.mode.blobMax",    0.70  );
     blobThresh      = props.getFloatProperty   ( "env.mode.blobThresh", 0.98  );
+    
+    // Display an indicator of the brush size
+    showSize         = props.getBooleanProperty ( "env.mode.showSize",  true  );
+
     
     // Flip the x axis of the tracking?
     mirrorX         = props.getBooleanProperty ( "env.mode.mirrorX",    false );

@@ -91,6 +91,10 @@ class SprayManager {
       
       Path stroke = getActiveStroke();
   
+  
+      // OPTIMIZE: manage the different coordinates (mouse  
+      // or controller) outside of the SprayManager class.
+      
       // spray when controller trigger is pressed
       if ( moveConnected == true && alwaysUseMouse == false ) {
           Knot k = new Knot(firstWindowWidth - blobX, blobY, weight, col);
@@ -108,7 +112,6 @@ class SprayManager {
     }
     
     
-    
     this.draw(targetBuffer);
     
   }
@@ -120,6 +123,28 @@ class SprayManager {
    for(Path p: strokeList) {
      p.draw(buffer, pointShader);
    }
+ }
+ 
+ 
+ // Show an indicator for the brushSize
+ void showSize(PGraphics buffer) {
+   buffer.pushStyle();
+   buffer.noFill();
+   buffer.strokeWeight(1);
+   buffer.stroke(20, 20, 20, 100);
+   
+   // OPTIMIZE: manage the different coordinates (mouse  
+   // or controller) outside of the SprayManager class.
+   
+   if ( moveConnected == true && alwaysUseMouse == false ) {
+     buffer.ellipse(blobX, blobY, weight, weight);
+   } else {
+     buffer.ellipse(mouseX, mouseY, weight, weight);
+   }
+   
+   
+   
+   buffer.popStyle();
  }
  
  
