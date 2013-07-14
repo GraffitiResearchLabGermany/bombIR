@@ -1,45 +1,86 @@
-//moves the mouse when according to the blob
-Robot mouseRobot;
 
+MouseRobotThread mt;
 
-//setup the mouse robot
 void setupMouseRobot(){
-	try {
-
-		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
-        GraphicsDevice[] gs = ge.getScreenDevices();
-        if (paintscreenIndex >= gs.length){
-        	println("No screen with index " + paintscreenIndex + " available. Falling back to primary screen");
-        	paintscreenIndex = 0;
-        } 
-    	mouseRobot = new Robot(gs[paintscreenIndex]);
-           	
-  	} catch (AWTException e) {
-    	println("Robot class not supported by your system!");
- 		exit();
-  	}
+	mt = new MouseRobotThread("MouseRobot", this, paintscreenIndex, firstWindowWidth, frameXLocation);
+	mt.start();
 }
 
+//Thread for controlling the Mouse when the blob moves
+//and buttons are pressed
+class MouseRobotThread extends Thread{
+	GraphicsEnvironment ge;
+	GraphicsDevice[] gs;
+	int screenIndex;
+	boolean running;
+	String id;
+	PApplet applet;
+	//moves the mouse when according to the blob
+	Robot mouseRobot;
+	int firstWindowWidth;
+	int frameXLocation;
+	int xRobot;
+	int yRobot;
 
-void controlMouse(){
-	//let the blob control the mouse when the menu is visible and 
-	//the move is connected
-	if(moveConnected  && alwaysUseMouse == false) {
-  
-                int xRobot = int ( firstWindowWidth - ( blobX - frameXLocation ) - frameXLocation * 2 ); // CRAZY! Fix this later
-                int yRobot = int ( blobY );
-                
-		mouseRobot.mouseMove( xRobot, yRobot );
 
-                //println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
-                
+	public MouseRobotThread(String id, PApplet applet, int screenIndex, int firstWindowWidth, int frameXLocation){
+		this.id = id;
+		this.applet = applet;
+		this.screenIndex = screenIndex; 
+		this.firstWindowWidth = firstWindowWidth;
+		this.frameXLocation = frameXLocation;
 	}
 
-	if(clicked){
-		mouseRobot.mousePress(InputEvent.BUTTON1_MASK);
+	public void start(){
+    	running = true;
+    	println("Starting MouseRobot Thread...");
+
+    	try {
+
+			this.ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
+	        this.gs = this.ge.getScreenDevices();
+	        if (this.screenIndex >= this.gs.length){
+	        	println("No screen with index " + this.screenIndex + " available. Falling back to primary screen");
+	        	this.screenIndex = 0;
+	        } 
+	    	this.mouseRobot = new Robot(this.gs[this.screenIndex]);
+	           	
+	  	} catch (AWTException e) {
+	    	println("Robot class not supported by your system!");
+	 		this.quit();
+	  	}
 	}
-	if(!clicked) {
-		mouseRobot.mouseRelease(InputEvent.BUTTON1_MASK);
+
+	public void run(){
+    	//nothing to be done here
+  	}
+
+	public void updateMouse(float blobX, float blobY, boolean clicked){
+		//let the blob control the mouse when the menu is visible and 
+		//the move is connected
+	    this.xRobot = int ( this.firstWindowWidth - ( blobX - this.frameXLocation ) - this.frameXLocation * 2 ); // CRAZY! Fix this later
+	    this.yRobot = int ( blobY );
+	                
+		mouseRobot.mouseMove( this.xRobot, this.yRobot );
+
+	    //println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
+	                
+		if(clicked){
+			this.mouseRobot.mousePress(InputEvent.BUTTON1_MASK);
+		}
+		if(!clicked) {
+			this.mouseRobot.mouseRelease(InputEvent.BUTTON1_MASK);
+		}
 	}
+
+	/**
+   	 * Stop camera and blob detection
+   	 */
+  	public void quit(){
+	    println("Quitting MouseRobot Thread...");
+	    this.running = false;
+	    this.mouseRobot = null;
+	    interrupt();
+ 	}
 }
 
