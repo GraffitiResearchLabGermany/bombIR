@@ -117,4 +117,15 @@ void updateCurrentBlob() {
   }
 }
 
+// Not yet used
+boolean isInsideCropZone( PVector coord, float left, float right, float top, float bottom ) {
+  
+   if ( coord.x * firstWindowWidth > LeftBorder   ) return false; 
+   if ( coord.x * firstWindowWidth < RightBorder  ) return false;
+   if ( coord.y * windowHeight     > TopBorder    ) return false; 
+   if ( coord.y * windowHeight     < BottomBorder ) return false; 
+   
+   return true;
+}
+
 // -------------------------------- //
