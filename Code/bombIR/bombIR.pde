@@ -11,6 +11,18 @@
  * Attribution-Non-Commercial-Repurcussions 3.0 Unported (CC BY-NC 3.0)
  * as per http://www.graffitiresearchlab.fr/?portfolio=attribution-noncommercial-repercussions-3-0-unported-cc-by-nc-3-0
  * 
+//-----------------------------------------------------------------------------------------
+/*
+ * bombIR
+ * ---------------------------------------------------------------------------
+ * Graffiti Research Lab Germany
+ * http://www.graffitiresearchlab.de
+ * ----------------------------------------------------------------------------
+ * License:
+ * Licensed according to the 
+ * Attribution-Non-Commercial-Repurcussions 3.0 Unported (CC BY-NC 3.0)
+ * as per http://www.graffitiresearchlab.fr/?portfolio=attribution-noncommercial-repercussions-3-0-unported-cc-by-nc-3-0
+ * 
  * ----------------------------------------------------------------------------
  * Credits
  * _______
@@ -56,15 +68,13 @@ ScreenPreview capturePreview;
 SprayManager sprayManagerLeft; // paint screen (left)
 SprayManager sprayManagerRight;  // wall screen (right)
 
-// Robot mouse
-//Robot robot;
-
 
 // GLOBAL VARIABLES
 //-----------------------------------------------------------------------------------------
 boolean clicked = false;
 boolean clickedEvent = false;
 boolean calibrateKeystone = false;
+boolean suspendMouseRobot = false;
 
 
 //-----------------------------------------------------------------------------------------
@@ -83,10 +93,7 @@ public void init() {
     
     cursor(CROSS);
     
-        // Create the robot mouse
-        //try                    { robot = new Robot(); } 
-        //catch (AWTException e) { e.printStackTrace(); }
-    
+           
         // Create the spray objects for both screens
         sprayManagerLeft   = new SprayManager();
         sprayManagerRight  = new SprayManager();
@@ -97,7 +104,7 @@ public void init() {
         //P3D or OPENGL seems to only work with one window (https://forum.processing.org/topic/opengl-rendering-multiple-windows-frames), 
         //so we make it big enough to span over two output devices (rp screen projector, wall projector) and position it to start at 
         //the first projector screen
-  	    size(windowWidth, windowHeight, P3D);
+        size(windowWidth, windowHeight, P3D);
         
         //create painting screen
         paintscreen = createGraphics(windowWidth/2, windowHeight, P3D);
@@ -143,11 +150,12 @@ public void init() {
         //Init the PSMove controller(s)
         psmoveInit();
 
+        //Init the robot to control the mouse 
         setupMouseRobot();
-		
+    
         //put the upper left corner of the frame to the upper left corner of the screen
         //needs to be the last call on setup to work
-	frame.setLocation(frameXLocation,0);
+        frame.setLocation(frameXLocation,0);
 
   } // end SETUP
   
@@ -164,7 +172,9 @@ public void init() {
     else {
       
       //let the blob control your mouse if move connected
-      controlMouse();
+      if(moveConnected  && alwaysUseMouse == false && suspendMouseRobot == false){
+        mt.updateMouse(blobX, blobY, clicked);
+      }
       
       //draw background for painting screen on first frame
       if(frameCount == 1 ) {
@@ -205,7 +215,7 @@ public void init() {
         }
         drawBlobsAndEdges(true, false);
       }
-     	
+      
       //update the x/y coordinates of the current blob
       updateCurrentBlob();
       
@@ -262,4 +272,13 @@ void drawPaintBg(){
         paintbackground.endDraw();
 }
 
-//-----------------------------------------------------------------------------------------
+//quit bombIR
+void quit(){
+  //shutdown threads
+  ct.quit();
+  mt.quit();
+
+  //TODO what else do we need to shutdown here?
+  exit();
+}
+
