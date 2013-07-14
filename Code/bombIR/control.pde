@@ -95,6 +95,14 @@ int saveCount = 0;
  
  void keyPressed() {
    switch(key) {
+     case 'q':
+       //quit bombIR gracefully;
+       quit();
+       break;
+     case 's' :
+       //toggle MouseRobot
+       suspendMouseRobot = !suspendMouseRobot;
+       break;  
      case 'r': 
        // clear the paint screen (left)
        sprayManagerLeft.reset(paintscreen, bg); 

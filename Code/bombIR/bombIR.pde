@@ -74,6 +74,7 @@ SprayManager sprayManagerRight;  // wall screen (right)
 boolean clicked = false;
 boolean clickedEvent = false;
 boolean calibrateKeystone = false;
+boolean suspendMouseRobot = false;
 
 
 //-----------------------------------------------------------------------------------------
@@ -171,7 +172,7 @@ public void init() {
     else {
       
       //let the blob control your mouse if move connected
-      if(moveConnected  && alwaysUseMouse == false){
+      if(moveConnected  && alwaysUseMouse == false && suspendMouseRobot == false){
         mt.updateMouse(blobX, blobY, clicked);
       }
       
@@ -269,5 +270,15 @@ void drawPaintBg(){
         paintbackground.beginDraw();
         paintbackground.image(bg,0,0);
         paintbackground.endDraw();
+}
+
+//quit bombIR
+void quit(){
+  //shutdown threads
+  ct.quit();
+  mt.quit();
+
+  //TODO what else do we need to shutdown here?
+  exit();
 }
 
