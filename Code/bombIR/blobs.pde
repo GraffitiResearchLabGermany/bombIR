@@ -5,6 +5,8 @@
 float blobX, blobY;
 float blobSize;
 
+// OPTIMIZE: implement a Tracker class to abstract the blob code
+
 void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {  
   Blob b;
   EdgeVertex eA, eB;
@@ -79,46 +81,69 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
 
 //set the mapped x/y coordinates to blobX and blobY
 void updateCurrentBlob() {
+  
+  // Register the current crop area
+  float top    = TopBorder;
+  float bottom = BottomBorder;
+  float right  = RightBorder;
+  float left   = LeftBorder;
+
+  // Register the size limits
+  float minSize = blobMin;
+  float maxSize = blobMax;
+  
+  int blobNb = ct.getBlobDetection().getBlobNb();
+  
   //we have at least one blob  
-  if (ct.getBlobDetection().getBlobNb() >= 1) {
-
-    //float xBlobUnit = ct.getBlobDetection().getBlob(0).xMin;
-    //float yBlobUnit = ct.getBlobDetection().getBlob(0).yMin;
-
-    float xBlobUnit = ct.getBlobDetection().getBlob(0).x;
-    float yBlobUnit = ct.getBlobDetection().getBlob(0).y;
-
-    /*
-      println("");
-     println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
-     println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
-     */
-
-    // Flip the X axis (when not using the rear projection screen)
-    if ( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
-
-    // 16:9 Y axis correction
-    if ( ratio == 1) {
-      yBlobUnit = ( yBlobUnit * 1.33333 ) - 0.166666;
-    }
-
-    // Map the blob coordinates from unit square to the cropping area
-    blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
-    blobY = map( yBlobUnit, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
-
-    // Adjust tracking
-    blobX = blobX - trackingOffsetX;
-    blobY = blobY - trackingOffsetY;
-
-    // Let's just average the two dimensions of the blob (we just need an order of magnitude).
-    blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
-    //System.out.println( "blobSize = "+ blobSize );
-
-
-    //println("blobX:" + blobX);
-    //println("blobY:" + blobY);
-
-    //we dont have a blob
+  if (blobNb >= 1) {
+  
+  boolean blobFound = false;
+  
+    // Get the first valid blob in the list
+    for (int n = 0 ; n < blobNb ; n++) {
+      
+      // When a valid blob has been found we stop 
+      // searching for other blob candidates
+      if( blobFound == true ) break;
+      
+      Blob b = ct.getBlobDetection().getBlob(n);
+      
+      // Is the blob valid?
+      boolean isValidBlob = true;
+      if ( isInside( b, left, right, top, bottom ) == false ) { 
+        isValidBlob = false;
+      }
+      else if ( isRightSize( b, minSize, maxSize) == false ) {
+        isValidBlob = false;
+      }
+  
+      if( isValidBlob ) {
+        blobFound = true;
+          
+        float xBlobUnit = b.x;
+        float yBlobUnit = b.y;
+    
+        // Flip the X axis (when not using the rear projection screen)
+        if ( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
+    
+        // 16:9 Y axis correction
+        if ( ratio == 1) {
+          yBlobUnit = ( yBlobUnit * 1.33333 ) - 0.166666;
+        }
+    
+        // Map the blob coordinates from unit square to the cropping area
+        blobX = map( xBlobUnit, 0.0, 1.0, RightBorder - LeftBorder, LeftBorder);
+        blobY = map( yBlobUnit, 0.0, 1.0, TopBorder, BottomBorder - TopBorder);
+    
+        // Adjust tracking
+        blobX = blobX - trackingOffsetX;
+        blobY = blobY - trackingOffsetY;
+    
+        // Let's just average the two dimensions of the blob (we just need an order of magnitude).
+        blobSize = ( b.w + b.h ) / 2.0;
+    
+      } // isValidBlob
+    } // for
   } 
   else {
     //println("No Blobs detected");
