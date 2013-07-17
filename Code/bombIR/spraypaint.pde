@@ -425,7 +425,7 @@ class Knot extends PVector {
       pointShader.set( "direction", dir.x, dir.y );
       pointShader.set( "rotation", random(0.0,1.0), random(0.0,1.0) );
       pointShader.set( "scale", 0.3 );
-      pointShader.set( "soften", brushSoften ); // set in settings.properties
+      //pointShader.set( "soften", brushSoften ); // set in settings.properties
       pointShader.set( "depthOffset", noiseDepth );
       
       // Draw in the buffer (if one was defined) or directly on the viewport

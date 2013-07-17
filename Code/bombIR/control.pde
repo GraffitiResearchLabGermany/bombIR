@@ -129,16 +129,16 @@ int saveCount = 0;
    // Adjust the position of the cursor 
    if (key == CODED) {
      if (keyCode == LEFT) {
-       trackingOffsetX -= 2;
-     }
-     else if(keyCode == RIGHT) {
        trackingOffsetX += 2;
      }
+     else if(keyCode == RIGHT) {
+       trackingOffsetX -= 2;
+     }
      else if(keyCode == UP) {
-       trackingOffsetY -= 2;
+       trackingOffsetY += 2;
      }
      else if(keyCode == DOWN) {
-       trackingOffsetY += 2;
+       trackingOffsetY -= 2;
      }
    }
    
