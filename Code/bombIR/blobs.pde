@@ -38,7 +38,6 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
       }
 
       if (isValidBlob) {
-        println("found a valid blob"); 
         // Edges
         if (drawEdges) {               
           noFill();

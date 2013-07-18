@@ -75,10 +75,9 @@ class SprayManager {
   
   void spray(PGraphics targetBuffer) {
 
-    
-    
+
     depthOffset += offsetVel;
-    
+
     
     // OPTIMIZE: move outside of the class. This should be passed to the object.
     ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
