@@ -94,28 +94,33 @@ int saveCount = 0;
  }
  
  void keyPressed() {
-   switch(key) {
-     case 'q':
-       //quit bombIR gracefully;
-       quit();
-       break;
-     case 's' :
-       //toggle MouseRobot
-       suspendMouseRobot = !suspendMouseRobot;
-       break;  
-     case 'r': 
+   
+   // Quit BombIR gracefully
+   if (key == 'q' || key == 'Q') 
+     quit();
+   
+   //toggle MouseRobot
+   else if (key == 's' || key == 'S') 
+     suspendMouseRobot = !suspendMouseRobot;
+
+   // Clear screen
+   else if (key == 'r' || key == 'R') {
        // clear the paint screen (left)
        sprayManagerLeft.reset(paintscreen, bg); 
        // clear the wall screen (right)
        sprayManagerRight.reset(wallscreen, color(0));
-     break;
-     case 'm': 
-       if(!calibrateCamera) {   
-         toggleMenu();
-         drawPaintBg();
-       }
-     break;
-     case 'b':
+   }
+   
+   // Show color spray menu
+   else if (key == 'm' || key == 'M') {
+     if(!calibrateCamera) {   
+       toggleMenu();
+       drawPaintBg();
+     }
+   }
+
+   // Show calibration menu
+   else if (key == 'b' || key == 'B') {
        toggleBlobControl();
        if(calibrateCamera) {   
          background(0);
@@ -123,8 +128,7 @@ int saveCount = 0;
        else {
          drawPaintBg();
        }
-     break;  
-   }
+    }
    
    // Adjust the position of the cursor 
    if (key == CODED) {
@@ -145,7 +149,7 @@ int saveCount = 0;
  }
    
  //show or hide the menu
- void toggleMenu(){
+ void toggleMenu() {
    if(menu.isVisible()){
      //noCursor();
      menu.hide();
