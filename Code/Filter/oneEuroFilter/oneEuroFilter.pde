@@ -1,410 +1,56 @@
+
 // Implementation of the 1€ filter [Casiez 2012] for the Processing environment
 // http://www.lifl.fr/~casiez/publications/CHI2012-casiez.pdf
 
-// Try the online version by Jonathan Aceituno: http://oin.name/1eurofilter/
+// Based on the Java version by Stéphane Conversy from Université de Toulouse
+// http://lii-enac.fr/~conversy/
 
-//Processing version by Stefan Ivanov
-//RWTH-Aachen University
-//i10 - Media Computing Group
-//stefan.ivanov@rwth-aachen.de
+// Try the online version by Jonathan Aceituno: http://oin.name/1eurofilter/
 
 // Tweaked by Raphaël de Courville 
 // for Graffiti Research Lab Germany 
 // (July 2013)
 // Twitter: @sableRaph, @GRLGermany
 
-//The following code is used to filter two data flows.
-//It is based on the c++ code here: http://www.lifl.fr/~casiez/1euro/OneEuroFilter.cc
-//In my implementation I use the filter for two continuosly read sets of values
-//representing X coordinate and Y coordinate of a point coming on the serial port 
-//from an Arduino Duelmilanove board.
-//Due to the fact that processing is not object-oriented there is a large number of
-//variables declared. Methods also duplicate each other for X and Y values but
-//since they work on different variables they have a slight difference in the name.
-//I use the following naming convention for methods and variables: all that is prefixed
-//with x or dx refers to the set of X coordinates that I filter and all that is
-//prefixed with y or dy refers to the set of Y coordinates that I filter. Additionally
-//all methods, containing LPF as second prefix are part of the low-pass filtering and
-//all methods, containing OEF as second prefix are part of the one euro filtering itself
 
-//This filter worked significantly better than the implementation of Kalman filter
-//that I was using before and the code executes much faster
+OneEuroFilter oneEuroX;
+OneEuroFilter oneEuroY;
 
 
-//parameters of the filter
-float freq, mincutoff, beta, dcutoff;
-
-//vars used in the low-pass filtering of the incoming X coordinate
-float xLPFy;
-float xLPFa;
-float xLPFs;
-boolean xLPFinitialized;
-float dxLPFy;
-float dxLPFa;
-float dxLPFs;
-boolean dxLPFinitialized;
-
-//vars used in the low-pass filtering of the incoming Y coordinate
-float yLPFy;
-float yLPFa;
-float yLPFs;
-boolean yLPFinitialized;
-float dyLPFy;
-float dyLPFa;
-float dyLPFs;
-boolean dyLPFinitialized;
-
-//vars used for the 1 euro filter parameters for the X coordinate
-float xOEFfreq;
-float xOEFmincutoff;
-float xOEFbeta;
-float xOEFdcutoff;
-float xOEFoldTime = 0.0;
-float xOEFnewTime = 0.0;
-
-//vars used for the 1 euro filter parameters for the Y coordinate
-float yOEFfreq;
-float yOEFmincutoff;
-float yOEFbeta;
-float yOEFdcutoff;
-float yOEFoldTime = 0.0;
-float yOEFnewTime = 0.0;
-
-void setup() 
-{
-  size(500,500);
+// “if high speed lag is a problem, increase β [beta]; 
+// if slow speed jitter is a problem, decrease fcmin [mincutoff].”
   
-  // “if high speed lag is a problem, increase β [beta]; 
-  // if slow speed jitter is a problem, decrease fcmin [mincutoff].”
-  freq      = 120.0; // Hz
-  mincutoff = 1.0;   // Minimum cutoff (intercept)
-  beta      = 0.0; // Cutoff slope
-  dcutoff   = 1.0;   // Cutoff for derivative
+double frequency = 120;    // Hz
+double mincutoff = 3.0;   // Minimum cutoff (intercept)
+double beta      = 0.00700; // Cutoff slope
+double dcutoff   = 1.0;   // Cutoff for derivative
+
+void setup() {
   
-  //set up the parameters of the 1 euro filter
-  xOneEuroFilter( freq, mincutoff, beta, dcutoff );
-  yOneEuroFilter( freq, mincutoff, beta, dcutoff );
+    size(1024, 768);
+    frameRate((int)frequency);
   
-  // Try to run the sketch at the frequency set for the filter
-  frameRate(60);
-  
-}  
-
-
+    try {
+     oneEuroX = new OneEuroFilter(frequency, mincutoff, beta, dcutoff);
+    }
+    catch (Exception e) {
+     e.printStackTrace();
+    }
     
-//low-pass filtering methods
-void xLPFsetAlfa(float alfa)
-{
-  if (alfa < 0.0) {
-    xLPFa = 0.0;
-  }    
-
+    try {
+     oneEuroY = new OneEuroFilter(frequency, mincutoff, beta, dcutoff);
+    }
+    catch (Exception e) {
+     e.printStackTrace();
+    }
     
-  else if (alfa > 1.0) {
-    xLPFa = 1.0;
-  }    
-
-    
-  else {
-    xLPFa = alfa;
-  }    
-
-    
-}    
-
-    
-
-void yLPFsetAlfa(float alfa)
-{
-  if (alfa < 0.0) {
-    yLPFa = 0.0;
-  }    
-
- 
-  else if (alfa > 1.0) {
-    yLPFa = 1.0;
-  }    
-
-    
-  else {
-    yLPFa = alfa;
-  }    
-
-    
-}    
-
-    
-void dxLPFsetAlfa(float alfa)
-{
-  if (alfa < 0.0) {
-    dxLPFa = 0.0;
-  }    
-
-    
-  else if (alfa > 1.0) {
-    dxLPFa = 1.0;
-  }    
-
-    
-  else {
-    dxLPFa = alfa;
-  }    
-
-    
-}    
-
-    
-void dyLPFsetAlfa(float alfa)
-{
-  if (alfa < 0.0) {
-    dyLPFa = 0.0;
-  }    
-
-    
-  else if (alfa > 1.0) {
-    dyLPFa = 1.0;
-  }    
-
-    
-  else {
-    dyLPFa = alfa;
-  }    
-
-    
-}    
-
-    
-void xLowPassFilter(float alfa, float initval)
-{
-  xLPFy = initval;
-  xLPFs = initval;
-  xLPFsetAlfa(alfa);
-  xLPFinitialized = false;
-}    
-
-    
-void yLowPassFilter(float alfa, float initval)
-{
-  yLPFy = initval;
-  yLPFs = initval;
-  yLPFsetAlfa(alfa);
-  yLPFinitialized = false;
-}    
-
-    
-void dxLowPassFilter(float alfa, float initval)
-{
-  dxLPFy = initval;
-  dxLPFs = initval;
-  dxLPFsetAlfa(alfa);
-  dxLPFinitialized = false;
-}    
-
-    
-void dyLowPassFilter(float alfa, float initval)
-{
-  dyLPFy = initval;
-  dyLPFs = initval;
-  dyLPFsetAlfa(alfa);
-  dyLPFinitialized = false;
-}    
-
-    
-float xLPFfilter(float value)
-{
-  float result;
-  if (xLPFinitialized) {
-    result = xLPFa * value + (1.0 - xLPFa) * xLPFs;
-  }    
-
-     
-  else {
-    result = value;
-    xLPFinitialized = true;
-  }    
-
-    
-  xLPFy = value;
-  xLPFs = result;
-  return result;
-}    
-
-    
-float yLPFfilter(float value) {
-  float result;
-  if (yLPFinitialized) {
-    result = yLPFa * value + (1.0 - yLPFa) * yLPFs;
-  }    
-
-     
-  else {
-    result = value;
-    yLPFinitialized = true;
-  }    
-
-    
-  yLPFy = value;
-  yLPFs = result;
-  return result;
-}    
-
-    
-float dxLPFfilter(float value)
-{
-  float result;
-  if (dxLPFinitialized) {
-    result = dxLPFa * value + (1.0 - dxLPFa) * dxLPFs;
-  }    
-
-     
-  else {
-    result = value;
-    dxLPFinitialized = true;
-  }    
-
-    
-  dxLPFy = value;
-  dxLPFs = result;
-  return result;
-}    
-
-    
-float dyLPFfilter(float value)
-{
-  float result;
-  if (dyLPFinitialized) {
-    result = dyLPFa * value + (1.0 - dyLPFa) * dyLPFs;
-  }    
-
-     
-  else {
-    result = value;
-    dyLPFinitialized = true;
-  }    
-
-    
-  dyLPFy = value;
-  dyLPFs = result;
-  return result;
-}    
-
-    
-float xLPFfilterWithAlfa(float value, float alfa) {
-  xLPFsetAlfa(alfa);
-  return xLPFfilter(value);
-}    
-
-    
-float yLPFfilterWithAlfa(float value, float alfa)
-{
-  yLPFsetAlfa(alfa);
-  return yLPFfilter(value);
-}    
-
-    
-float dxLPFfilterWithAlfa(float value, float alfa)
-{
-  dxLPFsetAlfa(alfa);
-  return dxLPFfilter(value);
-}    
-
-    
-float dyLPFfilterWithAlfa(float value, float alfa)
-{
-  dyLPFsetAlfa(alfa);
-  return dyLPFfilter(value);
-}    
-
-    
-//one euro filtering methods
-float xOEFalfa(float cutoff, float frequency)
-{
-  float te = 1.0/frequency;
-  float tau = 1.0/(2*PI*cutoff);
-  return 1.0/(1.0+tau/te);
-}    
-
-    
-float yOEFalfa(float cutoff, float frequency)
-{
-  float te = 1.0/frequency;
-  float tau = 1.0/(2*PI*cutoff);
-  return 1.0/(1.0+tau/te);
-}    
-
-    
-void xOneEuroFilter(float freq, float mincutoff, float beta, float dcutoff) {
-  xOEFfreq = freq;
-  xOEFmincutoff = mincutoff;
-  xOEFbeta = beta;
-  xOEFdcutoff = dcutoff;
-  xLowPassFilter(xOEFalfa(mincutoff, xOEFfreq), 0.0);
-  dxLowPassFilter(xOEFalfa(dcutoff, xOEFfreq), 0.0);
-}    
-
-    
-void yOneEuroFilter(float freq, float mincutoff, float beta, float dcutoff)
-{
-  yOEFfreq = freq;
-  yOEFmincutoff = mincutoff;
-  yOEFbeta = beta;
-  yOEFdcutoff = dcutoff;
-  yLowPassFilter(yOEFalfa(mincutoff, yOEFfreq), 0.0);
-  dyLowPassFilter(yOEFalfa(dcutoff, yOEFfreq), 0.0);
-}    
-
-    
-float xOEFfilter(float value)
-{
-  xOEFoldTime = xOEFnewTime;
-  xOEFnewTime = millis();
-  xOEFfreq = 1.0 / ((xOEFnewTime - xOEFoldTime) * 1000);
-  float dvalue;
-  if (xLPFinitialized) {
-    dvalue = (value - xLPFy) * xOEFfreq;
-  }    
-
-    
-  else {
-    dvalue = 0.0;
-  }    
-
-    
-  float edvalue = dxLPFfilterWithAlfa(dvalue, xOEFalfa(xOEFdcutoff, xOEFfreq));
-  float cutoff = xOEFmincutoff + xOEFbeta * abs(edvalue);
-  return xLPFfilterWithAlfa(value, xOEFalfa(cutoff, xOEFfreq));
-}    
-
-    
-float yOEFfilter(float value)
-{
-  yOEFoldTime = yOEFnewTime;
-  yOEFnewTime = millis();
-  yOEFfreq = 1.0 / ((yOEFnewTime - yOEFoldTime) * 1000);
-  float dvalue;
-  if (yLPFinitialized) {
-    dvalue = (value - yLPFy) * yOEFfreq;
-  }    
-
-    
-  else {
-    dvalue = 0.0;
-  }    
-
-    
-  float edvalue = dyLPFfilterWithAlfa(dvalue, yOEFalfa(yOEFdcutoff, yOEFfreq));
-  float cutoff = yOEFmincutoff + yOEFbeta * abs(edvalue);
-  return yLPFfilterWithAlfa(value, yOEFalfa(cutoff, yOEFfreq));
-}    
-
-
-
+}
 
 
 void draw()
 {
   
-  background(150);
+  background(180);
   
   noFill();
   strokeWeight(5);
@@ -421,46 +67,198 @@ void draw()
   println("");
   println("noisePos    = " + noisePos);
   
-  // Draw RED ellipse at noisy position
-  stroke(255, 10, 10);
-  ellipse(noiseX, noiseY, 50, 50);
+  // Draw a small ellipse at noisy position
+  pushStyle();
+  pushMatrix();
+  stroke(0);
+  strokeWeight(1);
+  fill(255);
+  translate(noiseX,noiseY);
+  ellipse(0, 0, 5, 5);
+  popMatrix();
+  popStyle();
   
-  //perform the 1 euro filtering (unit values)
-  float filteredX = xOEFfilter( noiseX / width ) * width;
-  float filteredY = yOEFfilter( noiseY / height ) * height;
+  float filteredX = 0.0;
+  float filteredY = 0.0;
+  
+  //perform the 1 euro filtering (unit values)   
+  try {
+     filteredX = (float) oneEuroX.filter( noiseX / width, frameCount / frequency ) * width;
+  }
+  catch (Exception e) {
+   e.printStackTrace();
+  }
+  
+  try {
+     filteredY = (float) oneEuroY.filter( noiseY / height, frameCount / frequency ) * height;
+  }
+  catch (Exception e) {
+   e.printStackTrace();
+  }
+    
   PVector filteredPos = new PVector( filteredX, filteredY );
   
   println( "filteredPos = " + filteredPos );
   
-  // Draw GREEN ellipse at filtered position
-  stroke(10, 255, 10); // Green
-  ellipse(filteredPos.x, filteredPos.y, 40, 40);
-  
-  
-  // Display tweakable parameters
-  
-  text( "beta (change using UP and DOWN arrows)      ", 10, 20 );
-  text( beta,           350, 20 );
-  
-  text( "mincutoff (change using LEFT and RIGHT arrows)  ", 10, 35 );
-  text( mincutoff,      350, 35 );
-  
+  // Draw PURPLE ellipse at filtered position
+  pushStyle();
+  pushMatrix();
+  translate(filteredPos.x, filteredPos.y);
+  stroke(146, 11, 254); // Purple
+  ellipse(0, 0, 45, 45);
+  fill(146, 11, 254);
+  text("1€ Filter", 30, -20);
+  popMatrix();
+  popStyle();  
   
 }
 
-void keyPressed() {
-  if (key == CODED) {
-    if (keyCode == UP) {
-      beta += 0.001;
-    } else if (keyCode == DOWN) {
-      beta -= 0.001;
-    } 
-    else if (keyCode == LEFT) {
-      mincutoff -= 1.0;
-    } else if (keyCode == RIGHT) {
-      mincutoff += 1.0;
-    } 
-  }
+
+
+/**
+ *
+ * @author s. conversy from n. roussel c++ version
+ */
+class LowPassFilter {
+
+    double y, a, s;
+    boolean initialized;
+
+    void setAlpha(double alpha) throws Exception {
+        if (alpha <= 0.0 || alpha > 1.0) {
+            throw new Exception("alpha should be in (0.0, 1.0] and is now "+ alpha);
+        }
+        a = alpha;
+    }
+
+    public LowPassFilter(double alpha) throws Exception {
+        init(alpha, 0);
+    }
+
+    public LowPassFilter(double alpha, double initval) throws Exception {
+        init(alpha, initval);
+    }
+
+    private void init(double alpha, double initval) throws Exception {
+        y = s = initval;
+        setAlpha(alpha);
+        initialized = false;
+    }
+
+    public double filter(double value) {
+        double result;
+        if (initialized) {
+            result = a * value + (1.0 - a) * s;
+        } else {
+            result = value;
+            initialized = true;
+        }
+        y = value;
+        s = result;
+        return result;
+    }
+
+    public double filterWithAlpha(double value, double alpha) throws Exception {
+        setAlpha(alpha);
+        return filter(value);
+    }
+
+    public boolean hasLastRawValue() {
+        return initialized;
+    }
+
+    public double lastRawValue() {
+        return y;
+    }
+}
+
+class OneEuroFilter {
+
+    double freq;
+    double mincutoff;
+    double beta_;
+    double dcutoff;
+    LowPassFilter x;
+    LowPassFilter dx;
+    double lasttime;
+    double UndefinedTime = -1;
+
+    double alpha(double cutoff) {
+        double te = 1.0 / freq;
+        double tau = 1.0 / (2 * Math.PI * cutoff);
+        return 1.0 / (1.0 + tau / te);
+    }
+
+    void setFrequency(double f) throws Exception {
+        if (f <= 0) {
+            throw new Exception("freq should be >0");
+        }
+        freq = f;
+    }
+
+    void setMinCutoff(double mc) throws Exception {
+        if (mc <= 0) {
+            throw new Exception("mincutoff should be >0");
+        }
+        mincutoff = mc;
+    }
+
+    void setBeta(double b) {
+        beta_ = b;
+    }
+
+    void setDerivateCutoff(double dc) throws Exception {
+        if (dc <= 0) {
+            throw new Exception("dcutoff should be >0");
+        }
+        dcutoff = dc;
+    }
+
+    public OneEuroFilter(double freq) throws Exception {
+        init(freq, 1.0, 0.0, 1.0);
+    }
+
+    public OneEuroFilter(double freq, double mincutoff) throws Exception {
+        init(freq, mincutoff, 0.0, 1.0);
+    }
+
+    public OneEuroFilter(double freq, double mincutoff, double beta_) throws Exception {
+        init(freq, mincutoff, beta_, 1.0);
+    }
+
+    public OneEuroFilter(double freq, double mincutoff, double beta_, double dcutoff) throws Exception {
+        init(freq, mincutoff, beta_, dcutoff);
+    }
+
+    private void init(double freq, double mincutoff, double beta_, double dcutoff) throws Exception {
+        setFrequency(freq);
+        setMinCutoff(mincutoff);
+        setBeta(beta_);
+        setDerivateCutoff(dcutoff);
+        x = new LowPassFilter(alpha(mincutoff));
+        dx = new LowPassFilter(alpha(dcutoff));
+        lasttime = UndefinedTime;
+    }
+
+    double filter(double value) throws Exception {
+        return filter(value, UndefinedTime);
+    }
+
+    double filter(double value, double timestamp) throws Exception {
+        // update the sampling frequency based on timestamps
+        if (lasttime != UndefinedTime && timestamp != UndefinedTime) {
+            freq = 1.0 / (timestamp - lasttime);
+        }
+        
+        lasttime = timestamp;
+        // estimate the current variation per second
+        double dvalue = x.hasLastRawValue() ? (value - x.lastRawValue()) * freq : 0.0; // FIXME: 0.0 or value?
+        double edvalue = dx.filterWithAlpha(dvalue, alpha(dcutoff));
+        // use it to update the cutoff frequency
+        double cutoff = mincutoff + beta_ * Math.abs(edvalue);
+        // filter the given value
+        return x.filterWithAlpha(value, alpha(cutoff));
+    }
 }
 
 
