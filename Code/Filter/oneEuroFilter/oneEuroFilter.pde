@@ -1,3 +1,5 @@
+// NOT FUNCTIONNAL
+
 // Implementation of the 1€ filter [Casiez 2012] for the Processing environment
 // http://www.lifl.fr/~casiez/publications/CHI2012-casiez.pdf
 
@@ -29,6 +31,8 @@
 
 //This filter worked significantly better than the implementation of Kalman filter
 //that I was using before and the code executes much faster
+
+// DO NOT USE
 
 
 //parameters of the filter
@@ -78,14 +82,13 @@ void setup()
   // if slow speed jitter is a problem, decrease fcmin [mincutoff].”
   freq      = 120.0; // Hz
   mincutoff = 1.0;   // Minimum cutoff (intercept)
-  beta      = 0.0; // Cutoff slope
+  beta      = 0.0;   // Cutoff slope
   dcutoff   = 1.0;   // Cutoff for derivative
   
   //set up the parameters of the 1 euro filter
   xOneEuroFilter( freq, mincutoff, beta, dcutoff );
   yOneEuroFilter( freq, mincutoff, beta, dcutoff );
   
-  // Try to run the sketch at the frequency set for the filter
   frameRate(60);
   
 }  
@@ -421,23 +424,38 @@ void draw()
   println("");
   println("noisePos    = " + noisePos);
   
-  // Draw RED ellipse at noisy position
-  stroke(255, 10, 10);
-  ellipse(noiseX, noiseY, 50, 50);
+  // Draw a small ellipse at noisy position
+  pushStyle();
+  pushMatrix();
+  stroke(0);
+  strokeWeight(1);
+  fill(255);
+  translate(noiseX,noiseY);
+  ellipse(0, 0, 5, 5);
+  popMatrix();
+  popStyle();
   
   //perform the 1 euro filtering (unit values)
-  float filteredX = xOEFfilter( noiseX / width ) * width;
-  float filteredY = yOEFfilter( noiseY / height ) * height;
+  float filteredX = xOEFfilter( noiseX );
+  float filteredY = yOEFfilter( noiseY );
   PVector filteredPos = new PVector( filteredX, filteredY );
   
   println( "filteredPos = " + filteredPos );
   
-  // Draw GREEN ellipse at filtered position
-  stroke(10, 255, 10); // Green
-  ellipse(filteredPos.x, filteredPos.y, 40, 40);
+  // Draw PURPLE ellipse at filtered position
+  pushStyle();
+  pushMatrix();
+  translate(filteredPos.x, filteredPos.y);
+  stroke(146, 11, 254); // Purple
+  ellipse(0, 0, 45, 45);
+  fill(146, 11, 254);
+  text("1€ Filter", 30, -20);
+  popMatrix();
+  popStyle();
   
   
   // Display tweakable parameters
+  fill(255);
   
   text( "beta (change using UP and DOWN arrows)      ", 10, 20 );
   text( beta,           350, 20 );
