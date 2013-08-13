@@ -71,6 +71,13 @@ void psmoveUpdate() {
     }
     
     //if(printDebug) println("clicked = "+clicked);
+    
+    if ( clicked ) {
+      rumbleLevel = rumbleStrength;
+    }
+    else {
+      rumbleLevel = 0;
+    }
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
