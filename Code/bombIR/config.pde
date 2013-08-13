@@ -36,6 +36,9 @@ float blobThresh = 0.98;
 float trackingOffsetX = 0.0;
 float trackingOffsetY = 0.0;
 
+// CONTROLLER variables
+int rumbleStrength;
+
 // SHADER variables (brush)
 float brushSize;
 float brushSoften;
@@ -82,11 +85,13 @@ void readConfiguration() {
     // Which camera device are we using?
     camDevice       = props.getProperty        ( "env.camera.device",       "default"         );
     
+    // How much should the controller vibrate when pressed?
+    rumbleStrength  = props.getIntProperty     ( "env.controller.rumble",   120               );
+    
     // SHADER vars
     brushSize       = props.getIntProperty     ( "env.shader.brushSize",    100               );
-    brushSoften     = props.getFloatProperty   ( "env.shader.brushSoften",  0.5               );
     brushMap        = props.getProperty        ( "env.shader.brushMap",     "sprayMap_01.png" );
-    
+    brushSoften     = props.getFloatProperty   ( "env.shader.brushSoften",  0.5               );    
     
     // Proportions of the screen ( 0 = 4:3 and 1 = 16:9 )
     ratio           = props.getIntProperty     ( "env.viewport.ratio",      0                 ); 
