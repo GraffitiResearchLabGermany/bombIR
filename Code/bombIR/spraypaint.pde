@@ -47,29 +47,29 @@ class SprayManager {
   //if(printDebug) println("void initSpray() {");
   
       Path newStroke = new Path();
-      //if(printDebug) println("Path newStroke = new Path();");
+      logger.fine("Path newStroke = new Path();");
       
-      //if(printDebug) println("strokeList.size()"+strokeList.size());
+      logger.fine("strokeList.size()"+strokeList.size());
       
       strokeList.add(newStroke);
-      //if(printDebug) println("strokeList.add(newStroke);");
+      logger.fine("strokeList.add(newStroke);");
       
-      //if(printDebug) println("strokeList.size()"+strokeList.size());
+      logger.fine("strokeList.size()"+strokeList.size());
       
   }
   
   // Remove from the bottom of the stroke list if it becomes too long
   void limitStrokes(int maxStrokes) {
     
-    //println("strokeList.size() = " + strokeList.size());
+    logger.fine("strokeList.size() = " + strokeList.size());
     
     if( maxStrokes >= 2 ) {
       if( strokeList.size() > maxStrokes ) {
         strokeList.remove(0);
-        //print(", removing a stroke from index O.");
+        logger.fine(", removing a stroke from index O.");
       }
     } else {
-        println("ERROR in SprayManager.limitStrokes(): maxStrokes can't be inferior to 2");
+        logger.severe("maxStrokes can't be inferior to 2");
     }
   }
   
@@ -224,12 +224,12 @@ class SprayManager {
  
  // Return the path beeing drawn at the moment
  Path getActiveStroke() {
-   //if(printDebug) println("Path getActiveStroke() {");
+   logger.finest("Path getActiveStroke() {");
    
-   //if(printDebug) println("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
+   logger.finest("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
    
    Path activeStroke = strokeList.get( strokeList.size() - 1 );
-   //if(printDebug) println("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
+   logger.finest("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
    
    return activeStroke;
  }
@@ -294,16 +294,16 @@ class Path {
   void add(Knot k) {
     
     currentKnot = k;
-    //if(printDebug) println("currentKnot = k;");
+    logger.finest("currentKnot = k;");
     
     int size = pointList.size();
-    //if(printDebug) println("int size = pointList.size();");
+    logger.finest("int size = pointList.size();");
     
     if(size == 0) { 
-    //if(printDebug) println("if(size == 0) { ");
+      logger.finest("if(size == 0) { ");
     
       pointList.add(currentKnot); 
-      //if(printDebug) println("pointList.add(currentKnot);");
+      logger.finest("pointList.add(currentKnot);");
       
     } else if( size > 0 ) {
       
@@ -313,7 +313,7 @@ class Path {
       */
       
       previousKnot = pointList.get( size-1 );
-      //if(printDebug) println("previousKnot = pointList.get( prev );");
+      logger.finest("previousKnot = pointList.get( prev );");
       
       // Compute the vector from previous to current knot
       PVector prevPos  = previousKnot.getPos();

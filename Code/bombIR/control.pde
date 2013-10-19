@@ -88,18 +88,25 @@ int saveCount = 0;
  
  void keyPressed() {
    switch(key) {
+     
+     //clear the screens
      case 'r': 
        // clear the paint screen (left)
        sprayManagerLeft.reset(paintscreen, bg); 
        // clear the wall screen (right)
        sprayManagerRight.reset(wallscreen, color(0));
      break;
+
+     //show/hide the menu with colorpicker and buttons for 
+     //save and clear
      case 'm': 
        if(!calibrateCamera) {   
          toggleMenu();
          drawPaintBg();
        }
      break;
+
+     //show/hide the calibration menu
      case 'b':
        toggleBlobControl();
        if(calibrateCamera) {   

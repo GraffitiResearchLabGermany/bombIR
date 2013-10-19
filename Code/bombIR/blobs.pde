@@ -12,7 +12,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
 
   for (int n = 0 ; n < ct.getBlobDetection().getBlobNb() ; n++) {
     b = ct.getBlobDetection().getBlob(n);
-    //println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
+    logger.fine("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
     if (b!= null) {
         
       // Edges
@@ -45,7 +45,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
             
             //blobY = map(blobY, 0, windowHeight, TopBorder, BottomBorder - TopBorder);
 
-            //println("BX: " + blobX + "  BY: " + blobY); 
+            //logger.fine("BX: " + blobX + "  BY: " + blobY); 
             
           }
         }   
@@ -81,11 +81,10 @@ void updateCurrentBlob() {
       float xBlobUnit = ct.getBlobDetection().getBlob(0).x;
       float yBlobUnit = ct.getBlobDetection().getBlob(0).y;
       
-      /*
-      println("");
-      println("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
-      println("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
-      */
+      
+      logger.fine("ct.getBlobDetection().getBlob(0).xMin = " + ct.getBlobDetection().getBlob(0).xMin);
+      logger.fine("ct.getBlobDetection().getBlob(0).yMin = " + ct.getBlobDetection().getBlob(0).yMin);
+      
       
       // Flip the X axis (when not using the rear projection screen)
       if( mirrorX == true ) xBlobUnit = 1.0 - xBlobUnit;
@@ -105,15 +104,15 @@ void updateCurrentBlob() {
       
       // Let's just average the two dimensions of the blob (we just need an order of magnitude).
       blobSize = ( ct.getBlobDetection().getBlob(0).w + ct.getBlobDetection().getBlob(0).h ) / 2.0;
-      //System.out.println( "blobSize = "+ blobSize );
+      logger.fine("blobSize = "+ blobSize);
 
       
-      //println("blobX:" + blobX);
-      //println("blobY:" + blobY);
+      logger.fine("blobX:" + blobX);
+      logger.fine("blobY:" + blobY);
       
   //we dont have a blob  
   } else {
-      //println("No Blobs detected");
+      logger.fine("No Blobs detected");
   }
 }
 

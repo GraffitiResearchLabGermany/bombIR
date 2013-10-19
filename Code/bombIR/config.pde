@@ -143,7 +143,7 @@ void readConfiguration() {
 
   }
   catch(IOException e) {
-    println("couldn't read config file...");
+    logger.warning("couldn't read config file...");
   }
 }
  

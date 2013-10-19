@@ -29,12 +29,12 @@ void psmoveInit() {
 
   // This is only fun if we actually have controllers
   if (connected == 0) {
-    println("WARNING: No controllers connected.");
+    logger.warning("No controllers connected.");
     moveConnected = false;
   }
-  else if (debug) { 
+  else { 
     String plural = (connected > 1) ? "s":"";
-    println("Found "+ connected + " connected controller" + plural);
+    logger.info("Found "+ connected + " connected controller" + plural);
   }
 
   controllers = new MoveController[connected];
@@ -70,7 +70,7 @@ void psmoveUpdate() {
       clickedEvent = controllers[i].isTriggerPressedEvent();
     }
     
-    //if(printDebug) println("clicked = "+clicked);
+    logger.fine("clicked = "+clicked);
       
     // Switch through color slots for color selection
     if ( controllers[i].isSquarePressedEvent() ) {
@@ -372,67 +372,67 @@ class MoveController extends PSMove {
     super.get_button_events(pressed, released);
     // Then register the current individual events to the corresponding MoveButton objects in the buttonList array
     if ((pressed[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just pressed.");
+      logger.fine("The Move button was just pressed.");
       buttonList[MOVE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just released.");
+      logger.fine("The Move button was just released.");
       buttonList[MOVE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just pressed.");
+      logger.fine("The Square button was just pressed.");
       buttonList[SQUARE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just released.");
+      logger.fine("The Square button was just released.");
       buttonList[SQUARE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just pressed.");
+      logger.fine("The Triangle button was just pressed.");
       buttonList[TRIANGLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just released.");
+      logger.fine("The Triangle button was just released.");
       buttonList[TRIANGLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just pressed.");
+      logger.fine("The Cross button was just pressed.");
       buttonList[CROSS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just released.");
+      logger.fine("The Cross button was just released.");
       buttonList[CROSS_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just pressed.");
+      logger.fine("The Circle button was just pressed.");
       buttonList[CIRCLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just released.");
+      logger.fine("The Circle button was just released.");
       buttonList[CIRCLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just pressed.");
+      logger.fine("The Start button was just pressed.");
       buttonList[START_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just released.");
+      logger.fine("The Start button was just released.");
       buttonList[START_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just pressed.");
+      logger.fine("The Select button was just pressed.");
       buttonList[SELECT_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just released.");
+      logger.fine("The Select button was just released.");
       buttonList[SELECT_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just pressed.");
+      logger.fine("The PS button was just pressed.");
       buttonList[PS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just released.");
+      logger.fine("The PS button was just released.");
       buttonList[PS_BTN].eventRelease();
     }
 
@@ -449,12 +449,12 @@ class MoveController extends PSMove {
     if (triggerValue>0) {
       buttonList[TRIGGER_BTN].press();
       if (previousTriggerValue == 0) { // Catch trigger presses
-        if (debug) println("The Trigger button was just pressed.");
+        logger.fine("The Trigger button was just pressed.");
         buttonList[TRIGGER_BTN].eventPress();
       }
     }
     else if (previousTriggerValue>0) { // Catch trigger releases
-      if (debug) println("The Trigger button was just released.");
+      logger.fine("The Trigger button was just released.");
       buttonList[TRIGGER_BTN].eventRelease();
       buttonList[TRIGGER_BTN].release();
     }

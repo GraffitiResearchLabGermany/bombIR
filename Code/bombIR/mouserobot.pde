@@ -9,13 +9,13 @@ void setupMouseRobot(){
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
         if (paintscreenIndex >= gs.length){
-        	println("No screen with index " + paintscreenIndex + " available. Falling back to primary screen");
+        	logger.warning("No screen with index " + paintscreenIndex + " available. Falling back to primary screen");
         	paintscreenIndex = 0;
         } 
     	mouseRobot = new Robot(gs[paintscreenIndex]);
            	
   	} catch (AWTException e) {
-    	println("Robot class not supported by your system!");
+    	logger.severe("Robot class not supported by your system!");
  		exit();
   	}
 }
@@ -26,12 +26,12 @@ void controlMouse(){
 	//the move is connected
 	if(moveConnected  && alwaysUseMouse == false) {
   
-                int xRobot = int ( firstWindowWidth - ( blobX - frameXLocation ) - frameXLocation * 2 ); // CRAZY! Fix this later
-                int yRobot = int ( blobY );
+        int xRobot = int ( firstWindowWidth - ( blobX - frameXLocation ) - frameXLocation * 2 ); // CRAZY! Fix this later
+        int yRobot = int ( blobY );
                 
 		mouseRobot.mouseMove( xRobot, yRobot );
 
-                //println("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
+        logger.fine("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
                 
 	}
 

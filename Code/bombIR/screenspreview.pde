@@ -33,7 +33,7 @@ class ScreenPreview {
 			this.isVisible = true;
 		}
 		else {
-			println("ScreenPreview.show() error: screen is already visible");
+			logger.warning("screen is already visible");
 		}
 	}
 
@@ -43,7 +43,7 @@ class ScreenPreview {
 	             this.isVisible = false;
 		}
 		else {
-			println("ScreenPreview.show() error: screen is already hidden");
+			logger.warning("screen is already hidden");
 		}
 	}
         
@@ -59,7 +59,7 @@ class ScreenPreview {
                         popStyle();
 		}
 		else {
-			println("ERROR: ScreenPreview.draw() doesn't have an image to display");
+			logger.severe("doesn't have an image to display");
 		}
 	}
 

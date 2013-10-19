@@ -41,6 +41,9 @@ import java.awt.AWTException;
 import java.awt.event.InputEvent;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 
 
   
@@ -50,6 +53,9 @@ PGraphics wallscreen, paintscreen, paintbackground;
 PImage bg;
 
 ScreenPreview capturePreview;
+
+//Create a logger for bombIR
+private final static Logger logger = Logger.getLogger(bombIR.class.getName());
 
 
 // Spray renderers
@@ -80,7 +86,7 @@ public void init() {
 //-----------------------------------------------------------------------------------------
   
   void setup() {
-    
+    logger.setLevel(Level.INFO);
     cursor(CROSS);
     
         // Create the robot mouse
@@ -250,7 +256,7 @@ public void init() {
     // Playstation Move update
     psmoveUpdate();
     
-    //if(debug) println("Framerate: " + int(frameRate));
+    logger.finest("Framerate: " + int(frameRate));
 
     
   } // end DRAW
