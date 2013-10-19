@@ -1,10 +1,29 @@
+/**
+ * BLOB DETECTION
+ */
 
-//-----------------------------------------------------------------------------------------
-// BLOB DETECTION
+/**
+ * x coordinate of the blob
+ */ 
+float blobX; 
 
-float blobX, blobY;
+/**
+ * y coordinate of the blob
+ */
+float blobY;
+
+/**
+ * size of the blob
+ */
 float blobSize;
 
+/**
+ *
+ * TODO: Document this method
+ * 
+ * @param drawEdges 
+ * @param drawRects
+ */
 void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {  
   Blob b;
   EdgeVertex eA,eB;
@@ -70,7 +89,10 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   } // for
 } 
 
-//set the mapped x/y coordinates to blobX and blobY
+/**
+ * Set the mapped x/y coordinates to blobX and blobY
+ *
+ */
 void updateCurrentBlob() {
   //we have at least one blob  
   if(ct.getBlobDetection().getBlobNb() >= 1){
@@ -115,5 +137,3 @@ void updateCurrentBlob() {
       logger.fine("No Blobs detected");
   }
 }
-
-// -------------------------------- //

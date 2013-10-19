@@ -1,11 +1,20 @@
-//moves the mouse when according to the blob
+/**
+ * Mouse Robot
+ *
+ * Controls the mouse when IR tracking is used
+ */
+
+/**
+ * Moves the mouse when according to the blob
+ */
 Robot mouseRobot;
 
 
-//setup the mouse robot
+/**
+ * Setup the mouse robot
+ */
 void setupMouseRobot(){
 	try {
-
 		GraphicsEnvironment ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
         if (paintscreenIndex >= gs.length){
@@ -20,7 +29,9 @@ void setupMouseRobot(){
   	}
 }
 
-
+/**
+ * Let the robot control the mouse according to the blob tracking
+ */
 void controlMouse(){
 	//let the blob control the mouse when the menu is visible and 
 	//the move is connected
@@ -31,8 +42,7 @@ void controlMouse(){
                 
 		mouseRobot.mouseMove( xRobot, yRobot );
 
-        logger.fine("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );
-                
+        logger.fine("xRobot = " +xRobot+" | yRobot = "+ yRobot + " | firstWindowWidth = " + firstWindowWidth );               
 	}
 
 	if(clicked){
@@ -42,4 +52,3 @@ void controlMouse(){
 		mouseRobot.mouseRelease(InputEvent.BUTTON1_MASK);
 	}
 }
-

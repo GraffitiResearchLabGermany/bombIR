@@ -14,11 +14,6 @@ http://www.sojamo.de/libraries/oscP5/
 Version 2.0.4
 http://www.sojamo.de/libraries/controlP5/
 
-# Keystone
-
-Version 004
-http://keystonep5.sourceforge.net/
-
 # GML4U
 
 Version xxx

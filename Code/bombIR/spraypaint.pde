@@ -1,12 +1,11 @@
-
-//-----------------------------------------------------------------------------------------
-// SHADER / PAINT
-
-
-//-----------------------------------------------------------------------------------------
-// The Spray Manager creates, updates, draws and deletes strokes
-
-
+/**
+ *
+ * SHADER / PAINT
+ *
+ * The Spray Manager creates, updates, draws and deletes strokes
+ * 
+ * TODO: Document this class
+ */
 class SprayManager { 
  
   ArrayList<Path> strokeList;
@@ -20,17 +19,23 @@ class SprayManager {
   // Spray density distribution expressed in grayscale gradient
   PImage sprayMap;
  
-   color col;
-   float weight = brushSize;
+  color col;
+  float weight = brushSize;
  
- //boolean clickEv;
- 
- SprayManager() {
-   strokeList = new ArrayList<Path>();
-   col = color(0);
- }
- 
- void setup() {
+  //boolean clickEv;
+  
+  /**
+   * Constructor
+   */
+  public SprayManager() {
+    strokeList = new ArrayList<Path>();
+    col = color(0);
+  }
+  
+  /**
+   * Set up the SprayManager
+   */
+  public void setup() {
     
     depthOffset = 0.0;
     offsetVel = 0.0005;
@@ -40,26 +45,31 @@ class SprayManager {
     
     pointShader = loadShader("pointfrag.glsl", "pointvert.glsl");
     pointShader.set( "sprayMap", sprayMap );
-    
   }
 
-  void initSpray() {
-  //if(printDebug) println("void initSpray() {");
+  /**
+   * TODO: Document this method
+   */
+  public void initSpray() {
+    logger.finest("void initSpray() {");
   
-      Path newStroke = new Path();
-      logger.fine("Path newStroke = new Path();");
+    Path newStroke = new Path();
+    logger.fine("Path newStroke = new Path();");
+     
+    logger.fine("strokeList.size()"+strokeList.size());
       
-      logger.fine("strokeList.size()"+strokeList.size());
-      
-      strokeList.add(newStroke);
-      logger.fine("strokeList.add(newStroke);");
-      
-      logger.fine("strokeList.size()"+strokeList.size());
-      
+    strokeList.add(newStroke);
+    logger.fine("strokeList.add(newStroke);");
+     
+    logger.fine("strokeList.size()"+strokeList.size());
   }
   
-  // Remove from the bottom of the stroke list if it becomes too long
-  void limitStrokes(int maxStrokes) {
+  /**
+   * Remove from the bottom of the stroke list if it becomes too long
+   *
+   * @param maxStrokes maximum number of strokes in the strokeList
+   */
+  public void limitStrokes(int maxStrokes) {
     
     logger.fine("strokeList.size() = " + strokeList.size());
     
@@ -73,12 +83,14 @@ class SprayManager {
     }
   }
   
-  void spray(PGraphics targetBuffer) {
-
-    
+  /**
+   * TODO: Document this method
+   *
+   * @param targetBuffer
+   */
+  public void spray(PGraphics targetBuffer) {
     
     depthOffset += offsetVel;
-    
     
     // OPTIMIZE: move outside of the class. This should be passed to the object.
     ColorSlot activeCS = cs.getColorSlot(activeColorSlot);
@@ -87,107 +99,126 @@ class SprayManager {
     //this.setWeight(weight);
     this.setColor(selectedColor);
     
-    if( clicked == true ) {
-      
+    if( clicked == true ) {  
       Path stroke = getActiveStroke();
-  
   
       // OPTIMIZE: manage the different coordinates (mouse  
       // or controller) outside of the SprayManager class.
       
       // spray when controller trigger is pressed
       if ( moveConnected == true && alwaysUseMouse == false ) {
-          Knot k = new Knot(firstWindowWidth - blobX, blobY, weight, col);
-          stroke.add(k);
+        Knot k = new Knot(firstWindowWidth - blobX, blobY, weight, col);
+        stroke.add(k);
       }
       
       // if no controller present or we chose to use mouse by default, spray on mouse click
       else  {
-          Knot k = new Knot(mouseX, mouseY, weight, col);
-          stroke.add(k);
+        Knot k = new Knot(mouseX, mouseY, weight, col);
+        stroke.add(k);
       }
       
       // IMPLEMENT: Remove from the bottom of the Knot list if it becomes to large
-    
     }
-    
-    
+        
     this.draw(targetBuffer);
-    
+  }
+  
+  /**
+   * Draw newly added points 
+   * NOTE: points are only drawn once so you should not redraw the background
+   * 
+   * TODO: Document this method
+   * @param buffer
+   */
+  public void draw(PGraphics buffer) {
+    for(Path p: strokeList) {
+      p.draw(buffer, pointShader);
+    }
   }
  
  
- // Draw newly added points 
- // NOTE: points are only drawn once so you should not redraw the background
- void draw(PGraphics buffer) {
-   for(Path p: strokeList) {
-     p.draw(buffer, pointShader);
-   }
- }
- 
- 
- // Show an indicator for the brushSize
- void showSize(PGraphics buffer) {
-   buffer.pushStyle();
-   buffer.noFill();
-   buffer.strokeWeight(1);
-   buffer.stroke(20, 20, 20, 100);
+  /** 
+   * Show an indicator for the brushSize
+   *
+   * TODO: Document this method
+   * @param buffer
+   */
+  public void showSize(PGraphics buffer) {
+    buffer.pushStyle();
+    buffer.noFill();
+    buffer.strokeWeight(1);
+    buffer.stroke(20, 20, 20, 100);
    
-   // OPTIMIZE: manage the different coordinates (mouse  
-   // or controller) outside of the SprayManager class.
+    // OPTIMIZE: manage the different coordinates (mouse  
+    // or controller) outside of the SprayManager class.
    
-   if ( moveConnected == true && alwaysUseMouse == false ) {
-     buffer.ellipse(blobX, blobY, weight, weight);
-   } else {
-     buffer.ellipse(mouseX, mouseY, weight, weight);
-   }
+    if ( moveConnected == true && alwaysUseMouse == false ) {
+      buffer.ellipse(blobX, blobY, weight, weight);
+    } else {
+      buffer.ellipse(mouseX, mouseY, weight, weight);
+    }
    
+    buffer.popStyle();
+  }
+ 
+ 
+  /**
+   * Clear the screen with a solid color
+   *
+   * TODO: Document parameters
+   * @param targetBuffer
+   * @param background
+   */
+  public void reset( PGraphics targetBuffer, color background ) {
    
+    targetBuffer.beginDraw();
+    targetBuffer.background(background);
+    targetBuffer.endDraw();
+    clearAll();
    
-   buffer.popStyle();
- }
+  }
  
  
- // Clear the screen with a solid color
+  /**
+   * Clear the screen with a frame buffer (PGraphics)
+   *
+   * TODO: Document parameters
+   * @param targetBuffer
+   * @param background
+   */
+  public void reset( PGraphics targetBuffer, PGraphics background ) {
+    targetBuffer.beginDraw();
+    targetBuffer.image(background,0,0);
+    targetBuffer.endDraw();
+    clearAll();
+  }
  
- void reset( PGraphics targetBuffer, color background ) {
+ 
+  /**
+   * Clear the screen with an image
+   *
+   * TODO: Document parameters
+   * @param targetBuffer
+   * @param background
+   */
+  public void reset( PGraphics targetBuffer, PImage background ) {
+    targetBuffer.beginDraw();
+    targetBuffer.image(background,0,0);
+    targetBuffer.endDraw();
+    clearAll();
+  }
+ 
+  /**
+   * Delete all the strokes
+   */
+  public void clearAll() {
    
-   targetBuffer.beginDraw();
-   targetBuffer.background(background);
-   targetBuffer.endDraw();
-   clearAll();
+    for(Path p: strokeList) {
+      p.clear();
+    }
    
- }
- 
- 
- // Clear the screen with a frame buffer (PGraphics)
- 
- void reset( PGraphics targetBuffer, PGraphics background ) {
-   targetBuffer.beginDraw();
-   targetBuffer.image(background,0,0);
-   targetBuffer.endDraw();
-   clearAll();
- }
- 
- 
- // Clear the screen with an image
- 
- void reset( PGraphics targetBuffer, PImage background ) {
-   targetBuffer.beginDraw();
-   targetBuffer.image(background,0,0);
-   targetBuffer.endDraw();
-   clearAll();
- }
- 
- // Delete all the strokes
- void clearAll() {
-   
-   for(Path p: strokeList) {
-     p.clear();
-   }
-   
-   strokeList.clear();
- }
+    strokeList.clear();
+  }
  
  /*
  void newStroke(float x, float y, float weight) {
@@ -222,43 +253,59 @@ class SprayManager {
  }
  */
  
- // Return the path beeing drawn at the moment
- Path getActiveStroke() {
-   logger.finest("Path getActiveStroke() {");
+  /**
+   * Return the path beeing drawn at the moment
+   *
+   * TODO: Document method
+   * @return
+   */
+  public Path getActiveStroke() {
+    logger.finest("Path getActiveStroke() {");
    
-   logger.finest("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
+    logger.finest("(strokeList.size() - 1) = "+(strokeList.size() - 1)); 
    
-   Path activeStroke = strokeList.get( strokeList.size() - 1 );
-   logger.finest("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
+    Path activeStroke = strokeList.get( strokeList.size() - 1 );
+    logger.finest("Path p = strokeList.get( strokeList.size() - 1 ); ["+ (strokeList.size() - 1) +"]");
    
-   return activeStroke;
- }
+    return activeStroke;
+  }
  
- // Set the size of the spray (overwrite the value from setting.properties)
- void setWeight(float size) {
-   weight = size;
-   brushSize = size; // 
- }
+  /**
+   * Set the size of the spray (overwrite the value from setting.properties)
+   *
+   * @param size the size of the brush
+   */
+  public void setWeight(float size) {
+    weight = size;
+    brushSize = size; // 
+  }
  
- // Set the color of the spray
- void setColor(color tint) {
-   col = tint;
- }
+  /**
+   * Set the color of the spray
+   *
+   * @param tint the color to be set
+   */
+  public void setColor(color tint) {
+    col = tint;
+  }
  
- color getColor() {
-   return col;
- }
+  /**
+   * Get the current color
+   *
+   * @return the current color
+   */
+  public color getColor() {
+    return col;
+  }
 
 }
 
 
-//-----------------------------------------------------------------------------------------
-// The Path object contains a list of knots (points)
-
-
-
-// The Path object contains a list of points
-
+/**
+ * The Path object contains a list of knots (points)
+ *
+ * TODO: Document this class
+ */
 class Path {
   
   ArrayList<Knot> pointList;       // raw point list
@@ -271,7 +318,10 @@ class Path {
   float distMin = 0;
   float stepSize = 1;
   
-  Path() {
+  /**
+   * Constructor
+   */
+  public Path() {
     pointList = new ArrayList<Knot>();
   }
   
@@ -289,9 +339,13 @@ class Path {
   }
   */
   
-  // Add a new knot and all knots between it and 
-  // the previous knot, based on the defined step size
-  void add(Knot k) {
+  /**
+   * Add a new knot and all knots between it and 
+   * the previous knot, based on the defined step size
+   *
+   * @param k knot to add
+   */
+  public void add(Knot k) {
     
     currentKnot = k;
     logger.finest("currentKnot = k;");
@@ -352,24 +406,34 @@ class Path {
     
   }
   
-  
-  void draw(PGraphics targetBuffer, PShader pointShader) {
+  /**
+   * Path draw method
+   *
+   * TODO: Document params
+   * @param targetBuffer
+   * @param pointShader
+   */
+  public void draw(PGraphics targetBuffer, PShader pointShader) {
     for(Knot p: pointList) {
       p.draw(targetBuffer, pointShader);
     }
   }
   
-  
-  void clear() {
+  /**
+   * Clear the pointList
+   */
+  public void clear() {
     pointList.clear();
   }
   
 }
 
 
-//-----------------------------------------------------------------------------------------
-// Each point in the path object is a knot with it's own properties (color, size, angle, etc)
-
+/**
+ * Each point in the path object is a knot with it's own properties (color, size, angle, etc)
+ *
+ * TODO: Document class
+ */
 class Knot extends PVector {
   
   float size;
@@ -380,7 +444,12 @@ class Knot extends PVector {
 
   boolean isDrawn = false;
   
-  Knot(float x, float y, float s, color tint) {
+  /**
+   * Constructor
+   *
+   * TODO: Document params
+   */
+  public Knot(float x, float y, float s, color tint) {
     super(x, y);
     size  = s;
     col   = tint;
@@ -399,19 +468,31 @@ class Knot extends PVector {
   }
   */
   
-  PVector getPos() {
+  /**
+   * TODO: Document method
+   */
+  public PVector getPos() {
     return new PVector(x,y);
   }
   
-  float getSize() {
+  /**
+   * TODO: Document method
+   */
+  public float getSize() {
     return size;
   }
   
-  color getColor() {
+  /**
+   * TODO: Document method
+   */
+  public color getColor() {
     return col; 
   }
   
-  void draw(PGraphics targetBuffer, PShader pointShader) {
+  /**
+   * TODO: Document method
+   */
+  public void draw(PGraphics targetBuffer, PShader pointShader) {
     
     float x = this.x;
     float y = this.y;

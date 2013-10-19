@@ -1,66 +1,149 @@
+/**
+ * CONFIGURATION 
+ * 
+ * Configuration values are stored in data/settings.properties
+ * add all variables that are set with the settings.properties here
+ */
 
-//-----------------------------------------------------------------------------------------
-// CONFIGURATION - configuration values are stored in data/settings.properties
-//add all variables that are set with the settings.properties here
- 
-//Access to the properties file
+/**
+ * Access to the properties file
+ */
 P5Properties props;
-
-// debugging mode, log messages are shown on the console
-// and the two "windows" appear smaller & on the main screen
+/**
+ * Debugging mode, log messages are shown on the console
+ * and the two "windows" appear smaller & on the main screen
+ */
 boolean debug = false;
-
-// If false, skip camera calibration and use default values (set in settings.properties)
+/** 
+ * If false, skip camera calibration and use default values (set in settings.properties)
+ */
 boolean calibrateCamera = true;
-
-//height of the application window
+/**
+ * Height of the application window
+ */
 int windowHeight;
-//width of the application window
+/**
+ * Width of the application window
+ */
 int windowWidth;
-//width of the paintscreen
+/**
+ * Width of the paintscreen
+ */
 int firstWindowWidth;
-//x location of the window
+/**
+ * x location of the window
+ */
 int frameXLocation;
-//file for the backgroudn image
+/**
+ * File for the backgroudn image
+ */
 String bgFile;
-//device of the camera (only set when needed)
+/**
+ * Device of the camera (only set when needed)
+ */
 String camDevice;
 
-// BLOB & CALIBRATION variables
+/** 
+ * BLOB & CALIBRATION variables
+ */
+
+/**
+ * TODO: Document this declaration
+ */
 float cropScale  = 0.0;
-float blobMin    = 0.03;      
+/**
+ * TODO: Document this declaration
+ */
+float blobMin    = 0.03;
+/**
+ * TODO: Document this declaration
+ */      
 float blobMax    = 0.70;
+/**
+ * TODO: Document this declaration
+ */
 float blobThresh = 0.98;
 
-// TRACKING adjustment variables
+/**
+ * TRACKING adjustment variables
+ */
+
+ /**
+ * TODO: Document this declaration
+ */
 float trackingOffsetX = 0.0;
+/**
+ * TODO: Document this declaration
+ */
 float trackingOffsetY = 0.0;
 
-// SHADER variables (brush)
+/** 
+ * SHADER variables (brush)
+ */
+
+/**
+ * Size if the brush to paint with
+ */
 float brushSize;
+/**
+ * TODO: Document this declaration
+ */
 float brushSoften;
+/**
+ * TODO: Document this declaration
+ */
 String brushMap;
 
-// SPRAY variables
-int maxStrokes = 10; // How long can the spray ArrayList be?
-boolean showSize = true; // Display an indicator of the brush size
+/**
+ * SPRAY variables
+ */
 
-// 
+/**
+ * How long can the spray ArrayList be?
+ */
+int maxStrokes = 10;
+/**
+ * Display an indicator of the brush size
+ */
+boolean showSize = true; // 
+
+/**
+ * TODO: Document this declaration
+ */
 boolean mirrorX;
-
+/**
+ * TODO: Document this declaration
+ */
 boolean alwaysUseMouse;
-
+/**
+ * TODO: Document this declaration
+ */
 int ratio;
-
-float captureWidth, captureHeight, captureOffsetY;
-
-//size of the colorpicker
+/**
+ * TODO: Document this declaration
+ */
+float captureWidth;
+/**
+ * TODO: Document this declaration
+ */
+float captureHeight;
+/**
+ * TODO: Document this declaration
+ */
+float captureOffsetY;
+/**
+ * Size of the colorpicker
+ */
 int cpsize;
-
-//index of the paintscreen
+/**
+ * Index number of the paintscreen in a multi monitor setup 
+ */
 int paintscreenIndex;
  
-
+/**
+ * Read the configuration values from the 'settings.properties' file in the data folder
+ * and set the variable values accordingly
+ */
 void readConfiguration() {
   try {
     
@@ -148,20 +231,35 @@ void readConfiguration() {
 }
  
 /**
- * simple convenience wrapper object for the standard
+ * Simple convenience wrapper object for the standard
  * Properties class to return pre-typed numerals
  */
 class P5Properties extends Properties {
- 
-  boolean getBooleanProperty(String id, boolean defState) {
+  
+  /**
+   * @param id the id of the property to get the value from
+   * @param defState default value of the property if no value is found in config file
+   * @return the boolean value of the property
+   */
+  public boolean getBooleanProperty(String id, boolean defState) {
     return boolean(getProperty(id,""+defState));
   }
- 
-  int getIntProperty(String id, int defVal) {
+  
+  /**
+   * @param id the id of the property to get the value from
+   * @param defState default value of the property if no value is found in config file
+   * @return the int value of the property
+   */
+  public int getIntProperty(String id, int defVal) {
     return int(getProperty(id,""+defVal));
   }
  
-  float getFloatProperty(String id, float defVal) {
+  /**
+   * @param id the id of the property to get the value from
+   * @param defState default value of the property if no value is found in config file
+   * @return the float value of the property
+   */
+  public float getFloatProperty(String id, float defVal) {
     return float(getProperty(id,""+defVal)); 
   }  
 }
