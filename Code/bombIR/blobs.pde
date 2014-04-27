@@ -1,8 +1,20 @@
+/**
+ * BLOB DETECTION
+ */
 
-//-----------------------------------------------------------------------------------------
-// BLOB DETECTION
+/**
+ * x coordinate of the blob
+ */ 
+float blobX; 
 
-float blobX, blobY;
+/**
+ * y coordinate of the blob
+ */
+float blobY;
+
+/**
+ * size of the blob
+ */
 float blobSize;
 
 // OPTIMIZE: implement a Tracker class to abstract the blob code
@@ -25,7 +37,7 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   for (int n = 0 ; n < ct.getBlobDetection().getBlobNb() ; n++) {
     b = ct.getBlobDetection().getBlob(n);
 
-    //println("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
+    logger.fine("There Are " + ct.getBlobDetection().getBlobNb() + " Blobs Detected...");
     if (b!= null) {
 
       // Is the blob valid?
@@ -78,7 +90,10 @@ void drawBlobsAndEdges(boolean drawEdges, boolean drawRects) {
   } // for
 }
 
-//set the mapped x/y coordinates to blobX and blobY
+/**
+ * Set the mapped x/y coordinates to blobX and blobY
+ *
+ */
 void updateCurrentBlob() {
   
   // Register the current crop area
@@ -145,7 +160,7 @@ void updateCurrentBlob() {
     } // for
   } 
   else {
-    //println("No Blobs detected");
+    logger.fine("No Blobs detected");
   }
 }
 

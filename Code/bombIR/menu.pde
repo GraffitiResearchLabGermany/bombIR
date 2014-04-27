@@ -1,26 +1,53 @@
+/**
+ * GUI
+ */
 
-//-----------------------------------------------------------------------------------------
-// GUI
 
-// colorpicker menu
+/**
+ * Menu to pick colors for painting
+ */
 ControlP5 menu;
-// separate menu for calibration
+/**
+ * Menu for calibration of the IR pen
+ */
 ControlP5 calibMenu;
-//color of the picker
+/**
+ * Color of the picker
+ */
 int picker;
-//red, green and blue color values for the brush
-float brushR, brushG, brushB;
-//number of the active colorslot
+/** 
+ * Red RGB color value for the brush
+ */
+float brushR;
+/** 
+ * Green RGB color value for the brush
+ */
+float brushG;
+/** 
+ * Blue RGB color value for the brush
+ */
+float brushB;
+/**
+ * Number of the selected colorslot
+ */
 int activeColorSlot = 0;
-//Canvas to display the colorslots
+/**
+ * Canvas to display the colorslots
+ */
 ColorSlotCanvas cs;
-//radio button to select a colorslot
+/** 
+ * Radio button to select the color stored in a colorslot
+ */
 RadioButton rb;
-//the colorpicker
+/**
+ * Colorpicker to pick a color for painting
+ */
 ColorPicker cp;
 
 
-//setup the control menu
+/**
+ * Setup the control menu
+ */
 void setupMenu(){
     menu = new ControlP5(this);
     
@@ -32,7 +59,7 @@ void setupMenu(){
                 .setWidth(100)
                 .setBackgroundColor(color(50))
                 .hideBar()
-                .addCanvas(new ColorSlotCanvas())
+                .addCanvas(new ColorSlotCanvas(5))
                 ;       
     
     menu.addGroup("misc")
@@ -81,7 +108,9 @@ void setupMenu(){
 }
 
 
-
+/**
+ * Set up the calibration menu
+ */
 void setupCalibrationMenu() {
   // Init
   calibMenu = new ControlP5(this);
@@ -104,7 +133,9 @@ void setupCalibrationMenu() {
 }
 
 
-//pick color with the mouse
+/**
+ * Pick the color to paint with the mouse
+ */
 void pickColor(){ 
     if(mouseX > 50 && mouseY < cpsize + 100 && mouseY > 100 && mouseX < cpsize + 50) {
           if(mousePressed) {
@@ -117,7 +148,11 @@ void pickColor(){
      }
 }
 
-//is called when a radio button is pressed
+/**
+ * Activates the colorlot selected by mouse
+ *
+ * method is called when a radio button is pressed
+ */
 void radioButton(int a) {
   //a is -1 if an activated button is pressed again
   if(a == -1){
@@ -129,7 +164,9 @@ void radioButton(int a) {
   
 }
 
-//change colorslot, picks always the next colorslot
+/**
+ * Change colorslot, picks always the next colorslot
+ */
 void switchColorSlot(){
   activeColorSlot = cs.getNextColorSlot(activeColorSlot);
   rb.activate(activeColorSlot);
@@ -139,14 +176,30 @@ void switchColorSlot(){
  * Displays the CA and DE logo on the menu
  */
 class LogoCanvas extends Canvas {
+  /**
+   * German logo
+   */
   protected PImage deLogo;
+  /**
+   * Canadian logo
+   */
   protected PImage caLogo;
 
+  /**
+   * Set up the canvas
+   * 
+   * @param p applet to dispaly the canvas in
+   */
   public void setup(PApplet p) {
     deLogo = p.loadImage("Logo_de.png");
     caLogo = p.loadImage("Logo_ca.png");
   }
   
+  /**
+   * Canvas draw method
+   * 
+   * @param p applet to draw the canvas in
+   */
   public void draw(PApplet p) {
       p.image(deLogo, 0, 200, 200, 180);
       p.image(caLogo, 0, 400, 200, 120);
@@ -157,44 +210,98 @@ class LogoCanvas extends Canvas {
  * Slot to save picked colors for later use
  */
 class ColorSlot{
-  
+  /**
+   * Red RGB value of the colorslot
+   */
   protected float red = 255.0;
+  /**
+   * Green RGB value of the colorslot
+   */
   protected float green = 255.0;
+  /**
+   * Blue RGB value of the colorslot
+   */
   protected float blue = 255.0;
-  
+  /**
+   * x position of top left corner of the colorslot
+   */
   protected int positionX;
+  /**
+   * y position of the top left corner of the colorslot 
+   */
   protected int positionY;
- 
+  
+  /**
+   * Constructor
+   *
+   * @param positionX the x position of the top left corner of the colorslot
+   * @param positionY the y position 0f the top left corner of the colorslot
+   */
   public ColorSlot(int positionX, int positionY) {
     this.positionX = positionX;
     this.positionY = positionY;
   }
   
+  /**
+   * Draw method of the colorslot
+   * 
+   * @param applet the applet to draw the colorslot in 
+   */
   public void draw(PApplet applet){
     applet.fill(red, green, blue);
     applet.rect(this.positionX, this.positionY, 30, 30);
   }
   
+  /**
+   * Get the red RGB value of the colorslot
+   * 
+   * @return the red RGB value of the colorslot
+   */
   public float getRed() {
     return red;
   }
   
+  /**
+   * Get the green RGB value of the colorslot
+   * 
+   * @return the green RGB value of the colorslot
+   */
   public float getGreen() {
     return green;
   }
   
+  /**
+   * Get the blue RGB value of the colorslot
+   * 
+   * @return the blue RGB value of the colorslot
+   */
   public float getBlue() {
     return blue;
   }
   
+  /**
+   * Set the red RGB value of the colorslot
+   * 
+   * @param red the red RGB value of the colorslot
+   */
   public void setRed(float red) {
     this.red = red;
   }
   
+  /**
+   * Set the green RGB value of the colorslot
+   * 
+   * @param green the green RGB value of the colorslot
+   */
   public void setGreen(float green) {
    this.green = green; 
   }
   
+  /**
+   * Set the blue RGB value of the colorslot
+   * 
+   * @param blue the blue RGB value of the colorslot
+   */
   public void setBlue(float blue) {
     this.blue = blue;
   }
@@ -205,29 +312,66 @@ class ColorSlot{
  * later use.
  */
 class ColorSlotCanvas extends Canvas {
-  ColorSlot[] colorSlots = new ColorSlot[5];
-  
-  public void setup(PApplet p) {
-    colorSlots[0] = new ColorSlot(5,0);
-    colorSlots[1] = new ColorSlot(5,31);
-    colorSlots[2] = new ColorSlot(5,62);
-    colorSlots[3] = new ColorSlot(5,93);
-    colorSlots[4] = new ColorSlot(5,124);
+  /**
+   * Number of colorslots to create
+   */
+  ColorSlot[] colorSlots;
+
+  /**
+   * Constructor
+   * 
+   * @param numberOfSlots number of Colorslots to create
+   */
+  public ColorSlotCanvas(int numberOfSlots){
+    this.colorSlots = new ColorSlot[numberOfSlots];
   }
   
-   public void draw(PApplet p) {
-    for(int i=0;i<=4;i++){
+  /**
+   * Set up the ColorslotCanvas
+   * 
+   * @param p the applet to create the ColorslotCanvas in
+   */
+  public void setup(PApplet p) {
+
+    for (int i = 0; i<this.colorSlots.length; i++){
+      //TODO: find a more flexible and elegant way to position the slots
+      colorSlots[i] = new ColorSlot(5,i*31);
+    }
+  }
+  
+  /**
+   * ColorSlotCanvas draw method
+   * 
+   * @param p the applet to draw the ColorSlotCanvas in
+   */
+  public void draw(PApplet p) {
+    for(int i=0;i<this.colorSlots.length;i++){
         this.colorSlots[i].draw(p);
     }
   }
   
-  //update the color of the color slot
+  /**
+   * Set the color of a ColorSlot
+   * 
+   * @param activeSlot the Colorslot to set the color for
+   * @param red red RGB value to set
+   * @param green green RGB value to set
+   * @param blue blue RGB value to set
+   */
   public void setColorSlot(int activeSlot, float red, float green, float blue) {
     this.colorSlots[activeSlot].setRed(red);
     this.colorSlots[activeSlot].setGreen(green);
     this.colorSlots[activeSlot].setBlue(blue); 
   }
   
+  /**
+   * Get the index number of the next color slot based on the active ColorSlot
+   * 
+   * If the last Colorslot is active, return the number of the first ColorSlot
+   * 
+   * @param activeSlot index number of the currently active slot
+   * @return the index number of the next ColorSlot
+   */
   public int getNextColorSlot(int activeSlot) {
     if(activeSlot < this.colorSlots.length-1) {
       return activeSlot+1;
@@ -235,10 +379,24 @@ class ColorSlotCanvas extends Canvas {
     return 0;
   }
   
+  /**
+   * Get the ColorSlot with index number 'id'
+   * 
+   * @param id the index number of the ColorSlot to return
+   * @return the ColorSlot specified by 'id'
+   */
   public ColorSlot getColorSlot(int id){
+    if(id >= this.colorSlots.length){
+      logger.warning("Colorslot with index " + id + " does not exist");
+    }
     return this.colorSlots[id];
   }
 
+  /**
+   * Get the number of ColorSlots
+   *
+   * @return the number of ColorSlots
+   */
   public int getNumberOfSlots(){
     return this.colorSlots.length;
   }
@@ -248,8 +406,9 @@ class ColorSlotCanvas extends Canvas {
 /**
  * Colorpicker from http://www.julapy.com/processing/ColorPicker.pde
  * with little adjustments
+ *
+ * TODO: Document this class
  */
- 
 public class ColorPicker {
   int x, y, w, h, c;
   PImage cpImage;

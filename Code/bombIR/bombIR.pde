@@ -1,6 +1,4 @@
-
-//-----------------------------------------------------------------------------------------
-/*
+/**
  * bombIR
  * ---------------------------------------------------------------------------
  * Graffiti Research Lab Germany
@@ -39,10 +37,10 @@
  *  blobdetection
  * ----------------------------------------------------------------------------
  */
-//-----------------------------------------------------------------------------------------
 
-// IMPORTS
-//-----------------------------------------------------------------------------------------
+/**
+ * IMPORTS
+ */
 import controlP5.*;
 import io.thp.psmove.*;
 import java.util.Properties;
@@ -53,43 +51,75 @@ import java.awt.AWTException;
 import java.awt.event.InputEvent;
 import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
   
-// DECLARATIONS
-//-----------------------------------------------------------------------------------------  
-PGraphics wallscreen, paintscreen, paintbackground;
+/**
+ * DECLARATIONS
+ */ 
+/**
+ * Screen that is projected to the big wall
+ */
+PGraphics wallscreen;
+/**
+ * Screen that is painted on aka the rear projection screen
+ */
+PGraphics paintscreen;
+/**
+ * Screen to display a background on the paintscreen (f.e. a graphic matching the wall to project on)
+ */
+PGraphics paintbackground;
+/**
+ * Image to display on the paintbackground screen
+ */
 PImage bg;
-
+/**
+ * TODO: Document this object declaration
+ */
 ScreenPreview capturePreview;
-
-
-// Spray renderers
-SprayManager sprayManagerLeft; // paint screen (left)
-SprayManager sprayManagerRight;  // wall screen (right)
-
-
-// GLOBAL VARIABLES
-//-----------------------------------------------------------------------------------------
+/**
+ * Logger for bombIR to display logging messages
+ */
+private final static Logger logger = Logger.getLogger(bombIR.class.getName());
+/**
+ * Spray renderer for the paintscreen (left)
+ */
+SprayManager sprayManagerLeft;
+/**
+ * Spray renderer for the wallscreen (right)
+ */
+SprayManager sprayManagerRight;
+/**
+ * TODO: Document this declaration
+ */
 boolean clicked = false;
+/**
+ * TODO: Document this declaration
+ */
 boolean clickedEvent = false;
+/**
+ * TODO: Document this declaration
+ */
 boolean calibrateKeystone = false;
 boolean suspendMouseRobot = false;
 
-
-//-----------------------------------------------------------------------------------------
-
+/**
+ * Init the object to manipulate the window
+ */
 public void init() {
-  // remove the window frame
-  frame.removeNotify(); 
-  frame.setUndecorated(true);
-  frame.addNotify();
-  super.init();
+ // remove the window frame
+ frame.removeNotify(); 
+ frame.setUndecorated(true);
+ frame.addNotify();
+ super.init();
 }
 
-//-----------------------------------------------------------------------------------------
-  
-  void setup() {
+/**
+ * Setting up bombIR
+ */ 
+ void setup() {
     
     cursor(CROSS);
     
@@ -159,8 +189,9 @@ public void init() {
 
   } // end SETUP
   
-  //-----------------------------------------------------------------------------------------
-  
+ /**
+  * The main draw method
+  */
   void draw() {
     
     // Calibration Stage
@@ -265,14 +296,17 @@ public void init() {
     
   } // end DRAW
 
-//draw the background of the paintscreen
+/**
+ * Draw the background of the paintscreen
+ */
 void drawPaintBg(){
         paintbackground.beginDraw();
         paintbackground.image(bg,0,0);
         paintbackground.endDraw();
 }
-
-//quit bombIR
+/**
+ * quit bombIR
+ */
 void quit(){
   //shutdown threads
   ct.quit();

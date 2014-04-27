@@ -1,13 +1,23 @@
 
+/**
+ * The thread running the Mouse robot
+ */
 MouseRobotThread mt;
 
+/**
+ * Setup the mouse robot
+ */
 void setupMouseRobot(){
 	mt = new MouseRobotThread("MouseRobot", this, paintscreenIndex, firstWindowWidth, frameXLocation);
 	mt.start();
 }
 
-//Thread for controlling the Mouse when the blob moves
-//and buttons are pressed
+/**
+ * Thread for controlling the Mouse when the blob moves
+ * and buttons are pressed
+ *
+ * TODO document class
+ */
 class MouseRobotThread extends Thread{
 	GraphicsEnvironment ge;
 	GraphicsDevice[] gs;
@@ -22,7 +32,6 @@ class MouseRobotThread extends Thread{
 	int xRobot;
 	int yRobot;
 
-
 	public MouseRobotThread(String id, PApplet applet, int screenIndex, int firstWindowWidth, int frameXLocation){
 		this.id = id;
 		this.applet = applet;
@@ -33,20 +42,20 @@ class MouseRobotThread extends Thread{
 
 	public void start(){
     	running = true;
-    	println("Starting MouseRobot Thread...");
+    	logger.fine("Starting MouseRobot Thread...");
 
     	try {
 
 			this.ge = GraphicsEnvironment.getLocalGraphicsEnvironment();
 	        this.gs = this.ge.getScreenDevices();
 	        if (this.screenIndex >= this.gs.length){
-	        	println("No screen with index " + this.screenIndex + " available. Falling back to primary screen");
+	        	logger.warning("No screen with index " + this.screenIndex + " available. Falling back to primary screen");
 	        	this.screenIndex = 0;
 	        } 
 	    	this.mouseRobot = new Robot(this.gs[this.screenIndex]);
 	           	
 	  	} catch (AWTException e) {
-	    	println("Robot class not supported by your system!");
+	    	logger.severe("Robot class not supported by your system!");
 	 		this.quit();
 	  	}
 	}
@@ -77,7 +86,7 @@ class MouseRobotThread extends Thread{
    	 * Stop camera and blob detection
    	 */
   	public void quit(){
-	    println("Quitting MouseRobot Thread...");
+	    logger.fine("Quitting MouseRobot Thread...");
 	    this.running = false;
 	    this.mouseRobot = null;
 	    interrupt();

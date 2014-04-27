@@ -1,16 +1,46 @@
+/**
+ * CAMERA + CALIBRATION
+ */
 
-//-----------------------------------------------------------------------------------------
-// CAMERA + CALIBRATION
-
+/**
+ * TODO: Document this declaration
+ */
 Corner corner;
+/**
+ * Should the camera image be shown on the paint screen
+ */
 boolean showCam = true;
+/**
+ * Should blobs be displayed on the paint screen
+ */
 boolean showBlob  = true;
-float LeftBorder, RightBorder, TopBorder, BottomBorder;
+/**
+ * TODO: Document this declaration
+ */
+float LeftBorder;
+/**
+ * TODO: Document this declaration
+ */
+float RightBorder;
+/**
+ * TODO: Document this declaration
+ */ 
+float TopBorder;
+/**
+ * TODO: Document this declaration
+ */ 
+float BottomBorder;
+/**
+ * Thread of the tracking camera
+ */
 CameraThread ct;
 
+/**
+ * Setup the camera for tracking
+ */
 void setupCamera() {
   
-  ct = new CameraThread("Camera", blobThresh, this);
+  ct = new CameraThread("Camera", this);
   ct.start();
    
   // Calbration Points
@@ -19,6 +49,10 @@ void setupCamera() {
 
 }
 
+/**
+ * Calibrate the camera
+ * TODO: Document what's happening here
+ */
 void runCameraCalibration() {
   background(0);
   
@@ -65,6 +99,9 @@ void runCameraCalibration() {
   
 }
 
+/**
+ * TODO: Document this class
+ */
 class Corner {
   
  int tlX, tlY, trX, trY, brX, brY, blX, blY;
@@ -80,7 +117,9 @@ class Corner {
    blY = _blY;   
  } 
  
- // Update Cropping Points
+ /**
+  * Update Cropping Points
+  */
  void update() {
    LeftBorder = (tlX + blX) /2;
    RightBorder = (trX + brX) /2; 
@@ -88,7 +127,9 @@ class Corner {
    BottomBorder = (blY + brY) /2;
  }
 
- // Show Cropping Polygon
+ /**
+  * Show Cropping Polygon
+  */
  void display() {
    pushStyle();
      noFill();
@@ -106,23 +147,39 @@ class Corner {
   
 }
 
-//runs the camera and blob detection in a different thread
+/**
+ * Runs the camera and blob detection in a different thread
+ * in the hope to increase performance
+ */
 class CameraThread extends Thread {
-  //is the thread running?
+  /**
+   * is the thread running?
+   */
   boolean running;
-  //thread id
+  /**
+   * id of the thread
+   */
   String id;
-  //the camera
+  /**
+   * the camera
+   */
   GSCapture cam;
-  //blob detection instance
+  /**
+   * blob detection instance
+   */
   BlobDetection bd;
-  //the applet
+  /**
+   * the applet
+   */
   PApplet applet;
 
   /**
    * Constructor
+
+   * @param id the ID of the thread
+   * @param applet the applet to call back to
    */
-  public CameraThread(String s, float blobThresh, PApplet applet){
+  public CameraThread(String s, PApplet applet){
     this.running = false;
     this.id = s;
     this.applet = applet;
@@ -151,6 +208,9 @@ class CameraThread extends Thread {
     super.start();
   }
   
+  /**
+   * Thread needs to implement run
+   */
   public void run(){
     //nothing to be done here
   }
@@ -162,16 +222,28 @@ class CameraThread extends Thread {
     return cam;
   }
   
+  /**
+   * Get the width of the camera image
+   *
+   * @return the width of the camera image
+   */
   public float getWidth() {
     return this.cam.width;
   }
   
+  /**
+   * Get the height of the camera image
+   *
+   * @return the height of the camera image
+   */
   public float getHeight() {
     return this.cam.height;
   }
   
   /**
-   * Return the blob detection object
+   * Get the blob detection object
+   * 
+   * @return the blob detection object
    */
   public BlobDetection getBlobDetection(){
     return bd;
@@ -179,6 +251,8 @@ class CameraThread extends Thread {
   
   /**
    * Set the threshold of the blob detection
+   * 
+   * @param the threshold to be set
    */
   public void setThreshold(float threshold){
     this.bd.setThreshold(threshold);
@@ -189,7 +263,7 @@ class CameraThread extends Thread {
    * Stop camera and blob detection
    */
   public void quit(){
-    println("Quitting Camera Thread...");
+    logger.info("Quitting Camera Thread...");
     running = false;
     this.cam.stop();
     interrupt();

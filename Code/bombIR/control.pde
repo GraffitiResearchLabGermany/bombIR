@@ -1,9 +1,17 @@
+/**
+ * MENU + GUI CONTROL
+ */
 
-//-----------------------------------------------------------------------------------------
-// MENU + GUI CONTROL
-
+/**
+ * TODO: Document this declaration
+ */
 int saveCount = 0;
 
+/**
+ * Clears the screens if theFlag is true
+ * 
+ * @param theFlag true if the screen should be cleared
+ */
  void CLEAR(boolean theFlag) {
   if(theFlag == true) {
     
@@ -18,7 +26,12 @@ int saveCount = 0;
   }
  }
 
- // SAVE
+/**
+ * Saves an image of the wallscreen
+ * Images are stored in the 'exports' folder. 
+ *
+ * @param theFlag true if the wallscreen image should be saved
+ */
  void SAVE(boolean theFlag) {
   if(theFlag == true) {
      saveCount ++;
@@ -34,17 +47,26 @@ int saveCount = 0;
   }
  } 
 
- //adjust brush size
+/**
+ * Adjust brush size
+ * 
+ * @param brushSize the size of the brush to paint width
+ */
  void WIDTH(int brushSize) {
     sprayManagerLeft.setWeight(brushSize);
     sprayManagerRight.setWeight(brushSize);
  } 
  
  
- // Set the position of the cropping area corners
- 
- void cropScale(float cs) {      // defined in settings.properties
-     float w = firstWindowWidth; // defined in settings.properties
+/**
+ * Set the position of the cropping area corners
+ * 
+ * @param cs scale of the cropping area
+ */
+ void cropScale(float cs) {      
+     // defined in settings.properties
+     float w = firstWindowWidth; 
+     // defined in settings.properties
      float h = windowHeight;
      corner.tlX = int( w / 2.0 * cs );
      corner.tlY = int( h / 2.0 * cs );
@@ -56,7 +78,9 @@ int saveCount = 0;
      corner.blY = int( h - ( h  / 2.0 * cs ) );
  }
 
- // Show Blob
+/**
+ * Show Blob
+ */
  void showBlob() {
    if(calibrateCamera) {
      showBlob =! showBlob;
@@ -68,7 +92,9 @@ int saveCount = 0;
    }   
  }
  
- // Show Cam
+ /**
+  * Show Cam
+  */
  void showCam() {
    if(calibrateCamera) {
      showCam =! showCam;
@@ -80,7 +106,9 @@ int saveCount = 0;
    }   
  }
  
- // Save Calibration
+ /** 
+  * Save Calibration
+  */
  void saveCalib() {
    if(calibrateCamera) {
      background(0);
@@ -93,6 +121,11 @@ int saveCount = 0;
    }
  }
  
+
+ /**
+  * Method will be called when a key is pressed and fire 
+  * an action if the key pressed matches 
+  */
  void keyPressed() {
    
    // Quit BombIR gracefully
@@ -148,7 +181,9 @@ int saveCount = 0;
    
  }
    
- //show or hide the menu
+ /**
+ * Show or hide the menu
+ */
  void toggleMenu() {
    if(menu.isVisible()){
      //noCursor();
@@ -161,7 +196,9 @@ int saveCount = 0;
    }
  }
  
- //show or hide blob control
+ /**
+  * Show or hide blob control
+  */
  void toggleBlobControl(){
    if(calibMenu.isVisible()){
      capturePreview.hide();

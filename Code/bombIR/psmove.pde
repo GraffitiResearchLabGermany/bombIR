@@ -1,40 +1,81 @@
+/**
+ * PSMOVE CONTROLLER
+ */
 
-//-----------------------------------------------------------------------------------------
-// CONTROLLER
 
-//MoveController move;
-MoveController [] controllers; // Define an array of controllers
-
+/**
+ * Define an array of controllers
+ */
+MoveController [] controllers;
+/**
+ * TODO: Document this declaration
+ */
 int rumbleLevel;
+/**
+ * Color of the sphere of a move controller
+ */
 color sphereColor;
-
+/**
+ * Is a move controller connected?
+ */
 boolean moveConnected = true;
 
-// Button enum
+/**
+ * Move buttons
+ */
+
+/**
+ * Analog trigger button
+ */ 
 final int TRIGGER_BTN  = 0;
+/**
+ * TODO: Button with the PS sign on it, right?
+ */
 final int MOVE_BTN     = 1;
+/**
+ * Button with the square on it
+ */
 final int SQUARE_BTN   = 2;
+/**
+ * Button with the triangle on it
+ */
 final int TRIANGLE_BTN = 3;
+/**
+ * Button with the cross on it
+ */
 final int CROSS_BTN    = 4;
+/**
+ * Button with the circle on it
+ */
 final int CIRCLE_BTN   = 5;
+/**
+ * Button 'start'
+ */
 final int START_BTN    = 6;
+/**
+ * Button 'select'
+ */
 final int SELECT_BTN   = 7;
+/**
+ * TODO: Which button is that?
+ */
 final int PS_BTN       = 8;
   
 
-// Setup of the move -------------------------------------------------------------
-
+/**
+ * Initialize the move
+ */
 void psmoveInit() {
   int connected = psmoveapi.count_connected();
 
   // This is only fun if we actually have controllers
   if (connected == 0) {
-    println("WARNING: No controllers connected.");
+    logger.warning("No controllers connected.");
     moveConnected = false;
   }
   else if (debug) { 
     String plural = (connected > 1) ? "s":"";
-    println("Found "+ connected + " connected controller" + plural);
+    logger.info("Found "+ connected + " connected controller" + plural);
   }
 
   controllers = new MoveController[connected];
@@ -48,8 +89,11 @@ void psmoveInit() {
 // END OF INIT
 
 
-// Update of the move controller(s) ---------------------------------------------------------
-
+/** 
+ * Update of the move controller(s) 
+ *
+ * Read out button events, set the sphere color
+ */
 void psmoveUpdate() {  
   
   for (int i = 0; i<controllers.length; i++) {
@@ -99,10 +143,13 @@ void psmoveUpdate() {
 }
 
 
-// Controller class -------------------------------------------------------------
-
-// HIC SVNT LEONES!
-
+/**
+ * Controller class
+ *
+ * HIC SVNT LEONES!
+ *
+ * TODO: Document this class
+ */
 class MoveController extends PSMove {
   
 
@@ -115,18 +162,27 @@ class MoveController extends PSMove {
   
   boolean isTriggerPressed, isMovePressed, isSquarePressed, isTrianglePressed, isCrossPressed, isCirclePressed, isStartPressed, isSelectPressed, isPsPressed; 
 
-  
+    /**
+   * Constructor
+   *
+   * @param i id of the controller (?)
+   */
   MoveController(int i) {
     super(i);
     init();
   }
   
+  /**
+   * Initialize controller
+   */
   void init() {
     createButtons();
     movePoll();
   }
   
-  //Populate the moveButton[] array of the controller with MoveButton objects.
+  /**
+   * Populate the moveButton[] array of the controller with MoveButton objects.
+   */
   void createButtons() {
     for (int i=0; i<buttonList.length; i++) {
       buttonList[i] = new MoveButton();
@@ -135,155 +191,296 @@ class MoveController extends PSMove {
 
   
   
-  // Trigger value --------------------------------------------------------
-  
-  int getTriggerValue() {
+   /** 
+   * Get the value of the Trigger button
+   *
+   * TODO: What's the range here?
+   *
+   * @return the value of the trigger press 
+   */
+  public int getTriggerValue() {
     return buttonList[TRIGGER_BTN].getValue();
   }
 
-  // Button presses --------------------------------------------------------
-  
-  boolean isTriggerPressed() {
+  /**
+   * Ís the Trigger Button pressed?
+   *
+   * @return true if Trigger is pressed, false otherwise
+   */
+  public boolean isTriggerPressed() {
     return buttonList[TRIGGER_BTN].isPressed();
   }
 
-  boolean isMovePressed() {
+  /**
+   * Ís the Move Button pressed?
+   *
+   * @return true if Move Button is pressed, false otherwise
+   */
+  public boolean isMovePressed() {
     return buttonList[MOVE_BTN].isPressed();
   }
-
-  boolean isSquarePressed() {
+  
+  /**
+   * Ís the Square Button pressed?
+   *
+   * @return true if Square Button is pressed, false otherwise
+   */
+  public boolean isSquarePressed() {
     return buttonList[SQUARE_BTN].isPressed();
   }
 
-  boolean isTrianglePressed() {
+ /**
+   * Ís the Triangle Button pressed?
+   *
+   * @return true if Triangle Button is pressed, false otherwise
+   */
+  public boolean isTrianglePressed() {
     return buttonList[TRIANGLE_BTN].isPressed();
   }
 
-  boolean isCrossPressed() {
+  /**
+   * Ís the Cross Button pressed?
+   *
+   * @return true if Cross Button is pressed, false otherwise
+   */
+  public boolean isCrossPressed() {
     return buttonList[CROSS_BTN].isPressed();
   }
 
-  boolean isCirclePressed() {
+  /**
+   * Ís the Circle Button pressed?
+   *
+   * @return true if Circle Button is pressed, false otherwise
+   */
+  public boolean isCirclePressed() {
     return buttonList[CIRCLE_BTN].isPressed();
   }
 
-  boolean isSelectPressed() {
+  /**
+   * Ís the Select Button pressed?
+   *
+   * @return true if Select Button is pressed, false otherwise
+   */
+  public boolean isSelectPressed() {
     return buttonList[SELECT_BTN].isPressed();
   }
 
-  boolean isStartPressed() {
+  /**
+   * Ís the Start Button pressed?
+   *
+   * @return true if Start Button is pressed, false otherwise
+   */
+  public boolean isStartPressed() {
     return buttonList[START_BTN].isPressed();
   }
 
-  boolean isPsPressed() {
+   /**
+   * Ís the PS Button pressed?
+   *
+   * @return true if PS Button is pressed, false otherwise
+   */
+  public boolean isPsPressed() {
     return buttonList[PS_BTN].isPressed();
   }    
 
-  // --------------------------------------------------------
-  // Button events 
-  
-  // Tells if a given button was pressed/released
-  // since the last call to the event function
+  /**
+   * Button events 
+   *
+   * Tells if a given button was pressed/released
+   * since the last call to the event function
+   *
+   */
 
-  // --------------------------------------------------------
-  // Pressed
-
-  boolean isTriggerPressedEvent() {
+  /**
+   * Was the Trigger button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isTriggerPressedEvent() {
     boolean event = buttonList[TRIGGER_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isMovePressedEvent() {
+ /**
+   * Was the Move button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isMovePressedEvent() {
     boolean event = buttonList[MOVE_BTN].isPressedEvent();
     return event;
   }
-
-  boolean isSquarePressedEvent() {
+  
+  /**
+   * Was the Square button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isSquarePressedEvent() {
     boolean event = buttonList[SQUARE_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isTrianglePressedEvent() {
+  /**
+   * Was the Triangle button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isTrianglePressedEvent() {
     boolean event = buttonList[TRIANGLE_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isCrossPressedEvent() {
+  /**
+   * Was the Cross button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isCrossPressedEvent() {
     boolean event = buttonList[CROSS_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isCirclePressedEvent() {
+ /**
+   * Was the Circle button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isCirclePressedEvent() {
     boolean event = buttonList[CIRCLE_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isSelectPressedEvent() {
+  /**
+   * Was the Select button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isSelectPressedEvent() {
     boolean event = buttonList[SELECT_BTN].isPressedEvent();
     return event;
   }
 
-  boolean isStartPressedEvent() {
+  /**
+   * Was the Start button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isStartPressedEvent() {
     boolean event = buttonList[START_BTN].isPressedEvent();
     return event;
   }
-
-  boolean isPsPressedEvent() {
+  
+  /**
+   * Was the PS button pressed since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isPsPressedEvent() {
     boolean event = buttonList[PS_BTN].isPressedEvent();
     return event;
-  }   
+  }    
 
-  // Released --------------------------------------------------------
-
-  boolean isTriggerReleasedEvent() {
+  /**
+   * Was the Trigger button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isTriggerReleasedEvent() {
     boolean event = buttonList[TRIGGER_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isMoveReleasedEvent() {
+  /**
+   * Was the Move button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isMoveReleasedEvent() {
     boolean event = buttonList[MOVE_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isSquareReleasedEvent() {
+  /**
+   * Was the Square button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isSquareReleasedEvent() {
     boolean event = buttonList[SQUARE_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isTriangleReleasedEvent() {
+  /**
+   * Was the Triangle button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isTriangleReleasedEvent() {
     boolean event = buttonList[TRIANGLE_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isCrossReleasedEvent() {
+ /**
+   * Was the Cross button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isCrossReleasedEvent() {
     boolean event = buttonList[CROSS_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isCircleReleasedEvent() {
+  /**
+   * Was the Circle button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isCircleReleasedEvent() {
     boolean event = buttonList[CIRCLE_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isSelectReleasedEvent() {
+  /**
+   * Was the Select button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isSelectReleasedEvent() {
     boolean event = buttonList[SELECT_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isStartReleasedEvent() {
+  /**
+   * Was the Start button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isStartReleasedEvent() {
     boolean event = buttonList[START_BTN].isReleasedEvent();
     return event;
   }
 
-  boolean isPsReleasedEvent() {
+  /**
+   * Was the PS button released since the last call of the event function?
+   * 
+   * @return true if yes, false otherwise
+   */
+  public boolean isPsReleasedEvent() {
     boolean event = buttonList[PS_BTN].isReleasedEvent();
     return event;
   }
   
 
   
-  // Update --------------------------------------------------------
-
+  /**
+   * Update
+   *
+   * TODO: which range can be used for rumble level?
+   * 
+   * @param _rumbleLevel the amount the move should rumble
+   * @param _sphereColor the color the move should show
+   */
   void update(int _rumbleLevel, color _sphereColor) {
     
     movePoll();
@@ -304,10 +501,10 @@ class MoveController extends PSMove {
   
   
   
-  // updatePoll --------------------------------------------------------
-  // Read inputs from the Move controller (buttons and sensors)
-
-
+  /**
+   * updatePoll 
+   * Read inputs from the Move controller (buttons and sensors)
+   */
   private void movePoll() { 
       
     // Update all readings in the PSMove object
@@ -379,67 +576,67 @@ class MoveController extends PSMove {
     super.get_button_events(pressed, released);
     // Then register the current individual events to the corresponding MoveButton objects in the buttonList array
     if ((pressed[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just pressed.");
+      logger.fine("The Move button was just pressed.");
       buttonList[MOVE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_MOVE.swigValue()) != 0) {
-      if (debug) println("The Move button was just released.");
+      logger.fine("The Move button was just released.");
       buttonList[MOVE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just pressed.");
+      logger.fine("The Square button was just pressed.");
       buttonList[SQUARE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SQUARE.swigValue()) != 0) {
-      if (debug) println("The Square button was just released.");
+      logger.fine("The Square button was just released.");
       buttonList[SQUARE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just pressed.");
+      logger.fine("The Triangle button was just pressed.");
       buttonList[TRIANGLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_TRIANGLE.swigValue()) != 0) {
-      if (debug) println("The Triangle button was just released.");
+      logger.fine("The Triangle button was just released.");
       buttonList[TRIANGLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just pressed.");
+      logger.fine("The Cross button was just pressed.");
       buttonList[CROSS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CROSS.swigValue()) != 0) {
-      if (debug) println("The Cross button was just released.");
+      logger.fine("The Cross button was just released.");
       buttonList[CROSS_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just pressed.");
+      logger.fine("The Circle button was just pressed.");
       buttonList[CIRCLE_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_CIRCLE.swigValue()) != 0) {
-      if (debug) println("The Circle button was just released.");
+      logger.fine("The Circle button was just released.");
       buttonList[CIRCLE_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just pressed.");
+      logger.fine("The Start button was just pressed.");
       buttonList[START_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_START.swigValue()) != 0) {
-      if (debug) println("The Start button was just released.");
+      logger.fine("The Start button was just released.");
       buttonList[START_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just pressed.");
+      logger.fine("The Select button was just pressed.");
       buttonList[SELECT_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_SELECT.swigValue()) != 0) {
-      if (debug) println("The Select button was just released.");
+      logger.fine("The Select button was just released.");
       buttonList[SELECT_BTN].eventRelease();
     }
     if ((pressed[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just pressed.");
+      logger.fine("The PS button was just pressed.");
       buttonList[PS_BTN].eventPress();
     } 
     else if ((released[0] & io.thp.psmove.Button.Btn_PS.swigValue()) != 0) {
-      if (debug) println("The PS button was just released.");
+      logger.fine("The PS button was just released.");
       buttonList[PS_BTN].eventRelease();
     }
 
@@ -456,12 +653,12 @@ class MoveController extends PSMove {
     if (triggerValue>0) {
       buttonList[TRIGGER_BTN].press();
       if (previousTriggerValue == 0) { // Catch trigger presses
-        if (debug) println("The Trigger button was just pressed.");
+        logger.fine("The Trigger button was just pressed.");
         buttonList[TRIGGER_BTN].eventPress();
       }
     }
     else if (previousTriggerValue>0) { // Catch trigger releases
-      if (debug) println("The Trigger button was just released.");
+      logger.fine("The Trigger button was just released.");
       buttonList[TRIGGER_BTN].eventRelease();
       buttonList[TRIGGER_BTN].release();
     }
@@ -470,6 +667,9 @@ class MoveController extends PSMove {
   }
   // END OF UPDATE POLL
   
+  /**
+   * Shutdown move
+   */
   void shutdown() {
       super.set_rumble(0);
       super.set_leds(0, 0, 0);
@@ -483,57 +683,72 @@ class MoveController extends PSMove {
 
 
 
-// Button class -------------------------------------------------------------
-
+/**
+ * Button class 
+ */
 class MoveButton {
-
   
-  boolean isPressed;
+  protected boolean isPressed;
   //boolean isPressedEvent, isReleasedEvent;
-  int value, previousValue; // For analog buttons only (triggers)
+  protected int value; // For analog buttons only (triggers)
+  protected int previousValue; // For analog buttons only (triggers)
   
   
   // We store multiple catchers for the event in case we need to make 
   // several queries; the event catcher is set to false after the query 
   // so we can only use each event catcher once. To do so, we can use 
   // isPressedEvent(i) where i is the id of the catcher.
-  boolean[] pressedEvents;
-  boolean[] releasedEvents;
+  protected boolean[] pressedEvents;
+  protected boolean[] releasedEvents;
 
-  
-  MoveButton() {
+  /**
+   * Constructor
+   */
+  public MoveButton() {
     isPressed = false;
     pressedEvents = new boolean[64];
     releasedEvents = new boolean[64];
     value = 0;
   }
   
-
-  void press() {
+  /**
+   * Press button 
+   */
+  public void press() {
     isPressed = true;
   }
 
-  
-  void release() { 
+  /**
+   * Release button 
+   */
+  public void release() { 
     isPressed = false;
   }
   
-  
-  void eventPress() {
+  /**
+   * TODO: Document this method
+   */
+  public void eventPress() {
     for(int i=0; i < pressedEvents.length; i++) {
       pressedEvents[i] = true; // update all the event catchers
     }
   }
   
-  
-  void eventRelease() {
+  /**
+   * TODO: Document this method
+   */
+  public void eventRelease() {
     for(int i=0; i < releasedEvents.length; i++) {
       releasedEvents[i] = true; // update all the event catchers
     }
   }
   
-  
-  boolean isPressedEvent() {
+  /**
+   * Returns true if there is a pressedEvent for this button
+   * 
+   * @return true if pressedEvent, false otherwise
+   */
+  public boolean isPressedEvent() {
     if(pressedEvents[0]) {
       pressedEvents[0] = false; // Reset the main event catcher
       return true;
@@ -541,8 +756,12 @@ class MoveButton {
     return false;
   }
   
-  
-  boolean isReleasedEvent() {
+  /**
+   * Returns true if there is a releasedEvent for this button
+   * 
+   * @return true if releasedEvent, false otherwise
+   */
+  public boolean isReleasedEvent() {
     if(releasedEvents[0]) {
       releasedEvents[0] = false; // Reset the main event catcher
       return true;
@@ -550,8 +769,10 @@ class MoveButton {
     return false;
   }
   
-  
-  boolean isPressedEvent(int i) {
+  /**
+   * TODO: Document this method
+   */
+  public boolean isPressedEvent(int i) {
     if(pressedEvents[i]) {
       pressedEvents[i] = false; // Reset the selected event catcher
       return true;
@@ -559,8 +780,10 @@ class MoveButton {
     return false;
   }
   
-  
-  boolean isReleasedEvent(int i) {
+  /**
+   * TODO: Document this method
+   */
+  public boolean isReleasedEvent(int i) {
     if(releasedEvents[i]) {
       releasedEvents[i] = false; // Reset the selected event catcher
       return true;
@@ -568,20 +791,27 @@ class MoveButton {
     return false;
   }
   
-  
-  boolean isPressed() {
+  /**
+   * Is the button pressed?
+   *
+   * @return true if pressed, false otherwise
+   */
+  public boolean isPressed() {
     return isPressed;
   }
 
-  
-  void setValue(int _val) { 
+  /**
+   * TODO: Document this method
+   */
+  public void setValue(int _val) { 
     previousValue = value;
     value = _val;
   }
   
-  
-  int getValue() {    
+  /**
+   * TODO: Document this method
+   */
+  public int getValue() {    
     return value;
   }
-   
 }
